@@ -1,3 +1,5 @@
+from deals.models import Deal, Vendor
 from django.contrib import admin
 
-# Register your models here.
+admin.site.register(Deal)
+admin.site.register(Vendor)
