@@ -31,16 +31,11 @@ def post_deal(post_dict):
       *time_start
       *time_end
 
-  Args: Django QuerySet consisting of a structured POST request body
+  Args: Django QueryDict consisting of a structured POST request body
 
   Returns: Nothing. Raises exceptions on error. 
   """
-  new_deal = Deal(vendor=post_dict['vendor'],
-                  title=post_dict['title'],
-                  desc=post_dict['desc'],
-                  radius=post_dict['radius'],
-                  time_start=post_dict['time_start'],
-                  time_end=post_dict['time_end'])
+  new_deal = Deal(**post_dict.dict())
   new_deal.save()
 
 def get_vendor(vendor_id=None):
@@ -64,17 +59,11 @@ def post_vendor(post_dict):
       *web_url
       *yelp_url
 
-  Args: Django QuerySet consisting of a structured POST request body
+  Args: Django QueryDict consisting of a structured POST request body
 
   Returns: Nothing. Raises exceptions on error. 
   """
-  new_vendor = Vendor(name=post_dict['name'],
-                      address=post_dict['address'],
-                      business_type=post_dict['business_type'],
-                      latitude=post_dict['latitude'],
-                      longitude=post_dict['longitude'],
-                      web_url=post_dict['web_url'],
-                      yelp_url=post_dict['yelp_url'])
+  new_vendor = Vendor(**post_dict.dict())
   new_vendor.save()
 
 @require_http_methods(["GET", "POST"])
