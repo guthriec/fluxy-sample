@@ -70,7 +70,7 @@ def post_vendor(post_dict):
 def deal(request, deal_id=None):
   """
   Routes request to appropriate handler based on request method.
-  Returns appropriate HttpResponse.
+  Returns JSON HttpResponse for GET, text for POST (regardless of success).
   """
   if request.method == 'GET':
     resp = get_deal(deal_id)
@@ -84,7 +84,7 @@ def deal(request, deal_id=None):
 def vendor(request, vendor_id=None):
   """
   Routes request to appropriate handler based on request method.
-  Returns appropriate HttpResponse.
+  Returns JSON HttpResponse for GET, text for POST (regardless of success).
   """
   if request.method == 'GET':
     resp = get_vendor(vendor_id)
