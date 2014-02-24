@@ -1,0 +1,14 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+</head>
+<body>
+  <div id="content">
+    {% block content %}{% endblock %}
+  </div>
+  <script type="text/javascript" src="{% static 'lib/jquery-2.1.0.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'lib/underscore-1.6.0.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'lib/backbone-1.1.2.min.js'%}"></script>
+</body>
+</html>
