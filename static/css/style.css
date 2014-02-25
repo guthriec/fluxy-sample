@@ -17,6 +17,30 @@ input[type="text"] {
   margin: 0 auto;
 }
 
+#landing-page #left-col {
+  float: left;
+  position: relative;
+  left: 30px;
+}
+
+#landing-page #right-col {
+  position: relative;
+  top: 80px;
+  left: 80px;
+}
+
 #landing-page #email-signup {
   font-size: 24px;
+}
+
+#landing-page h1 {
+  font-size: 45px;
+  color: #666;
+  position: relative;
+  left: 75px;
+}
+
+#landing-page #logo-name {
+  margin-bottom: 30px;
+}
 }
