@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+
+<div id="landing-page">
+  <img src="{% static 'img/logo_name.png' %}" alt="Fluxy" />
+  <form action="" method="POST">
+    <input type="text" id="email-signup" name="email-signup" placeholder="Email here!">
+    <button type="submit" id="email-signup-btn" class="btn btn-default btn-lg">Submit</button>
+  </form>
+</div>
+
+{% endblock %}

@@ -1,9 +1,12 @@
 from django.conf.urls import patterns, include, url
 
+from fluxy import views
+
 from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
+  url(r'^$', views.index),
   url(r'^admin/', include(admin.site.urls)),
   # Route /deals/ and /vendors/ resources
   url(r'^deals/$', 'deals.views.deal'),
