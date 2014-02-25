@@ -3,7 +3,7 @@ html, body {
   font-family: 'Josefin Sans', sans-serif;
 }
 
-input[type="text"] {
+input[type="text"], input[type="email"] {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
@@ -29,7 +29,7 @@ input[type="text"] {
   left: 80px;
 }
 
-#landing-page #email-signup {
+#landing-page #mce-EMAIL {
   font-size: 24px;
 }
 
@@ -42,5 +42,4 @@ input[type="text"] {
 
 #landing-page #logo-name {
   margin-bottom: 30px;
-}
 }
