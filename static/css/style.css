@@ -27,6 +27,7 @@ input[type="text"], input[type="email"] {
   position: relative;
   top: 80px;
   left: 80px;
+  padding-right: 150px;
 }
 
 #landing-page #mce-EMAIL {
@@ -38,6 +39,12 @@ input[type="text"], input[type="email"] {
   color: #666;
   position: relative;
   left: 75px;
+}
+
+#landing-page h3 {
+  text-align: center;
+  position: relative;
+  left: -40px;
 }
 
 #landing-page #logo-name {
