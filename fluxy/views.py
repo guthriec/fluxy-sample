@@ -1,6 +1,5 @@
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
 
 import mailchimp
 # mailchimp example app: https://github.com/mailchimp/mcapi2-python-examples
