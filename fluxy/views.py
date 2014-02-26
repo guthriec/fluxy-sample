@@ -1,11 +1,18 @@
-from django.shortcuts import render
+from django.core.urlresolvers import reverse
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 
 import mailchimp
+# mailchimp example app: https://github.com/mailchimp/mcapi2-python-examples
 
 
 def index(request):
   return render(request, 'fluxy/index.html')
+
+def success(request):
+  return render(request, 'fluxy/index.html', {
+    'success': True,
+  })
 
 def subscribe(request):
   try:
@@ -13,8 +20,14 @@ def subscribe(request):
     m.lists.subscribe('56437bae31', {'email':request.POST['email']},
         double_optin=False)
   except mailchimp.ListAlreadySubscribedError:
-    return HttpResponse("You've already subscribed. Thanks though!")
-    # return render(request, 'fluxy/index.html')
+    return render(request, 'fluxy/index.html', {
+      'error_message': "You've already subscribed for updates. Thanks though!",
+    })
   except mailchimp.Error, e:
-    return HttpResponse("An error occured %s: %s" % (e.__class__, e))
-  return HttpResponse("You're good")
+    return render(request, 'fluxy/index.html', {
+      # We could display the specific error that occurs using e, but
+      # that doesn't seem very user friendly
+      'error_message': "Oh no! An error occured! Try again?",
+    })
+  return redirect(reverse('fluxy.views.success'))
+

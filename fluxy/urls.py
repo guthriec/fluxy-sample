@@ -8,6 +8,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
   url(r'^$', views.index),
   url(r'^subscribe$', views.subscribe),
+  url(r'^success$', views.success),
   url(r'^admin/', include(admin.site.urls)),
   # Route /deals/ and /vendors/ resources
   url(r'^deals/$', 'deals.views.deal'),
