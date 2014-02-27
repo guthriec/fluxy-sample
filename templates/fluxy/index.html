@@ -10,13 +10,18 @@
     <img src="{% static 'img/logo_name.png' %}" id="logo-name" alt="Fluxy" />
     <h3>Exclusive, right-now restaurant deals coming soon to San Francisco and Palo Alto! Sign up for updates.</h3>
   </div>
+
+  <!-- The sign-up form itself -->
   <div id="form-container">
+    <!-- Error message -->
     {% if error_message %}
     <p><strong>{{ error_message }}</strong></p>
     {% endif %}
+    <!-- Success message -->
     {% if success %}
     <p><strong>Thanks for subscribing!</strong></p>
     {% endif %}
+    <!-- Form to submit email to our list -->
     <form action="subscribe" method="post">
       {% csrf_token %}
       <input name="email" type="email" class="required email"
