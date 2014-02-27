@@ -24,6 +24,10 @@ Endpoints supporting GET and POST:
 Endpoints supporting GET only:
 /api/v1/deals/{id}
 /api/v1/vendors/{id}
+
+Mock API
+-------------
+Supports only GET:
 /api/mock/deals
 /api/mock/vendors
 /api/mock/deals/{id}
