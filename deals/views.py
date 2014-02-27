@@ -66,7 +66,7 @@ def post_vendor(post_dict):
 
   Args: Django QueryDict consisting of a structured POST request body
 
-  Returns: new vendor object and its database id
+  Returns: new vendor object and its database id.
   """
   new_vendor = Vendor(**post_dict.dict())
   new_vendor.save()
@@ -80,12 +80,26 @@ def deal(request, deal_id=None):
   (regardless of success).
   """
   if request.method == 'GET':
-    deal_set = get_deal(deal_id)
+    try:
+      deal_set = get_deal(deal_id)
+    except Exception:
+      err = [{error: "Server error"}]
+      return HttpResponse(serializers.serialize("json", err),\
+                          content_type="application/json", status=500)
+    if deal_set.count() == 0:
+      err = [{error: "No such deal found"}]  
+      return HttpResponse(serializers.serialize("json", err),\
+                          content_type="application/json", status=404)
     return HttpResponse(serializers.serialize("json", deal_set),\
                         content_type="application/json", status=200)
   else:
-    # POST request. Ignore deal_id.
-    deal, deal_id = post_deal(request.POST)
+    # POST request.
+    try:
+      deal, deal_id = post_deal(request.POST)
+    except Exception:
+      err = [{error: "Server error"}]
+      return HttpResponse(serializers.serialize("json", err),\
+                          content_type="application/json", status=500)
     return HttpResponseRedirect('deals/' + str(deal_id),\
                                 serializers.serialize("json", [deal]),\
                                 content_type="application/json", status=201)
