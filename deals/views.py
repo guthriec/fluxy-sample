@@ -9,13 +9,14 @@ import json
 
 def _get_deal(deal_id=None):
   """
-  GET request handler for deals. If deal_id is specified, it serializes the
-  corresponding Deal object to JSON and returns the result. Otherwise, response
-  contains an array of all Deal objects. No special handling for invalid deal IDs.
+  by Chris
+  GET request handler for deals. If deal_id is specified, it finds the 
+  corresponding Deal object and returns the result. Otherwise, response
+  contains a QuerySet of all Deal objects. No special handling for invalid deal IDs.
   
   Args: deal primary key (integer)
 
-  Returns: JSON data dump (string)
+  Returns: QuerySet of selected objects 
   """
   if deal_id:
     return Deal.objects.filter(pk=deal_id)
@@ -24,7 +25,9 @@ def _get_deal(deal_id=None):
 
 def _post_deal(post_dict):
   """
-  POST request handler for deals. Adds the specified deal to the DB.
+  by Chris
+  POST request handler for deals. Adds the specified deal to the DB, de-serializing
+  as necessary.
   Assumes the POST request has the following keys, corresponding to field names:
       *vendor (this should be the vendor id)
       *title
@@ -45,7 +48,8 @@ def _post_deal(post_dict):
 
 def _get_vendor(vendor_id=None):
   """
-  Behaves identically to get_deal(), except with vendors.
+  by Chris
+  Behaves identically to _get_deal(), except with vendors.
   """
   if vendor_id:
     return Vendor.objects.filter(pk=vendor_id)
@@ -54,6 +58,7 @@ def _get_vendor(vendor_id=None):
 
 def _post_vendor(post_dict):
   """
+  by Chris
   POST request handler for vendors. Adds the specified vendor to the DB.
   Assumes the POST request has the following keys, corresponding to field names:
       *name
@@ -73,6 +78,10 @@ def _post_vendor(post_dict):
   return new_vendor, new_vendor.id
 
 def _make_get_response(qset, known_error = None):
+  """
+  by Chris
+
+  """
   if not known_error and qset.count() == 0:
     known_error = {'code': 404, 'message': 'No resource found'}
   if known_error:
