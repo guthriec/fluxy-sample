@@ -47,5 +47,7 @@ def subscribe(request):
       # that doesn't seem very user friendly
       'error_message': "Oh no! An error occured! Try again?",
     })
+  except:
+    return render(request, 'fluxy/index.html')
   return redirect(reverse('fluxy.views.success'))
 
