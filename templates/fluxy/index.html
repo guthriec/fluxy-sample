@@ -9,7 +9,8 @@
     <h1>Introducing</h1>
     <img src="{% static 'img/logo_name.png' %}" id="logo-name" alt="Fluxy" />
     <h3>Exclusive, right-now restaurant deals coming soon to San Francisco and Palo Alto! Sign up for updates.</h3>
-
+  </div>
+  <div id="form-container">
     {% if error_message %}
     <p><strong>{{ error_message }}</strong></p>
     {% endif %}
@@ -19,8 +20,8 @@
     <form action="subscribe" method="post">
       {% csrf_token %}
       <input name="email" type="email" class="required email"
-      placeholder="Your email" />
-      <button type="submit" class="btn btn-default btn-lg">Subscribe</button>
+      placeholder="Your email" id="email" />
+      <button type="submit" class="btn btn-default btn-lg" id="submit-btn">Subscribe</button>
     </form>
   </div>
 </div>
