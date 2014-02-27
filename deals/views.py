@@ -7,7 +7,7 @@ from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 import json
 
-def get_deal(deal_id=None):
+def get_deal(deal_id=None, vendor_id=None):
   """
   GET request handler for deals. If deal_id is specified, it serializes the
   corresponding Deal object to JSON and returns the result. Otherwise, response
@@ -17,10 +17,15 @@ def get_deal(deal_id=None):
 
   Returns: JSON data dump (string)
   """
+  if deal_id and vendor_id:
+    raise ValueError("You done gone goofed")
   if deal_id:
     return Deal.objects.filter(pk=deal_id)
   else:
-    return Deal.objects.all()
+    if vendor_id:
+      return Deal.objects.filter(vendor_id=vendor_id)
+    else:
+      return Deal.objects.all()
 
 def post_deal(post_dict):
   """
@@ -107,6 +112,16 @@ def vendor(request, vendor_id=None):
     return HttpResponseRedirect('vendors/' + str(vendor_id),\
                                 serializers.serialize("json", [vendor]),\
                                 content_type="application/json", status=201)
+
+@require_http_methods(["GET"])
+def vendor_deals(request, vendor_id=None):
+  if not vendor_id:
+    raise ValueError("Must supply a vendor id")
+  deal_set = get_deal(vendor_id = vendor_id)
+  return HttpResponse(serializers.serialize("json", deal_set),\
+                      content_type="application/json", status=200)
+
+
 
 @require_http_methods(["GET"])
 def mock_deal(request, deal_id=None):
