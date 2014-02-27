@@ -4,6 +4,8 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 
+def dashboard(request):
+  return render(request, 'deals/dashboard.html')
 
 def get_deal(deal_id=None):
   """
