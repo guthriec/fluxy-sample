@@ -1,9 +1,14 @@
 var DealsListView = Backbone.View.extend({
   initialize: function() {
-    vd_collection = new VendorDealCollection();
+    var vd_collection = new VendorDealCollection();
     vd_collection.set_vendor(1);
-    this.deals = vd_collection.fetch();
-    console.log(this.deals);
+    vd_collection.fetch({
+      success: function() {
+        console.log(vd_collection)
+        console.log(vd_collection.models)
+        console.log(vd_collection.models[0]);
+      }
+    });
   },
 
   render: function() {
