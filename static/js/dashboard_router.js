@@ -16,7 +16,7 @@ DashboardRouter = Backbone.Router.extend({
   },
 
   view: function() {
-    this.currentView = new DealListView();
+    this.currentView = new DealsListView();
     $('#dashboard').html(this.currentView.render().el);
   }
 });

@@ -9,6 +9,11 @@
 
 {% block scripts %}
 
+<script id="dealsListTemplate" type="text/template">
+<h1>boom shakalaka</h1>
+</script>
+
+
 <script id="dashIndexTemplate" type="text/template">
 <div class="choices-buttons">
       <a href="#create">Create a deal</a>
@@ -54,6 +59,8 @@
 </script>
 <script type="text/javascript" src="{% static 'js/dashboard_router.js'%}"></script>
 <script type="text/javascript" src="{% static 'js/dashboard_index.js'%}"></script>
+<script type="text/javascript" src="{% static 'js/deal_model.js'%}"></script>
 <script type="text/javascript" src="{% static 'js/deals_create.js'%}"></script>
+<script type="text/javascript" src="{% static 'js/deals_list.js'%}"></script>
 <script type="text/javascript" src="{% static 'js/dashboard_init.js'%}"></script>
 {% endblock %}
