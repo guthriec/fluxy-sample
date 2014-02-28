@@ -25,6 +25,15 @@ class Vendor(models.Model):
     """
     return self.name
 
+  def natural_key(self):
+    """
+    For nested serialization.
+    """
+    return{'id':self.id, 'name':self.name, 'address':self.address,
+           'business_type':self.business_type, 'latitude':self.latitude,
+           'longitude':self.longitude, 'web_url':self.web_url,
+           'yelp_url':self.yelp_url} 
+
 class Deal(models.Model):
   """
   Deal model. Here's the schema:

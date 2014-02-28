@@ -78,20 +78,24 @@ def _post_vendor(post_dict):
   new_vendor.save()
   return new_vendor, new_vendor.id
 
-def _make_get_response(qset, known_error = None):
+def _make_get_response(qset, known_error=None, include_nested=False):
   """
   by Chris
 
   """
-  if not known_error and qset.count() == 0:
-    known_error = {'code': 404, 'message': 'No resource found'}
+  try:
+    if not known_error and qset.count() == 0:
+      known_error = {'code': 404, 'message': 'No resource found'}
+  except TypeError:
+    pass
   if known_error:
     code = known_error['code']
     err_message = known_error['message']
     return HttpResponse(json.dumps(known_error),\
                         content_type="application/json", status=code)
   else:
-    return HttpResponse(serializers.serialize("json", qset),\
+    return HttpResponse(serializers.serialize("json", qset,\
+                                              use_natural_keys=include_nested),\
                         content_type="application/json", status=200)
 
 def _make_post_response(obj, redirect_addr, known_error = None):
@@ -120,7 +124,7 @@ def deal(request, deal_id=None):
       deal_set = _get_deal(deal_id)
     except Exception:
       known_error = {'code': 500, 'message': 'Server error'}
-    return _make_get_response(deal_set, known_error)
+    return _make_get_response(deal_set, known_error, True)
   else:
     # POST request.
     known_error = None
@@ -146,7 +150,7 @@ def vendor(request, vendor_id=None):
       vendor_set = _get_vendor(vendor_id)
     except Exception:
       known_error = {'code': 500, 'message': 'Server error'}
-    return _make_get_response(vendor_set, known_error)
+    return _make_get_response(vendor_set, known_error, False)
   else:
     # POST request.
     known_error = None
@@ -172,8 +176,7 @@ def mock_deal(request, deal_id=None):
     deal_set = [deal1_full] 
   if deal_id == "2":
     deal_set = [deal2_full]
-  return HttpResponse(serializers.serialize("json", deal_set),\
-                      content_type="application/json", status=200)
+  return _make_get_response(deal_set, None, True)
 
 @require_http_methods(["GET"])
 def mock_vendor(request, vendor_id=None):
@@ -190,5 +193,4 @@ def mock_vendor(request, vendor_id=None):
     vendor_set = [vendor1_full] 
   if vendor_id == "2":
     vendor_set = [vendor2_full]
-  return HttpResponse(serializers.serialize("json", vendor_set),\
-                      content_type="application/json", status=200)
+  return _make_get_response(vendor_set, None, False) 
