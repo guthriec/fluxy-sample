@@ -14,13 +14,14 @@ input[type="text"], input[type="email"] {
 /** LANDING PAGE CSS **/
 #landing-page {
   width: 900px;
-  margin: 0 auto;
+  margin: 50px auto 0 auto;
 }
 
 #landing-page #left-col {
   float: left;
   position: relative;
   left: 30px;
+  top: 30px;
 }
 
 #landing-page #right-col {
@@ -30,8 +31,22 @@ input[type="text"], input[type="email"] {
   padding-right: 150px;
 }
 
-#landing-page #mce-EMAIL {
+#landing-page #form-container {
+  position: relative;
+  top: 125px;
+}
+
+#landing-page #form-container #email {
+  position: relative;
+  top: 3px;
+  left: -100px;
   font-size: 24px;
+  width: 400px;
+}
+
+#landing-page #form-container #submit-btn {
+  position: relative;
+  left: -95px;
 }
 
 #landing-page h1 {
@@ -48,5 +63,5 @@ input[type="text"], input[type="email"] {
 }
 
 #landing-page #logo-name {
-  margin-bottom: 30px;
+  margin: 10px 0 20px 0;
 }
