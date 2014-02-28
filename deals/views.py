@@ -12,7 +12,8 @@ def _get_deal(deal_id=None):
   by Chris
   GET request handler for deals. If deal_id is specified, it retrieves the
   corresponding Deal object and returns the result. Otherwise, response
-  contains an array of all Deal objects. No special handling for invalid deal IDs.
+  contains an array of all Deal objects. Invalid deal ID's result in
+  an empty QuerySet.
   
   Args: deal primary key (integer)
 
@@ -81,7 +82,9 @@ def _post_vendor(post_dict):
 def _make_get_response(qset, known_error = None):
   """
   by Chris
-
+  Helper function to take a QuerySet and an optional "known error"
+  dict (with keys 'message' and 'code'), and create an appropriate
+  response to a GET request.
   """
   if not known_error and qset.count() == 0:
     known_error = {'code': 404, 'message': 'No resource found'}
@@ -95,6 +98,11 @@ def _make_get_response(qset, known_error = None):
                         content_type="application/json", status=200)
 
 def _make_post_response(obj, redirect_addr, known_error = None):
+  """
+  As with _make_get_response, generates an appropriate response given
+  any known errors passed in, along with the created object and an
+  address to redirect to.
+  """
   if known_error:
     code = known_error['code']
     err_message = known_error['message']
