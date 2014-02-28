@@ -9,13 +9,8 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import os, socket
+import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-
-
-# Put your dev hostname in this file. Otherwise your server will run with
-# production settings
-developers = ['dn51usu2.sunet']
 
 
 # Quick-start development settings - unsuitable for production
@@ -25,11 +20,21 @@ developers = ['dn51usu2.sunet']
 SECRET_KEY = '36b2glm^*w=wz8+y&fn^s6^huvgibiaz$7++!rayba8fi)%0pd'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = TEMPLATE_DEBUG = False
 
-TEMPLATE_DEBUG = True
+ALLOWED_HOSTS = [
+    'www.fluxyapp.com',
+    'http://fluxyapp.com',
+    'http://www.fluxyapp.com'
+]
 
-ALLOWED_HOSTS = ['www.fluxyapp.com']
+ADMINS = (
+    ('Ayush Sood', 'ayushsood@gmail.com'),
+    ('Chris Guthrie', 'guthriec93@gmail.com'),
+    ('Rahul Gupta-Iwasaki', 'deepthinkingfool@gmail.com'),
+    ('Arushi Raghuvanshi', 'arushi.raghu@gmail.com'),
+    ('Amrit Saxena', 'amrit.saxena1@gmail.com'),
+)
 
 # Application definition
 
@@ -90,14 +95,15 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
-# TODO Handle static files in production (i.e. with debug turned off)
-# https://docs.djangoproject.com/en/1.6/howto/static-files/deployment/
-
 # Template files
 
 TEMPLATE_DIRS = [
     os.path.join(BASE_DIR, 'templates'),
 ]
 
-if not socket.gethostname() in developers:
-  from settings_production import *
+try:
+  # Local dev settings... use local_settings_commented if you don't have it
+  # already
+  from local_settings import *
+except ImportError:
+  pass
