@@ -10,9 +10,13 @@
 {% block scripts %}
 
 <script id="dealsListTemplate" type="text/template">
-<h1>boom shakalaka</h1>
+<table class="deal-list-table">
+</table>
 </script>
 
+<script id="dealsRowTemplate" type="text/template">
+<td>title: <%= title  %></td><td>radius: <%= radius %></td>
+</script>
 
 <script id="dashIndexTemplate" type="text/template">
 <div class="choices-buttons">
@@ -61,6 +65,7 @@
 <script type="text/javascript" src="{% static 'js/dashboard_index.js'%}"></script>
 <script type="text/javascript" src="{% static 'js/deal_model.js'%}"></script>
 <script type="text/javascript" src="{% static 'js/deals_create.js'%}"></script>
+<script type="text/javascript" src="{% static 'js/deal_row.js'%}"></script>
 <script type="text/javascript" src="{% static 'js/deals_list.js'%}"></script>
 <script type="text/javascript" src="{% static 'js/dashboard_init.js'%}"></script>
 {% endblock %}

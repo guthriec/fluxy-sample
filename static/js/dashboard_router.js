@@ -16,7 +16,10 @@ DashboardRouter = Backbone.Router.extend({
   },
 
   view: function() {
-    this.currentView = new DealsListView();
+    var deals_col = new VendorDealCollection();
+    deals_col.set_vendor(1);
+    this.currentView = new DealsListView(deals_col);
     $('#dashboard').html(this.currentView.render().el);
+    deals_col.fetch();
   }
 });

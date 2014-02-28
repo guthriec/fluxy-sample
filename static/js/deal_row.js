@@ -3,5 +3,11 @@ var DealRowView = Backbone.View.extend({
 
   initialize: function(deal) {
     this.deal = deal;
+  },
+
+  render: function() { 
+    var template = _.template($('#dealsRowTemplate').html(), this.deal.toJSON());
+    this.$el.html(template);
+    return this;
   }
 });
