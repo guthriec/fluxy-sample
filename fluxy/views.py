@@ -7,26 +7,31 @@ from django.shortcuts import render, redirect
 import mailchimp
 # mailchimp example app: https://github.com/mailchimp/mcapi2-python-examples
 
-
-# Author: Rahul Gupta-Iwasaki
-# Path: /
-# Description: Renders the landing page
+"""
+  Author: Rahul Gupta-Iwasaki
+  Path: /
+  Description: Renders the landing page
+"""
 def index(request):
   return render(request, 'fluxy/index.html')
 
-# Author: Rahul Gupta-Iwasaki
-# Path: /success
-# Description: Renders the landing page with a success message
+"""
+  Author: Rahul Gupta-Iwasaki
+  Path: /success
+  Description: Renders the landing page with a success message
+"""
 def success(request):
   return render(request, 'fluxy/index.html', {
     'success': True,
   })
 
-# Author: Rahul Gupta-Iwasaki
-# Path: /subscribe
-# Description: Takes post with email parameter, synchronously posts this to
-# Mailchimp trying to subscribe the email. Either returns an error message or
-# redirects the client to /success displaying a success message
+"""
+  Author: Rahul Gupta-Iwasaki
+  Path: /subscribe
+  Description: Takes post with email parameter, synchronously posts this to
+  Mailchimp trying to subscribe the email. Either returns an error message or
+  redirects the client to /success displaying a success message
+"""
 def subscribe(request):
   try:
     m = mailchimp.Mailchimp('f8dd77b845c2045f7df529b04427bd98-us3')
@@ -42,5 +47,7 @@ def subscribe(request):
       # that doesn't seem very user friendly
       'error_message': "Oh no! An error occured! Try again?",
     })
+  except:
+    return render(request, 'fluxy/index.html')
   return redirect(reverse('fluxy.views.success'))
 
