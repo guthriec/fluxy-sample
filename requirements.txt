@@ -1,4 +1,4 @@
 django==1.6.2
 mailchimp==2.0.7
-// due to http://stackoverflow.com/questions/2609259/converting-string-to-datetime-object-in-python
-python-dateutil==2.0
+# due to http://stackoverflow.com/questions/2609259/converting-string-to-datetime-object-in-python
+python-dateutil==2.2
