@@ -8,15 +8,15 @@ class FixtureDicts:
   vendor1 = {'name' : "Happy Donuts",
              'address' : "111 El Camino",
              'business_type' : "Restaurant",
-             'latitude' : 40,
-             'longitude' : 80,
+             'latitude' : 37.4225,
+             'longitude' : 122.1653,
              'web_url' : "http://www.happydonuts.com",
              'yelp_url' : "http://www.yelp.com/biz/happy_d"}
   vendor2 = {'name' : "Thaiphoon",
              'address' : "111 Emerson",
              'business_type' : "Restaurant",
-             'latitude' : 40,
-             'longitude' : 80,
+             'latitude' : 37.43,
+             'longitude' : 122.166,
              'web_url' : "http://www.thaiphoon.com",
              'yelp_url' : "http://www.yelp.com/biz/thaiphoon"}
   vendors = [vendor1, vendor2]
