@@ -90,6 +90,7 @@ def _make_get_response(qset, known_error=None, include_nested=False):
     if not known_error and qset.count() == 0:
       known_error = {'code': 404, 'message': 'No resource found'}
   except TypeError:
+    # qset is a dict, indicating a mock api call
     pass
   if known_error:
     code = known_error['code']
