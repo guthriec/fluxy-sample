@@ -27,6 +27,7 @@ Endpoints supporting GET only:
 ```
 /api/v1/deals/{id}
 /api/v1/vendors/{id}
+/api/v1/vendors/{id}/deals
 ```
 
 Mock API
