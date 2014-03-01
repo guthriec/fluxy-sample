@@ -29,14 +29,16 @@ class Vendor(models.Model):
     """
     For nested serialization.
     """
-    return{'id':self.id,\
-           'name':self.name,\
-           'address':self.address,\
-           'business_type':self.business_type,\
-           'latitude':self.latitude,\
-           'longitude':self.longitude,\
-           'web_url':self.web_url,\
-           'yelp_url':self.yelp_url} 
+    return { 
+        'id': self.id,
+        'name': self.name,
+        'address': self.address,
+        'business_type': self.business_type,
+        'latitude': self.latitude,
+        'longitude': self.longitude,
+        'web_url': self.web_url,
+        'yelp_url': self.yelp_url
+    } 
 
 class Deal(models.Model):
   """
