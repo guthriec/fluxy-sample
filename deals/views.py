@@ -188,18 +188,27 @@ def vendor(request, vendor_id=None):
       known_error = {'code': 500, 'message': 'Server error'}
     return _make_post_response(vendor, 'vendors/' + str(vendor_id), known_error)
     
-@require_http_methods(["GET"])
-def vendor_deals(request, vendor_id=None):
-  known_error = None
-  deal_set = None
-  if not vendor_id:
-    known_error = {'code': 500, 'message': 'Server error'} 
-  try:
-    deal_set = _get_deal(vendor_id=vendor_id)
-  except Exception:
-    known_error = {'code': 500, 'message': 'Server error'}
-  return _make_get_response(deal_set, known_error,\
-                            flatten=True, include_nested=True)
+@require_http_methods(["GET", "POST"])
+def vendor_deals(request, vendor_id):
+  if request.method == 'GET':
+    known_error = None
+    deal_set = None
+    if not vendor_id:
+      known_error = {'code': 500, 'message': 'Server error'} 
+    try:
+      deal_set = _get_deal(vendor_id=vendor_id)
+    except Exception:
+      known_error = {'code': 500, 'message': 'Server error'}
+    return _make_get_response(deal_set, known_error,\
+                              flatten=True, include_nested=True)
+  else:
+    known_error = None
+    vendor = vendor_id 
+    try:
+      deal, deal_id = _post_deal(request.POST)
+    except Exception:
+      known_error = {'code': 500, 'message': 'Server error'}
+    return _make_post_response(deal, 'deals/' + str(deal_id), known_error)
 
 @require_http_methods(["GET"])
 def mock_deal(request, deal_id=None):
