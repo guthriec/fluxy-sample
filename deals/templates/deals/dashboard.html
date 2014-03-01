@@ -39,7 +39,7 @@
       <td><textarea style="resize: none;" rows="10" cols="50" form="deal-form"></textarea></td>
     </tr>
     <tr>
-      <td>Duration: </td> 
+      <td>Duration: </td>
       <td>
         <select name="hours" form="deal-form">
           <option value="0">0</option>
@@ -61,11 +61,12 @@
   </table>
 </form>
 </script>
-<script type="text/javascript" src="{% static 'js/dashboard_router.js'%}"></script>
-<script type="text/javascript" src="{% static 'js/dashboard_index.js'%}"></script>
-<script type="text/javascript" src="{% static 'js/deal_model.js'%}"></script>
-<script type="text/javascript" src="{% static 'js/deals_create.js'%}"></script>
-<script type="text/javascript" src="{% static 'js/deal_row.js'%}"></script>
-<script type="text/javascript" src="{% static 'js/deals_list.js'%}"></script>
-<script type="text/javascript" src="{% static 'js/dashboard_init.js'%}"></script>
+<script type="text/javascript" src="{% static 'js/routers/dashboard_router.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/views/deal_dashboard_index_view.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/models/deal_model.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/collections/deal_collection.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/views/deal_create_view.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/views/deal_row_view.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/views/deal_list_view.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/dashboard_init.js' %}"></script>
 {% endblock %}
