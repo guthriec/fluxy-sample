@@ -20,12 +20,21 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = '36b2glm^*w=wz8+y&fn^s6^huvgibiaz$7++!rayba8fi)%0pd'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = TEMPLATE_DEBUG = False
 
-TEMPLATE_DEBUG = True
+ALLOWED_HOSTS = [
+    'www.fluxyapp.com',
+    'http://fluxyapp.com',
+    'http://www.fluxyapp.com'
+]
 
-ALLOWED_HOSTS = []
-
+ADMINS = (
+    ('Ayush Sood', 'ayushsood@gmail.com'),
+    ('Chris Guthrie', 'guthriec93@gmail.com'),
+    ('Rahul Gupta-Iwasaki', 'deepthinkingfool@gmail.com'),
+    ('Arushi Raghuvanshi', 'arushi.raghu@gmail.com'),
+    ('Amrit Saxena', 'amrit.saxena1@gmail.com'),
+)
 
 # Application definition
 
@@ -91,3 +100,10 @@ STATICFILES_DIRS = (
 TEMPLATE_DIRS = [
     os.path.join(BASE_DIR, 'templates'),
 ]
+
+try:
+  # Local dev settings - use local_settings_template.py as a template and move
+  # it to local_settings.py
+  from local_settings import *
+except ImportError:
+  pass
