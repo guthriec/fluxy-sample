@@ -207,13 +207,17 @@ def mock_deal(request, deal_id=None):
   deal_set = []
   deal1_full = Deal(pk=1, **FixtureDicts.deal1)
   deal2_full = Deal(pk=2, **FixtureDicts.deal2)
+  vendor1_full = Vendor(pk=1, **FixtureDicts.vendor1)
+  vendor2_full = Vendor(pk=2, **FixtureDicts.vendor2)
+  deal1_full.vendor = vendor1_full
+  deal2_full.vendor = vendor2_full
   if deal_id == None:
     deal_set = [deal1_full, deal2_full] 
   if deal_id == "1":
     deal_set = [deal1_full] 
   if deal_id == "2":
     deal_set = [deal2_full]
-  return _make_get_response(deal_set, None, flatten=True, include_nested=False)
+  return _make_get_response(deal_set, None, flatten=True, include_nested=True)
 
 @require_http_methods(["GET"])
 def mock_vendor(request, vendor_id=None):
