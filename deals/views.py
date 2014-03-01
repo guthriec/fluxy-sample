@@ -7,7 +7,7 @@ from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 import json
 
-def _get_deal(deal_id=None):
+def _get_deal(deal_id=None, vendor_id=None):
   """
   by Chris
   GET request handler for deals. If deal_id is specified, it retrieves the
@@ -19,10 +19,29 @@ def _get_deal(deal_id=None):
 
   Returns: QuerySet of retrieved objects 
   """
+  deal_set = None
+  if deal_id and vendor_id:
+    raise ValueError("You done gone goofed")
   if deal_id:
-    return Deal.objects.filter(pk=deal_id)
+    deal_set = Deal.objects.filter(pk=deal_id)
   else:
-    return Deal.objects.all()
+    if vendor_id:
+      deal_set = Deal.objects.filter(vendor_id=vendor_id)
+    else:
+      deal_set = Deal.objects.all()
+  return deal_set
+
+def _get_vendor(vendor_id=None):
+  """
+  by Chris
+  Behaves identically to _get_deal(), except with vendors.
+  """
+  vendor_set = None
+  if vendor_id:
+    vendor_set = Vendor.objects.filter(pk=vendor_id)
+  else:
+    vendor_set = Vendor.objects.all()
+  return vendor_set
 
 def _post_deal(post_dict):
   """
@@ -47,16 +66,6 @@ def _post_deal(post_dict):
   new_deal.save()
   return new_deal, new_deal.id
 
-def _get_vendor(vendor_id=None):
-  """
-  by Chris
-  Behaves identically to _get_deal(), except with vendors.
-  """
-  if vendor_id:
-    return Vendor.objects.filter(pk=vendor_id)
-  else:
-    return Vendor.objects.all()
-
 def _post_vendor(post_dict):
   """
   by Chris
@@ -79,23 +88,33 @@ def _post_vendor(post_dict):
   new_vendor.save()
   return new_vendor, new_vendor.id
 
-def _make_get_response(qset, known_error = None):
+def _make_get_response(qset, known_error=None, include_nested=False, flatten=True):
   """
   by Chris
   Helper function to take a QuerySet and an optional "known error"
   dict (with keys 'message' and 'code'), and create an appropriate
   response to a GET request.
   """
-  if not known_error and qset.count() == 0:
-    known_error = {'code': 404, 'message': 'No resource found'}
+  try:
+    if not known_error and qset.count() == 0:
+      known_error = {'code': 404, 'message': 'No resource found'}
+  except TypeError:
+    # qset is a dict, indicating a mock api call
+    pass
   if known_error:
     code = known_error['code']
     err_message = known_error['message']
     return HttpResponse(json.dumps(known_error),\
                         content_type="application/json", status=code)
   else:
-    return HttpResponse(serializers.serialize("json", qset),\
-                        content_type="application/json", status=200)
+    json_out = serializers.serialize("json", qset, use_natural_keys=include_nested)
+    if flatten:
+      obj_list = json.loads(json_out)
+      flattened = []
+      for obj in obj_list:
+        flattened.append(obj['fields'])
+      json_out = json.dumps(flattened)
+    return HttpResponse(json_out, content_type="application/json", status=200)
 
 def _make_post_response(obj, redirect_addr, known_error = None):
   """
@@ -128,7 +147,7 @@ def deal(request, deal_id=None):
       deal_set = _get_deal(deal_id)
     except Exception:
       known_error = {'code': 500, 'message': 'Server error'}
-    return _make_get_response(deal_set, known_error)
+    return _make_get_response(deal_set, known_error, include_nested=True)
   else:
     # POST request.
     known_error = None
@@ -154,7 +173,8 @@ def vendor(request, vendor_id=None):
       vendor_set = _get_vendor(vendor_id)
     except Exception:
       known_error = {'code': 500, 'message': 'Server error'}
-    return _make_get_response(vendor_set, known_error)
+    return _make_get_response(vendor_set, known_error,\
+                              flatten=True, include_nested=False)
   else:
     # POST request.
     known_error = None
@@ -165,6 +185,19 @@ def vendor(request, vendor_id=None):
       known_error = {'code': 500, 'message': 'Server error'}
     return _make_post_response(vendor, 'vendors/' + str(vendor_id), known_error)
     
+@require_http_methods(["GET"])
+def vendor_deals(request, vendor_id=None):
+  known_error = None
+  deal_set = None
+  if not vendor_id:
+    known_error = {'code': 500, 'message': 'Server error'} 
+  try:
+    deal_set = _get_deal(vendor_id=vendor_id)
+  except Exception:
+    known_error = {'code': 500, 'message': 'Server error'}
+  return _make_get_response(deal_set, known_error,\
+                            flatten=True, include_nested=True)
+
 @require_http_methods(["GET"])
 def mock_deal(request, deal_id=None):
   """
@@ -180,8 +213,7 @@ def mock_deal(request, deal_id=None):
     deal_set = [deal1_full] 
   if deal_id == "2":
     deal_set = [deal2_full]
-  return HttpResponse(serializers.serialize("json", deal_set),\
-                      content_type="application/json", status=200)
+  return _make_get_response(deal_set, None, flatten=True, include_nested=True)
 
 @require_http_methods(["GET"])
 def mock_vendor(request, vendor_id=None):
@@ -198,5 +230,4 @@ def mock_vendor(request, vendor_id=None):
     vendor_set = [vendor1_full] 
   if vendor_id == "2":
     vendor_set = [vendor2_full]
-  return HttpResponse(serializers.serialize("json", vendor_set),\
-                      content_type="application/json", status=200)
+  return _make_get_response(vendor_set, None, flatten=True, include_nested=True) 
