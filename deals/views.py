@@ -213,7 +213,7 @@ def mock_deal(request, deal_id=None):
     deal_set = [deal1_full] 
   if deal_id == "2":
     deal_set = [deal2_full]
-  return _make_get_response(deal_set, None, flatten=True, include_nested=True)
+  return _make_get_response(deal_set, None, flatten=True, include_nested=False)
 
 @require_http_methods(["GET"])
 def mock_vendor(request, vendor_id=None):
@@ -230,4 +230,4 @@ def mock_vendor(request, vendor_id=None):
     vendor_set = [vendor1_full] 
   if vendor_id == "2":
     vendor_set = [vendor2_full]
-  return _make_get_response(vendor_set, None, flatten=True, include_nested=True) 
+  return _make_get_response(vendor_set, None, flatten=True, include_nested=False) 
