@@ -23,6 +23,7 @@ SECRET_KEY = '36b2glm^*w=wz8+y&fn^s6^huvgibiaz$7++!rayba8fi)%0pd'
 DEBUG = TEMPLATE_DEBUG = False
 
 ALLOWED_HOSTS = [
+    'fluxyapp.com',
     'www.fluxyapp.com',
     'http://fluxyapp.com',
     'http://www.fluxyapp.com'
