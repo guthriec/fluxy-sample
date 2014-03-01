@@ -1,5 +1,5 @@
 var VendorModel = Backbone.Model.extend({
-  initialize: function(vendor_id) {
+  initialize: function(vendorId) {
     this.id = vendorId;
   },
   urlRoot: '/api/v1/vendors/',

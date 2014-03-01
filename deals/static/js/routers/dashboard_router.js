@@ -12,6 +12,7 @@ DashboardRouter = Backbone.Router.extend({
 
   create: function() {
     this.currentView = new DealCreateView();
+    this.currentView.setVendor(1);
     $('#dashboard').html(this.currentView.render().el);
   },
 

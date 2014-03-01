@@ -27,7 +27,7 @@
 
 <script id="dealFormTemplate" type="text/template">
 <h2>Launch a deal</h2>
-<form>
+<form action="" method="POST" id="deal-form">
   <table class="deal-form-table">
     <tr>
       <td>Title: </td>
@@ -36,7 +36,7 @@
     <tr>
       <td>Description: </td>
       <!-- inline css here for now -->
-      <td><textarea style="resize: none;" rows="10" cols="50" form="deal-form"></textarea></td>
+      <td><textarea name="desc" style="resize: none;" rows="10" cols="50" form="deal-form"></textarea></td>
     </tr>
     <tr>
       <td>Duration: </td>
@@ -56,17 +56,18 @@
       </td>
     </tr>
     <tr><td></td>
-      <td><button type="submit">Launch now!</button></td>
+      <td><button class="deal-form-submit" type="submit">Launch now!</button></td>
     </tr>
   </table>
 </form>
 </script>
 <script type="text/javascript" src="{% static 'js/routers/dashboard_router.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/views/deal_dashboard_index_view.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/models/vendor_model.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/models/deal_model.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/collections/deal_collection.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/views/deal_create_view.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/views/deal_row_view.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/views/deal_list_view.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/views/deal_create_view.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/dashboard_init.js' %}"></script>
 {% endblock %}
