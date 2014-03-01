@@ -205,22 +205,17 @@ def mock_deal(request, deal_id=None):
   Short-circuits the database to return a mock JSON deal set.
   """
   deal_set = []
-  deal1_full = Deal(pk=1, **FixtureDicts.deal1)
-  deal2_full = Deal(pk=2, **FixtureDicts.deal2)
+  deal1_full = FixtureDicts.deal1
+  deal2_full = FixtureDicts.deal2
   if deal_id == None:
     deal_set = [deal1_full, deal2_full] 
   if deal_id == "1":
     deal_set = [deal1_full] 
   if deal_id == "2":
     deal_set = [deal2_full]
-  flattened = []
-  json_out = serializers.serialize("json", deal_set, use_natural_keys=False)
-  obj_list = json.loads(json_out)
-  for obj in obj_list:
-    fields = obj['fields']
-    fields['vendor'] = FixtureDicts.vendor1
-    flattened.append(obj['fields'])
-  return HttpResponse(json.dumps(flattened), content_type="application/json", status=200) 
+  for obj in deal_set:
+    obj['vendor'] = FixtureDicts.vendor1
+  return HttpResponse(json.dumps(deal_set), content_type="application/json", status=200) 
 
 @require_http_methods(["GET"])
 def mock_vendor(request, vendor_id=None):
@@ -229,12 +224,12 @@ def mock_vendor(request, vendor_id=None):
   Short-circuits the database to return a mock JSON vendor set.
   """
   vendor_set = []
-  vendor1_full = Vendor(pk=1, **FixtureDicts.vendor1)
-  vendor2_full = Vendor(pk=2, **FixtureDicts.vendor2)
+  vendor1_full = FixtureDicts.vendor1
+  vendor2_full = FixtureDicts.vendor2
   if vendor_id == None:
     vendor_set = [vendor1_full, vendor2_full] 
   if vendor_id == "1":
     vendor_set = [vendor1_full] 
   if vendor_id == "2":
     vendor_set = [vendor2_full]
-  return _make_get_response(vendor_set, None, flatten=True, include_nested=False) 
+  return HttpResponse(json.dumps(vendor_set), content_type="application/json", status=200) 
