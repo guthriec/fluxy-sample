@@ -99,7 +99,7 @@ def _make_get_response(qset, known_error=None, include_nested=False, flatten=Tru
     if not known_error and qset.count() == 0:
       known_error = {'code': 404, 'message': 'No resource found'}
   except TypeError:
-    # qset is a dict, indicating a mock api call
+    # qset is a list, indicating a mock api call
     pass
   if known_error:
     code = known_error['code']
@@ -207,17 +207,20 @@ def mock_deal(request, deal_id=None):
   deal_set = []
   deal1_full = Deal(pk=1, **FixtureDicts.deal1)
   deal2_full = Deal(pk=2, **FixtureDicts.deal2)
-  vendor1_full = Vendor(pk=1, **FixtureDicts.vendor1)
-  vendor2_full = Vendor(pk=2, **FixtureDicts.vendor2)
-  deal1_full.vendor = vendor1_full
-  deal2_full.vendor = vendor2_full
   if deal_id == None:
     deal_set = [deal1_full, deal2_full] 
   if deal_id == "1":
     deal_set = [deal1_full] 
   if deal_id == "2":
     deal_set = [deal2_full]
-  return _make_get_response(deal_set, None, flatten=True, include_nested=True)
+  flattened = []
+  json_out = serializers.serialize("json", deal_set, use_natural_keys=False)
+  obj_list = json.loads(json_out)
+  for obj in obj_list:
+    fields = obj['fields']
+    fields['vendor'] = FixtureDicts.vendor1
+    flattened.append(obj['fields'])
+  return HttpResponse(json.dumps(flattened), content_type="application/json", status=200) 
 
 @require_http_methods(["GET"])
 def mock_vendor(request, vendor_id=None):
