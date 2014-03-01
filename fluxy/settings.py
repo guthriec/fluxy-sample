@@ -102,8 +102,8 @@ TEMPLATE_DIRS = [
 ]
 
 try:
-  # Local dev settings... use local_settings_commented if you don't have it
-  # already
+  # Local dev settings - use local_settings_template.py as a template and move
+  # it to local_settings.py
   from local_settings import *
 except ImportError:
   pass
