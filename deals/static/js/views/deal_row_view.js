@@ -1,13 +1,17 @@
-var DealRowView = Backbone.View.extend({
-  tagName: "tr",
+var app = app || {};
 
-  initialize: function(deal) {
-    this.deal = deal;
-  },
+(function() {
+  var DealRowView = Backbone.View.extend({
+    tagName: "tr",
 
-  render: function() { 
-    var template = _.template($('#dealsRowTemplate').html(), this.deal.toJSON());
-    this.$el.html(template);
-    return this;
-  }
-});
+    initialize: function(deal) {
+      this.deal = deal;
+    },
+
+    render: function() {
+      var template = _.template($('#dealsRowTemplate').html(), this.deal.toJSON());
+      this.$el.html(template);
+      return this;
+    }
+  });
+})();
