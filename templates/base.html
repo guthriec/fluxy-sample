@@ -60,6 +60,22 @@
         <script type="text/javascript" src="{% static 'js/lib/underscore-1.6.0.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/lib/backbone-1.1.2.min.js'%}"></script>
         <script type="text/javascript" src="{% static 'js/lib/bootstrap.min.js'%}"></script>
+        
+        <!-- Django CSRF -->
+        <script type="text/javascript">
+        function csrfSafeMethod(method) {
+          return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        var csrfToken = "{{ csrf_token }}";
+        $.ajaxSetup({
+          beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type)) {
+              xhr.setRequestHeader("X-CSRFToken", csrfToken);
+            }
+          }
+        });
+        </script>
+
         {% block scripts %}{% endblock %}
 
         <!-- Google Analytics -->
@@ -72,5 +88,6 @@
           ga('create', 'UA-48371840-1', 'fluxyapp.com');
           ga('send', 'pageview');
         </script>
+
     </body>
 </html>

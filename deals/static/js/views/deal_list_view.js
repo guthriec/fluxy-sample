@@ -1,7 +1,7 @@
 var app = app || {};
 
 (function() {
-  DealsListView = Backbone.View.extend({
+  app.DealsListView = Backbone.View.extend({
     initialize: function(vd_col) {
       this.vd_col = vd_col;
       console.log(this.vd_col);

@@ -63,7 +63,7 @@ def _post_deal(post_dict):
 
   Returns: new deal object and its database id
   """
-  new_deal = Deal(**post_dict.dict())
+  new_deal = Deal(**post_dict)
   new_deal.time_start = parser.parse(new_deal.time_start)
   new_deal.time_end = parser.parse(new_deal.time_end)
   new_deal.save()
@@ -87,7 +87,7 @@ def _post_vendor(post_dict):
 
   Returns: new vendor object and its database id.
   """
-  new_vendor = Vendor(**post_dict.dict())
+  new_vendor = Vendor(**post_dict)
   new_vendor.save()
   return new_vendor, new_vendor.id
 
@@ -150,7 +150,7 @@ def deal(request, deal_id=None):
     known_error = None
     deal = None
     try:
-      deal, deal_id = _post_deal(request.POST)
+      deal, deal_id = _post_deal(json.loads(request.body))
     except Exception:
       known_error = {'code': 500, 'message': 'Server error'}
     return _make_post_response(deal, 'deals/' + str(deal_id), known_error)
@@ -177,7 +177,7 @@ def vendor(request, vendor_id=None):
     known_error = None
     vendor = None
     try:
-      vendor, vendor_id = _post_vendor(request.POST)
+      vendor, vendor_id = _post_vendor(json.loads(request.body))
     except Exception:
       known_error = {'code': 500, 'message': 'Server error'}
     return _make_post_response(vendor, 'vendors/' + str(vendor_id), known_error)
@@ -197,11 +197,13 @@ def vendor_deals(request, vendor_id):
                               flatten=True, include_nested=True)
   else:
     known_error = None
-    vendor = vendor_id 
-    try:
-      deal, deal_id = _post_deal(request.POST)
-    except Exception:
-      known_error = {'code': 500, 'message': 'Server error'}
+    deal = []
+    deal_id = -1
+    #try:
+    print request.body
+    deal, deal_id = _post_deal(json.loads(request.body))
+    #except Exception:
+    #  known_error = {'code': 500, 'message': 'Server error'}
     return _make_post_response(deal, 'deals/' + str(deal_id), known_error)
 
 @require_http_methods(["GET"])
