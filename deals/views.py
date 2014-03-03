@@ -139,19 +139,16 @@ def deal(request, deal_id=None):
   if request.method == 'GET':
     known_error = None
     deal_set = None
-    try:
-      deal_set = _get_deal(deal_id)
-    except Exception:
-      known_error = {'code': 500, 'message': 'Server error'}
+    deal_set = _get_deal(deal_id)
     return _make_get_response(deal_set, known_error, include_nested=True)
   else:
     # POST request.
     known_error = None
     deal = None
-    try:
+    if request.user.has_perm('create_deal'):
       deal, deal_id = _post_deal(json.loads(request.body))
-    except Exception:
-      known_error = {'code': 500, 'message': 'Server error'}
+    else:
+      known_error = {'code': 403, 'message': 'User not logged in or not authorized'}
     return _make_post_response(deal, 'deals/' + str(deal_id), known_error)
 
 @require_http_methods(["GET", "POST"])
@@ -165,20 +162,14 @@ def vendor(request, vendor_id=None):
   if request.method == 'GET':
     known_error = None
     vendor_set = None
-    try:
-      vendor_set = _get_vendor(vendor_id)
-    except Exception:
-      known_error = {'code': 500, 'message': 'Server error'}
+    vendor_set = _get_vendor(vendor_id)
     return _make_get_response(vendor_set, known_error,\
                               flatten=True, include_nested=False)
   else:
     # POST request.
     known_error = None
     vendor = None
-    try:
-      vendor, vendor_id = _post_vendor(json.loads(request.body))
-    except Exception:
-      known_error = {'code': 500, 'message': 'Server error'}
+    vendor, vendor_id = _post_vendor(json.loads(request.body))
     return _make_post_response(vendor, 'vendors/' + str(vendor_id), known_error)
     
 @require_http_methods(["GET", "POST"])
@@ -186,22 +177,14 @@ def vendor_deals(request, vendor_id):
   if request.method == 'GET':
     known_error = None
     deal_set = None
-    if not vendor_id:
-      known_error = {'code': 500, 'message': 'Server error'} 
-    try:
-      deal_set = _get_deal(vendor_id=vendor_id)
-    except Exception:
-      known_error = {'code': 500, 'message': 'Server error'}
+    deal_set = _get_deal(vendor_id=vendor_id)
     return _make_get_response(deal_set, known_error,\
                               flatten=True, include_nested=True)
   else:
     known_error = None
     deal = []
     deal_id = -1
-    try:
-      deal, deal_id = _post_deal(json.loads(request.body))
-    except Exception:
-      known_error = {'code': 500, 'message': 'Server error'}
+    deal, deal_id = _post_deal(json.loads(request.body))
     return _make_post_response(deal, 'deals/' + str(deal_id), known_error)
 
 @require_http_methods(["GET"])
