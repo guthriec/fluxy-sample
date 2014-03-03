@@ -239,3 +239,4 @@ def mock_vendor(request, vendor_id=None):
   if vendor_id == "2":
     vendor_set = [vendor2_full]
   return HttpResponse(json.dumps(vendor_set), content_type="application/json", status=200)
+

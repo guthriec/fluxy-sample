@@ -4,6 +4,8 @@ var app = app || {};
   app.DashboardRouter = Backbone.Router.extend({
     routes: {
       "": "index",
+      "login": "auth",
+      "register": "register",
       "create": "create",
       "view": "view"
     },
@@ -13,20 +15,26 @@ var app = app || {};
       $('#dashboard').html(this.currentView.render().el);
     },
 
+    auth: function() {
+      this.currentView = new app.AuthView();
+      $('#dashboard').html(this.currentView.render().el);
+    },
+
+    register: function() {
+      this.currentView = new app.RegView();
+      $('#dashboard').html(this.currentView.render().el);
+    },
+
     create: function() {
       this.currentView = new app.DealCreateView();
-    
-      // Right now vendor is always '1'. The app should have some
-      // option to change the current vendor.
-      this.currentView.setVendor(1);
+      // This should be done in DealCreateView, but the whole vendor thing is broken anyway
+      this.currentView.setVendor(app.currentVendor);
       $('#dashboard').html(this.currentView.render().el);
     },
 
     view: function() {
       var deals_col = new app.VendorDealCollection();
-      
-      // See note above about determining the right vendor to set.
-      deals_col.set_vendor(1);
+      deals_col.set_vendor(app.currentVendor);
       this.currentView = new app.DealsListView(deals_col);
       $('#dashboard').html(this.currentView.render().el);
       deals_col.fetch();

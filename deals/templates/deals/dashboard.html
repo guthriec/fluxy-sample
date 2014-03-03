@@ -9,6 +9,23 @@
 
 {% block scripts %}
 
+<script id="authTemplate" type="text/template">
+<form action="" method="POST" id="auth-form">
+  Username: <input name="username" type="text" maxlength="30" size="12">
+  Password: <input name="password" type="password" maxlength="50" size="12">
+  <button class="auth-form-submit" type="submit">Login</button>
+</form>
+</script>
+
+<script id="regTemplate" type="text/template">
+<form action="" method="POST" id="reg-form">
+  Username: <input name="username" type="text" maxlength="30" size="12">
+  Password: <input name="password" type="password" maxlength="50" size="12">
+  Confirm password: <input name="confirm-password" type="password" maxlength="50" size="12">
+  <button class="reg-form-submit" type="submit">Login</button>
+</form>
+</script>
+
 <script id="dealsListTemplate" type="text/template">
 <table class="deal-list-table">
 </table>
@@ -61,6 +78,10 @@
   </table>
 </form>
 </script>
+<script type="text/javascript" src="{% static 'js/models/auth_model.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/views/auth_view.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/models/reg_model.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/views/reg_view.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/views/deal_dashboard_index_view.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/models/vendor_model.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/models/vendor_deal_model.js' %}"></script>

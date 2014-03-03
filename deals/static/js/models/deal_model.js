@@ -2,7 +2,7 @@ var app = app || {};
 
 (function() {
   app.DealModel= Backbone.Model.extend({
-    urlRoot: '/api/v1/deals/';
+    urlRoot: '/api/v1/deals/',
 
     parse: function(response) {
       var embeddedVendor = response['vendor'];
