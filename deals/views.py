@@ -124,7 +124,6 @@ def _make_post_response(obj, redirect_addr, known_error = None):
     err_message = known_error['message']
     return HttpResponse(json.dumps(known_error),\
                         content_type="application/json", status=code)
-
   else:
     return HttpResponseRedirect(redirect_addr, serializers.serialize("json", [obj]),\
                                 content_type="application/json", status=201)
@@ -199,11 +198,10 @@ def vendor_deals(request, vendor_id):
     known_error = None
     deal = []
     deal_id = -1
-    #try:
-    print request.body
-    deal, deal_id = _post_deal(json.loads(request.body))
-    #except Exception:
-    #  known_error = {'code': 500, 'message': 'Server error'}
+    try:
+      deal, deal_id = _post_deal(json.loads(request.body))
+    except Exception:
+      known_error = {'code': 500, 'message': 'Server error'}
     return _make_post_response(deal, 'deals/' + str(deal_id), known_error)
 
 @require_http_methods(["GET"])

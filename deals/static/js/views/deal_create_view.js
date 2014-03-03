@@ -15,26 +15,33 @@ var app = app || {};
       return this;
     },
 
+    /*
+     * postDeal() reads the input data from deal-form and constructs a
+     * VendorDealModel object.
+     */
     postDeal: function(e) {
       e.preventDefault();
-      console.log(this.vendorId);
       var vdModel = new app.VendorDealModel(this.vendorId);
       var $inputs = $('#deal-form :input');
       var values = {};
       $inputs.each(function() {
         values[this.name] = $(this).val();
       });
-      vdModel.set("vendor_id", this.vendorId);
+      //vdModel.set("vendor_id", this.vendorId);
       vdModel.set("title", values["title"]);
       vdModel.set("desc", values["desc"]);
       vdModel.set("radius", 5);
+
+      // For now the client performs the logic to find the "now" time and
+      // convert duration in hours and minutes to an end time. This should
+      // eventually be moved to the server.
       var timeStart = new Date()
       timeStart.setTime(Date.now());
       vdModel.set("time_start", timeStart);
       var minutes = values["minutes"] + 60*values["hours"];
       vdModel.set("time_end", new Date(timeStart.getTime() + minutes*60000));
-      console.log(vdModel);
-      console.log("trying to post the deal");
+
+      // Post the model and redirect to a view of all the vendor's deals.
       vdModel.save();
       app.router.navigate('view', {trigger: true});
     }
