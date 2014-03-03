@@ -68,7 +68,7 @@ def vendor_reg(request):
     new_user = User.objects.create_user(username=username, password=password)
     try:
       new_user.user_permissions.add(Permission.objects.get(codename='change_deal'))
-      new_user.save();
+      new_user.save()
     response = {"code": 200, "message": "Successfully registered"}
   return HttpResponse(json.dumps(response), content_type="application/json",\
                       status = response['code'])
