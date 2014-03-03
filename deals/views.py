@@ -145,6 +145,7 @@ def deal(request, deal_id=None):
     # POST request.
     known_error = None
     deal = None
+    deal_id = -1
     if request.user.has_perm('create_deal'):
       deal, deal_id = _post_deal(json.loads(request.body))
     else:
@@ -184,7 +185,10 @@ def vendor_deals(request, vendor_id):
     known_error = None
     deal = []
     deal_id = -1
-    deal, deal_id = _post_deal(json.loads(request.body))
+    if request.user.has_perm('create_deal'):
+      deal, deal_id = _post_deal(json.loads(request.body))
+    else:
+      known_error = {'code': 403, 'message': 'User not logged in or not authorized'}
     return _make_post_response(deal, 'deals/' + str(deal_id), known_error)
 
 @require_http_methods(["GET"])
@@ -222,4 +226,3 @@ def mock_vendor(request, vendor_id=None):
   if vendor_id == "2":
     vendor_set = [vendor2_full]
   return HttpResponse(json.dumps(vendor_set), content_type="application/json", status=200)
-

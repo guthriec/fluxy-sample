@@ -6,6 +6,10 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
+  # Registration/authentication
+  url(r'^api/v1/auth/$', views.vendor_auth),
+  url(r'^api/v1/register/$', views.vendor_reg),
+  
   # Route landing page resources: /, /success, /subscribe
   url(r'^$', views.index),
   url(r'^subscribe/$', views.subscribe),

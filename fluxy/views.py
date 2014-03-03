@@ -1,9 +1,13 @@
 # Filename: /fluxy/views.py
 # Notes: Includes view functions for the overall Fluxy project
 
+from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
-
+from django.views.decorators.http import require_http_methods
+import json
 import mailchimp
 # mailchimp example app: https://github.com/mailchimp/mcapi2-python-examples
 
@@ -51,3 +55,32 @@ def subscribe(request):
     return render(request, 'fluxy/index.html')
   return redirect(reverse('fluxy.views.success'))
 
+@require_http_methods(["POST"])
+def vendor_reg(request):   
+  post_data = json.loads(request.body)
+  username = post_data['username']
+  password = post_data['password']
+  response = {"code": 401, "message": "Could not register"}
+  try:
+    User.objects.get(username__exact=username)
+    response.message = "Username already registered"
+  except User.DoesNotExist:
+    new_user = User.objects.create_user(username=username, password=password)
+    response = {"code": 200, "message": "Successfully registered"}
+  return HttpResponse(json.dumps(response), content_type="application/json",\
+                      status = response['code'])
+
+@require_http_methods(["POST"])
+def vendor_auth(request):
+  post_data = json.loads(request.body)
+  username = post_data['username']
+  password = post_data['password']
+  user = authenticate(username=username, password=password)
+  response = {}
+  if user is not None:
+    login(request, user)
+    return HttpResponse("", content_type="application/json",\
+                        status = 200)
+  else:
+    response = {"code": 401, "message": "Invalid username/password", "success": False} 
+    return HttpResponse(json.dumps(response), content_type="application/json", status = response["code"])
