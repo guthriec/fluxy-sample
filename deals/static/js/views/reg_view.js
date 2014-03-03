@@ -20,14 +20,13 @@ var app = app || {};
       $inputs.each(function() {
         values[this.name] = $(this).val();
       });
+      var self = this;
       if (values['confirm-password'] != values['password']) {
         app.error = "Passwords do not match";
         self.render();
       }
-      var self = this;
       this.model.save(values, {
         success: function(model, response) {
-          console.log("got here");
           app.router.navigate('', {trigger: true}); 
         },
         error: function(model, response) {

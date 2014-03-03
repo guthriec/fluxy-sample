@@ -2,7 +2,7 @@
 # Notes: Includes view functions for the overall Fluxy project
 
 from django.contrib.auth import authenticate
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Permission, User
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -63,9 +63,12 @@ def vendor_reg(request):
   response = {"code": 401, "message": "Could not register"}
   try:
     User.objects.get(username__exact=username)
-    response.message = "Username already registered"
+    response['message'] = "Username already registered"
   except User.DoesNotExist:
     new_user = User.objects.create_user(username=username, password=password)
+    try:
+      new_user.user_permissions.add(Permission.objects.get(codename='change_deal'))
+      new_user.save();
     response = {"code": 200, "message": "Successfully registered"}
   return HttpResponse(json.dumps(response), content_type="application/json",\
                       status = response['code'])
