@@ -59,7 +59,7 @@ def _post_deal(post_dict):
       *time_start
       *time_end
 
-  Args: Django QueryDict consisting of a structured POST request body
+  Args: Dict consisting of a structured POST request body
 
   Returns: new deal object and its database id
   """
@@ -83,7 +83,7 @@ def _post_vendor(post_dict):
       *web_url
       *yelp_url
 
-  Args: Django QueryDict consisting of a structured POST request body
+  Args: Dict consisting of a structured POST request body
 
   Returns: new vendor object and its database id.
   """
