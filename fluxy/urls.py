@@ -7,9 +7,16 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
   # Registration/authentication
-  url(r'^api/v1/auth/$', views.vendor_auth),
-  url(r'^api/v1/register/$', views.vendor_reg),
-  
+  url(r'^user/auth/$', views.user_auth),
+  url(r'^user/register/$', views.user_regster),
+  url(r'^user/logout/$', views.user_logout),
+
+  # User model
+  url(r'^api/v1/user/vendors/$', views.user_vendors),
+  url(r'^api/v1/user/claim/$', views.user_claim),
+  url(r'^api/v1/user/claimed-deals/$', views.user_deals),
+  url(r'^api/v1/user/claimed-deals/all/$', view.user_deals_all),
+
   # Route landing page resources: /, /success, /subscribe
   url(r'^$', views.index),
   url(r'^subscribe/$', views.subscribe),

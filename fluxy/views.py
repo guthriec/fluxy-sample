@@ -56,7 +56,22 @@ def subscribe(request):
   return redirect(reverse('fluxy.views.success'))
 
 @require_http_methods(["POST"])
-def vendor_reg(request):
+def user_auth(request):
+  post_data = json.loads(request.body)
+  username = post_data['username']
+  password = post_data['password']
+  user = authenticate(username=username, password=password)
+  response = {}
+  if user is not None:
+    login(request, user)
+    return HttpResponse("", content_type="application/json",
+                        status = 200)
+  else:
+    response = {"code": 401, "message": "Invalid username/password", "success": False}
+    return HttpResponse(json.dumps(response), content_type="application/json", status = response["code"])
+
+@require_http_methods(["POST"])
+def user_register(request):
   post_data = json.loads(request.body)
   username = post_data['username']
   password = post_data['password']
@@ -69,20 +84,26 @@ def vendor_reg(request):
     new_user.user_permissions.add(Permission.objects.get(codename='change_deal'))
     new_user.save()
     response = {"code": 200, "message": "Successfully registered"}
-  return HttpResponse(json.dumps(response), content_type="application/json",\
+  return HttpResponse(json.dumps(response), content_type="application/json",
                       status = response['code'])
 
+@require_http_methods(["GET"])
+def user_logout(request):
+  return HttpResponse("API Method unimplemented")
+
+@require_http_methods(["GET"])
+def user_vendors(request):
+  return HttpResponse("API Method unimplemented")
+
 @require_http_methods(["POST"])
-def vendor_auth(request):
-  post_data = json.loads(request.body)
-  username = post_data['username']
-  password = post_data['password']
-  user = authenticate(username=username, password=password)
-  response = {}
-  if user is not None:
-    login(request, user)
-    return HttpResponse("", content_type="application/json",\
-                        status = 200)
-  else:
-    response = {"code": 401, "message": "Invalid username/password", "success": False}
-    return HttpResponse(json.dumps(response), content_type="application/json", status = response["code"])
+def user_claim(request):
+  return HttpResponse("API Method unimplemented")
+
+@require_http_methods(["GET"])
+def user_deals(request):
+  return HttpResponse("API Method unimplemented")
+
+@require_http_methods(["GET"])
+def user_deals_all(request):
+  return HttpResponse("API Method unimplemented")
+
