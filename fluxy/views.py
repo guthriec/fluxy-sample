@@ -1,12 +1,13 @@
 # Filename: /fluxy/views.py
 # Notes: Includes view functions for the overall Fluxy project
 
-from django.contrib.auth import authenticate
-from django.contrib.auth.models import Permission, User
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import Permission
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
+from fluxy.models import FluxyUser
 import json
 import mailchimp
 # mailchimp example app: https://github.com/mailchimp/mcapi2-python-examples
@@ -77,10 +78,10 @@ def user_register(request):
   password = post_data['password']
   response = {"code": 401, "message": "Could not register"}
   try:
-    User.objects.get(username__exact=username)
+    FluxyUser.objects.get(username__exact=username)
     response['message'] = "Username already registered"
-  except User.DoesNotExist:
-    new_user = User.objects.create_user(username=username, password=password)
+  except FluxyUser.DoesNotExist:
+    new_user = FluxyUser.objects.create_user(username=username, password=password)
     new_user.user_permissions.add(Permission.objects.get(codename='change_deal'))
     new_user.save()
     response = {"code": 200, "message": "Successfully registered"}
