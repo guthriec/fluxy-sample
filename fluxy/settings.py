@@ -41,6 +41,7 @@ ADMINS = (
 
 INSTALLED_APPS = (
     'deals',
+    'fluxy',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -94,6 +95,9 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
+
+# Replacing django user model
+AUTH_USER_MODEL = 'fluxy.FluxyUser'
 
 # Template files
 
