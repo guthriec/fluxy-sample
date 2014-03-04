@@ -94,3 +94,9 @@ class ClaimedDeal(models.Model):
   time_completed = models.DateTimeField()
   completed_latitude = models.FloatField()
   completed_longitude = models.FloatField()
+
+  def __unicode__(self):
+    """
+    Human readable way to print a ClaimedDeal instance. 
+    """
+    return "User {0} claimed deal {1}".format(self.user, self.deal)
