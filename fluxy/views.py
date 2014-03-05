@@ -8,6 +8,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 from fluxy.models import FluxyUser
+import datetime
 import json
 import mailchimp
 # mailchimp example app: https://github.com/mailchimp/mcapi2-python-examples
@@ -145,18 +146,43 @@ def user_claim(request):
   Requires that a user be authenticated. Takes a POST request with a deal id
   indicating that the user has claimed this deal. A new claimed deal object is
   created.
-  TODO this method has not been implemented, as we need the updated deal model
   """
-  return HttpResponse("API Method unimplemented", status = 501)
+  if not request.user.is_authenticated():
+    response = {'code': 403, 'message': 'Authentication error'}
+    return HttpResponse(json.dumps(response), content_type="application/json",
+                        status = response['code'])
+  post_data = json.loads(request.body)
+  deal = post_data['deal_id']
+  latitude = post_data['latitude']
+  longitude = post_data['longitude']
+  claimed_deal = ClaimedDeal.objects.create(deal=deal,
+                    claimed_latitude=latitude, claimed_longitude=longitude)
+  claimed_deal.save()
+  return HttpResponse('Successfully claimed deal.',
+                      content_type='application/json')
 
 @require_http_methods(["GET"])
 def user_deals(request):
   """
   Author: Rahul Gupta-Iwasaki
   This returns a JSON array contain the user's ACTIVE deals.
-  TODO this method has not been implemented, as the deal model must be updated.
+
+  Note, when making this query on my local machine, it was throwing a
+  RuntimeError complaining about the time_end field receiving a naive datetime
+  while time zone support is active. This was remedied by turning the USE_TZ
+  setting off in settings.py. However, it seems we would rather have this on,
+  and the problem is the sqlite db doesn't support time zones. If so, this
+  should go away in production, but we should verify this.
   """
-  return HttpResponse("API Method unimplemented", status = 501)
+  if not request.user.is_authenticated():
+    response = {'code': 403, 'message': 'Authentication error'}
+    return HttpResponse(json.dumps(response), content_type="application/json",
+                        status = response['code'])
+  else:
+    return
+  HttpResponse(json.dumps(response.user.claimeddeal_set.filter(
+                          deal__time_end__lte=datetime.datetime.now())),
+                          content_type="application/json")
 
 @require_http_methods(["GET"])
 def user_deals_all(request):
@@ -164,7 +190,12 @@ def user_deals_all(request):
   Author: Rahul Gupta-Iwasaki
   This returns a JSON array contain all the currently authenticated user's
   deals, including those that have expired or been completed.
-  TODO this method has not been implemented, as the deal model must be updated.
   """
-  return HttpResponse("API Method unimplemented")
+  if not request.user.is_authenticated():
+    response = {'code': 403, 'message': 'Authentication error'}
+    return HttpResponse(json.dumps(response), content_type="application/json",
+                        status = response['code'])
+  else:
+    return HttpResponse(json.dumps(response.user.claimeddeal_set.all()),
+                        content_type="application/json")
 

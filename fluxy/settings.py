@@ -40,8 +40,8 @@ ADMINS = (
 # Application definition
 
 INSTALLED_APPS = (
-    'deals',
     'fluxy',
+    'deals',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django.db import models
 
 class Vendor(models.Model):
@@ -13,7 +12,7 @@ class Vendor(models.Model):
     yelp_url - URL of vendor's Yelp page
     image - Link to vendor image
     phone - Phone number
-    approved_by - Name of contact we can say approved use of Fluxy 
+    approved_by - Name of contact we can say approved use of Fluxy
   """
   name = models.CharField(max_length=100)
   address = models.CharField(max_length=100)
@@ -36,7 +35,7 @@ class Vendor(models.Model):
     """
     For nested serialization.
     """
-    return { 
+    return {
         'id': self.id,
         'name': self.name,
         'address': self.address,
@@ -48,7 +47,7 @@ class Vendor(models.Model):
         'image': self.image,
         'phone': self.phone,
         'approved_by': self.approved_by
-    } 
+    }
 
 class Deal(models.Model):
   """
@@ -56,7 +55,7 @@ class Deal(models.Model):
     vendor - Primary 'Vendor' key for the creator of the deal
     title - Short title for the deal
     desc - Longer (500 char) description of the deal
-    time_start, time_end - Duration of the deal 
+    time_start, time_end - Duration of the deal
     max_deals - Cap on number of deals available
     instructions - Instructions for users to claim deal at point of sale
   """
@@ -85,7 +84,7 @@ class ClaimedDeal(models.Model):
     time_completed - When was the deal completed?
     completed_latitude/longitude - Location where the deal was completed
   """
-  user = models.ForeignKey(User)
+  user = models.ForeignKey('fluxy.FluxyUser')
   deal = models.ForeignKey(Deal)
   time_claimed = models.DateTimeField(auto_now_add=True)
   claimed_latitude = models.FloatField()
@@ -97,6 +96,6 @@ class ClaimedDeal(models.Model):
 
   def __unicode__(self):
     """
-    Human readable way to print a ClaimedDeal instance. 
+    Human readable way to print a ClaimedDeal instance.
     """
     return "User {0} claimed deal {1}".format(self.user, self.deal)
