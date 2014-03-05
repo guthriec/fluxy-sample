@@ -21,3 +21,6 @@ def distance(lat1, long1, lat2, long2):
   arc = math.acos(cos)
 
   return arc*earth_radius
+
+def in_radius(lat1, long1, lat2, long2, radius):
+  return (distance(lat1, long1, lat2, long2) < radius)
