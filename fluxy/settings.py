@@ -96,6 +96,10 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
+# Media files (Images, etc.)
+
+MEDIA_URL = '/media/'
+
 # Template files
 
 TEMPLATE_DIRS = [
