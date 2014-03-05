@@ -87,7 +87,7 @@ class ClaimedDeal(models.Model):
   """
   user = models.ForeignKey(User)
   deal = models.ForeignKey(Deal)
-  time_claimed = models.DateTimeField()
+  time_claimed = models.DateTimeField(auto_now_add=True)
   claimed_latitude = models.FloatField()
   claimed_longitude = models.FloatField()
   completed = models.BooleanField(default = False)
