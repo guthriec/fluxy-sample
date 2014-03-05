@@ -1,3 +1,4 @@
+from datetime import datetime
 from dateutil import parser
 from deals.fixture_dicts import FixtureDicts
 from deals.models import Deal, Vendor
@@ -10,7 +11,7 @@ import json
 def dashboard(request):
   return render(request, 'deals/dashboard.html')
 
-def _get_deal(deal_id=None, vendor_id=None):
+def _get_deal(deal_id=None, vendor_id=None, active_only=True):
   """
   by Chris
   GET request handler for deals. If deal_id is specified, it retrieves the
@@ -32,6 +33,9 @@ def _get_deal(deal_id=None, vendor_id=None):
       deal_set = Deal.objects.filter(vendor_id=vendor_id)
     else:
       deal_set = Deal.objects.all()
+    if active_only:
+      now = datetime.now()
+      deal_set = deal_set.filter(time_start__lte=now, time_end__gte=now)
   return deal_set
 
 def _get_vendor(vendor_id=None):
@@ -139,10 +143,7 @@ def deal(request, deal_id=None):
   if request.method == 'GET':
     known_error = None
     deal_set = None
-    try:
       deal_set = _get_deal(deal_id)
-    except Exception:
-      known_error = {'code': 500, 'message': 'Server error'}
     return _make_get_response(deal_set, known_error, include_nested=True)
   else:
     # POST request.
