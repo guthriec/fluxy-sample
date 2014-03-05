@@ -12,6 +12,7 @@ urlpatterns = patterns('',
   url(r'^user/logout/$', views.user_logout),
 
   # User model
+  url(r'^api/v1/user/$', views.user),
   url(r'^api/v1/user/vendors/$', views.user_vendors),
   url(r'^api/v1/user/claim/$', views.user_claim),
   url(r'^api/v1/user/claimed-deals/$', views.user_deals),

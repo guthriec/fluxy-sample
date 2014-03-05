@@ -10,4 +10,4 @@ class FluxyUser(AbstractUser):
   many-to-many vendor_id which describes which vendors the user can edit.
   """
   phone = models.CharField(max_length=20)
-  vendor_id = models.ManyToManyField(Vendor)
+  vendors = models.ManyToManyField(Vendor)

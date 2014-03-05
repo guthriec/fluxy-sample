@@ -1,7 +1,7 @@
 # Filename: /fluxy/views.py
 # Notes: Includes view functions for the overall Fluxy project
 
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Permission
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
@@ -58,6 +58,10 @@ def subscribe(request):
 
 @require_http_methods(["POST"])
 def user_auth(request):
+  """
+  Author: Chris Guthrie
+  This method is used to log a user in.
+  """
   post_data = json.loads(request.body)
   username = post_data['username']
   password = post_data['password']
@@ -73,6 +77,10 @@ def user_auth(request):
 
 @require_http_methods(["POST"])
 def user_register(request):
+  """
+  Author: Chris Guthrie
+  This method registers a new user.
+  """
   post_data = json.loads(request.body)
   username = post_data['username']
   password = post_data['password']
@@ -90,21 +98,72 @@ def user_register(request):
 
 @require_http_methods(["GET"])
 def user_logout(request):
-  return HttpResponse("API Method unimplemented")
+  """
+  Author: Rahul Gupta-Iwasaki
+  This method logs any authenticated user out.
+  """
+  logout(request)
+  response = {"code": 200, "message": "Logged out."}
+  return HttpResponse(json.dumps(response), content_type="application/json",
+                      status = response['code'])
+
+@require_http_methods(["GET"])
+def user(request):
+  """
+  Author: Rahul Gupta-Iwasaki
+  This method returns a JSON object contianing the currently authenticated
+  user's details.
+  """
+  if not request.user.is_authenticated():
+    response = {'code': 403, 'message': 'Authentication error'}
+    return HttpResponse(json.dumps(response), content_type="application/json",
+                        status = response['code'])
+  else:
+    return HttpResponse(json.dumps(request.user),
+                        content_type="application/json")
 
 @require_http_methods(["GET"])
 def user_vendors(request):
-  return HttpResponse("API Method unimplemented")
+  """
+  Author: Rahul Gupta-Iwasaki
+  This method returns a JSON array of all the vendors which the user has
+  administrative power over.
+  """
+  if not request.user.is_authenticated():
+    response = {'code': 403, 'message': 'Authentication error'}
+    return HttpResponse(json.dumps(response), content_type="application/json",
+                        status = response['code'])
+  else:
+    return HttpResponse(json.dumps(response.user.vendors.all()),
+                        content_type="application/json")
 
 @require_http_methods(["POST"])
 def user_claim(request):
-  return HttpResponse("API Method unimplemented")
+  """
+  Author: Rahul Gupta-Iwasaki
+  Requires that a user be authenticated. Takes a POST request with a deal id
+  indicating that the user has claimed this deal. A new claimed deal object is
+  created.
+  TODO this method has not been implemented, as we need the updated deal model
+  """
+  return HttpResponse("API Method unimplemented", status = 501)
 
 @require_http_methods(["GET"])
 def user_deals(request):
-  return HttpResponse("API Method unimplemented")
+  """
+  Author: Rahul Gupta-Iwasaki
+  This returns a JSON array contain the user's ACTIVE deals.
+  TODO this method has not been implemented, as the deal model must be updated.
+  """
+  return HttpResponse("API Method unimplemented", status = 501)
 
 @require_http_methods(["GET"])
 def user_deals_all(request):
+  """
+  Author: Rahul Gupta-Iwasaki
+  This returns a JSON array contain all the currently authenticated user's
+  deals, including those that have expired or been completed.
+  TODO this method has not been implemented, as the deal model must be updated.
+  """
   return HttpResponse("API Method unimplemented")
 
