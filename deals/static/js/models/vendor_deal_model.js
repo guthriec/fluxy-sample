@@ -1,5 +1,9 @@
 var app = app || {};
 
+/*
+ * @author: Chris
+ * Model for a single deal, but restricted to given vendor.
+ */
 (function() {
   app.VendorDealModel = Backbone.Model.extend({
     initialize: function(vendorId) {

@@ -1,5 +1,9 @@
 var app = app || {};
 
+/*
+ * @author: Chris
+ * Home view for the dashboard application.
+ */
 (function() {
   app.DashboardIndexView = Backbone.View.extend({
     render: function() {

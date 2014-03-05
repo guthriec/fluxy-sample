@@ -1,18 +1,22 @@
 var app = app || {};
 
+/*
+ * @author: Chris
+ * View for list of deals for a given vendor.
+ */
 (function() {
   app.DealsListView = Backbone.View.extend({
+    // Expects a VendorDealsCollection
     initialize: function(vd_col) {
       this.vd_col = vd_col;
-      console.log(this.vd_col);
       _.bindAll(this, 'addDeals');
+      // Re-render the view elements on collection db update 
       this.vd_col.bind('sync reset', this.addDeals, this);
     },
 
     render: function() {
       template = _.template($('#dealsListTemplate').html());
       this.$el.html(template);
-      console.log(this.vd_col);
       this.addDeals();
       return this;
     },
@@ -21,10 +25,7 @@ var app = app || {};
       this.$el.find(".deal-list-table").children().remove();
       var self = this;
       _.each(this.vd_col.models, function(deal) {
-        console.log("loopin'");
-        console.log(deal);
         var view = new app.DealRowView(deal);
-        console.log(view);
         self.$el.find(".deal-list-table").append(view.render().el);
       });
     }

@@ -1,5 +1,10 @@
 var app = app || {};
 
+/*
+ * @author: Chris
+ * Router for dashboard app. Supports three top-level views, corresponding
+ * to deal creation, deal list, and an index page.
+ */
 (function() {
   app.DashboardRouter = Backbone.Router.extend({
     routes: {
