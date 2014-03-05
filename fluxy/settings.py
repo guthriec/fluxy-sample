@@ -97,7 +97,12 @@ STATICFILES_DIRS = (
 )
 
 # Replacing django user model
+
 AUTH_USER_MODEL = 'fluxy.FluxyUser'
+
+# Media files (Images, etc.)
+
+MEDIA_URL = '/media/'
 
 # Template files
 

@@ -18,7 +18,7 @@ def index(request):
   Path: /
   Description: Renders the landing page
   """
-  return render(request, 'fluxy/index.html')
+  return render(request, 'fluxy/index.html', {'title': 'Fluxy'})
 
 def success(request):
   """
@@ -27,6 +27,7 @@ def success(request):
   Description: Renders the landing page with a success message
   """
   return render(request, 'fluxy/index.html', {
+    'title': 'Fluxy',
     'success': True,
   })
 
