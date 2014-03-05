@@ -15,12 +15,27 @@ git fetch origin
 git rebase origin/master
 ```
 
-API
+API (planned)
 -----------
 Endpoints supporting GET and POST:
 ```
-/api/v1/deals
-/api/v1/vendors
+/deals
+```
+Returns all active deals, including those that are maxed out.
+
+```
+/deals/all
+```
+Returns all deals ever created.
+
+```
+/deal/{id}
+```
+Returns full 
+
+
+```
+/vendors
 ```
 
 Endpoints supporting GET only:
