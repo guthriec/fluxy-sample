@@ -13,7 +13,7 @@ import mailchimp
   Description: Renders the landing page
 """
 def index(request):
-  return render(request, 'fluxy/index.html')
+  return render(request, 'fluxy/index.html', {'title': 'Fluxy'})
 
 """
   Author: Rahul Gupta-Iwasaki
@@ -22,6 +22,7 @@ def index(request):
 """
 def success(request):
   return render(request, 'fluxy/index.html', {
+    'title': 'Fluxy',
     'success': True,
   })
 
