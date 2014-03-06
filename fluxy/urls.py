@@ -14,7 +14,6 @@ urlpatterns = patterns('',
   # User model
   url(r'^api/v1/user/$', views.user),
   url(r'^api/v1/user/vendors/$', views.user_vendors),
-  url(r'^api/v1/user/claim/$', views.user_claim),
   url(r'^api/v1/user/claimed-deals/$', views.user_deals),
   url(r'^api/v1/user/claimed-deals/all/$', views.user_deals_all),
 

@@ -139,33 +139,11 @@ def user_vendors(request):
     return HttpResponse(json.dumps(response.user.vendors.all()),
                         content_type="application/json")
 
-@require_http_methods(["POST"])
-def user_claim(request):
-  """
-  Author: Rahul Gupta-Iwasaki
-  Requires that a user be authenticated. Takes a POST request with a deal id
-  indicating that the user has claimed this deal. A new claimed deal object is
-  created.
-  """
-  if not request.user.is_authenticated():
-    response = {'code': 403, 'message': 'Authentication error'}
-    return HttpResponse(json.dumps(response), content_type="application/json",
-                        status = response['code'])
-  post_data = json.loads(request.body)
-  deal = post_data['deal_id']
-  latitude = post_data['latitude']
-  longitude = post_data['longitude']
-  claimed_deal = ClaimedDeal.objects.create(deal=deal,
-                    claimed_latitude=latitude, claimed_longitude=longitude)
-  claimed_deal.save()
-  return HttpResponse('Successfully claimed deal.',
-                      content_type='application/json')
-
-@require_http_methods(["GET"])
+@require_http_methods(['GET', 'POST'])
 def user_deals(request):
   """
   Author: Rahul Gupta-Iwasaki
-  This returns a JSON array contain the user's ACTIVE deals.
+  If GET, this returns a JSON array contain the user's ACTIVE deals.
 
   Note, when making this query on my local machine, it was throwing a
   RuntimeError complaining about the time_end field receiving a naive datetime
@@ -173,16 +151,27 @@ def user_deals(request):
   setting off in settings.py. However, it seems we would rather have this on,
   and the problem is the sqlite db doesn't support time zones. If so, this
   should go away in production, but we should verify this.
+
+  If POST, create a new claimed deal.
   """
   if not request.user.is_authenticated():
     response = {'code': 403, 'message': 'Authentication error'}
     return HttpResponse(json.dumps(response), content_type="application/json",
                         status = response['code'])
+  if request.method == 'POST':
+    post_data = json.loads(request.body)
+    deal = post_data['deal_id']
+    latitude = post_data['latitude']
+    longitude = post_data['longitude']
+    claimed_deal = ClaimedDeal.objects.create(deal=deal,
+                      claimed_latitude=latitude, claimed_longitude=longitude)
+    claimed_deal.save()
+    return HttpResponse('Successfully claimed deal.',
+                        content_type='application/json')
   else:
-    return
-  HttpResponse(json.dumps(response.user.claimeddeal_set.filter(
-                          deal__time_end__lte=datetime.datetime.now())),
-                          content_type="application/json")
+    return HttpResponse(json.dumps(response.user.claimeddeal_set.filter(
+                              deal__time_end__lte=datetime.datetime.now())),
+                              content_type="application/json")
 
 @require_http_methods(["GET"])
 def user_deals_all(request):
