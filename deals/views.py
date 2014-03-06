@@ -118,17 +118,20 @@ def _list_from_qset(qset, include_nested=False, flatten=True, max_radius=-1, loc
                              max_radius of tuple loc = (latitude, longitude)
   """
   json_out = serializers.serialize("json", qset, use_natural_keys=include_nested)
-  if flatten:
-    obj_list = json.loads(json_out)
-    flattened = []
-    for obj in obj_list:
-      attrs = obj['fields']
-      if max_radius >= 0 and loc:
-        lat = attrs['lat']
-        lon = attrs['long']
-        if not in_radius(lat, lon, loc[0], loc[1], max_radius):
-          continue
-      flattened.append(attrs)
+  obj_list = json.loads(json_out)
+  out_list = []
+  for obj in obj_list:
+    attrs = obj['fields']
+    if max_radius >= 0 and loc:
+      lat = attrs['lat']
+      lon = attrs['long']
+      if not in_radius(lat, lon, loc[0], loc[1], max_radius):
+        continue
+    if flatten:
+      out_list.append(attrs)
+    else:
+      out_list.append(obj)
+  return out_list
 
 def _make_get_response(resp_list, known_error=None):
   """
