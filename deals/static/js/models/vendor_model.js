@@ -4,7 +4,7 @@ var app = app || {};
  * @author: Chris
  * Model for vendor data.
  */
-(function() {
+(function(window, document, undefined) {
   app.VendorModel = Backbone.Model.extend({
     initialize: function(vendorId) {
       this.id = vendorId;
@@ -14,4 +14,4 @@ var app = app || {};
       return this.urlRoot + this.id;
     }
   });
-})();
+})(this, this.document);

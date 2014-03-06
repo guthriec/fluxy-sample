@@ -5,7 +5,7 @@ var app = app || {};
  * Collection of VendorDealModels. Pretty bad interface, works but will
  * be redesigned.
  */
-(function() {
+(function(window, document, undefined) {
   app.VendorDealCollection = Backbone.Collection.extend({
     initialize: function() {
       this.vendor_id = -1;
@@ -19,4 +19,4 @@ var app = app || {};
       this.vendor_id = v_id;
     }
   });
-})();
+})(this, this.document);

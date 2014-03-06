@@ -5,7 +5,7 @@ var app = app || {};
  * Router for dashboard app. Supports three top-level views, corresponding
  * to deal creation, deal list, and an index page.
  */
-(function() {
+(function(window, document, undefined) {
   app.DashboardRouter = Backbone.Router.extend({
     routes: {
       "": "index",
@@ -20,7 +20,7 @@ var app = app || {};
 
     create: function() {
       this.currentView = new app.DealCreateView();
-    
+
       // Right now vendor is always '1'. The app should have some
       // option to change the current vendor.
       this.currentView.setVendor(1);
@@ -29,7 +29,7 @@ var app = app || {};
 
     view: function() {
       var deals_col = new app.VendorDealCollection();
-      
+
       // See note above about determining the right vendor to set.
       deals_col.set_vendor(1);
       this.currentView = new app.DealsListView(deals_col);
@@ -37,4 +37,4 @@ var app = app || {};
       deals_col.fetch();
     }
   });
-})();
+})(this, this.document);

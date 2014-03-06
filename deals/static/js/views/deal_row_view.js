@@ -1,6 +1,6 @@
 var app = app || {};
 
-(function() {
+(function(window, document, undefined) {
   var DealRowView = Backbone.View.extend({
     tagName: "tr",
 
@@ -14,4 +14,4 @@ var app = app || {};
       return this;
     }
   });
-})();
+})(this, this.document);

@@ -4,7 +4,7 @@ var app = app || {};
  * @author: Chris
  * View for a vendor to fill in a deal form and create a new deal
  */
-(function() {
+(function(window, document, undefined) {
   app.DealCreateView = Backbone.View.extend({
     // View creator should know the vendorId. This may eventually be moved
     // to be a property of app.
@@ -52,4 +52,4 @@ var app = app || {};
       app.router.navigate('view', {trigger: true});
     }
   });
-})();
+})(this, this.document);

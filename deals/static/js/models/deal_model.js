@@ -4,7 +4,7 @@ var app = app || {};
  * @author: Chris
  * Not used now, will be useful for the user webapp.
  */
-(function() {
+(function(window, document, undefined) {
   app.DealModel= Backbone.Model.extend({
     urlRoot: '/api/v1/deals/';
 
@@ -14,4 +14,4 @@ var app = app || {};
       return response;
     }
   });
-})();
+})(this, this.document);

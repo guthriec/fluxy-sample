@@ -4,13 +4,13 @@ var app = app || {};
  * @author: Chris
  * View for list of deals for a given vendor.
  */
-(function() {
+(function(window, document, undefined) {
   app.DealsListView = Backbone.View.extend({
     // Expects a VendorDealsCollection
     initialize: function(vd_col) {
       this.vd_col = vd_col;
       _.bindAll(this, 'addDeals');
-      // Re-render the view elements on collection db update 
+      // Re-render the view elements on collection db update
       this.vd_col.bind('sync reset', this.addDeals, this);
     },
 
@@ -30,4 +30,4 @@ var app = app || {};
       });
     }
   });
-})();
+})(this, this.document);
