@@ -4,7 +4,7 @@ Fluxy Web Stack
 
 Deploying
 -----------
-To deploy latest commit from ```master``` to ```prod```, you want to follow the following command. 
+To deploy latest commit from ```master``` to ```prod```, you want to follow the following command.
 **Please be sure you want to deploy. Otherwise we should follow a deployment schedule.**
 ```sh
 ssh [username]@fluxyapp.com
@@ -14,7 +14,7 @@ git rebase origin/master
 ```
 
 
-API (planned)
+API
 -----------
 * ``` /deal/{id} ```
   * Accepts GET.
@@ -54,17 +54,21 @@ API (planned)
   * Accepts GET.
   * Logs out current user, returns 200 on success.
 
+* ``` /vendors ```
+  * Accepts GET, POST.
+  * GET returns a list of all vendors. 200 on success. POST creates a vendor object. 201 on success, 403 if no permissions, 400 on bad POST.
+
 * ``` /vendor/{id} ```
   * Accepts GET, PUT.
   * GET returns full vendor object associated with {id}, PUT modifies this object. Returns 200 on success. If user does not have PUT permissions, returns 403. If no vendor of {id} exists on a PUT request, returns 404.
 
-* ``` /vendor/{id}/deals/{id} ```
-  * Accepts GET, PUT.
-  * Get returns deal associated with {id} with no embedded vendor object. Returns 200 on success. If user does not have PUT permissions, returns 403. If no vendor of {id} exists, returns 404. If no deal of {id} exists on a PUT request, returns 404.
-
 * ``` /vendor/{id}/deals ```
   * Accepts GET, POST.
   * GET returns all active deals associated with {id}, with no embedded vendor object. Returns 200 on success. POST creates a deal associated with {id}, returns 201 on success. If user does not have POST permissions for {id}, returns 403. If no vendor of {id} exists returns 404.
+
+* ``` /vendor/{id}/deals/{id} ```
+  * Accepts GET, PUT.
+  * Get returns deal associated with {id} with no embedded vendor object. Returns 200 on success. If user does not have PUT permissions, returns 403. If no vendor of {id} exists, returns 404. If no deal of {id} exists on a PUT request, returns 404.
 
 * ``` /vendor/{id}/deals/all ```
   * Accepts GET.
@@ -77,10 +81,6 @@ API (planned)
 * ``` /vendor/{id}/claimed_deals/all ```
   * Accepts GET.
   * Returns all claimed_deals objects associated with {id}. Returns 200 on success, 404 if no vendor of {id} exists.
-
-* ``` /vendors ```
-  * Accepts GET, POST.
-  * GET returns a list of all vendors. 200 on success. POST creates a vendor object. 201 on success, 403 if no permissions, 400 on bad POST.
 
 
 Mock API

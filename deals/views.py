@@ -1,4 +1,4 @@
-from dateutil import parser 
+from dateutil import parser
 from deals.fixture_dicts import FixtureDicts
 from deals.models import Deal, Vendor
 from django.core import serializers
@@ -6,18 +6,19 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 import json
+import datetime
 
-def _get_deal(deal_id=None, vendor_id=None):
+def _get_deal(deal_id=None, vendor_id=None, active=True):
   """
-  by Chris
+  by Chris and Rahul
   GET request handler for deals. If deal_id is specified, it retrieves the
   corresponding Deal object and returns the result. Otherwise, response
   contains an array of all Deal objects. Invalid deal ID's result in
   an empty QuerySet.
-  
+
   Args: deal primary key (integer)
 
-  Returns: QuerySet of retrieved objects 
+  Returns: QuerySet of retrieved objects
   """
   deal_set = None
   if deal_id and vendor_id:
@@ -26,10 +27,27 @@ def _get_deal(deal_id=None, vendor_id=None):
     deal_set = Deal.objects.filter(pk=deal_id)
   else:
     if vendor_id:
-      deal_set = Deal.objects.filter(vendor_id=vendor_id)
+      if active:
+        deal_set = Deal.objects.filter(vendor_id=vendor_id,
+            time_end__lte=datetime.datetime.now())
+      else:
+        deal_set = Deal.objects.filter(vendor_id=vendor_id)
     else:
       deal_set = Deal.objects.all()
   return deal_set
+
+def _get_claimed_deals(vendor_id, active=True):
+  """
+  by Rahul
+  """
+  claimed_deal_set = None
+  if active:
+    claimed_deal_set = Deal.objects.filter(vendor_id=vendor_id,
+        claimed_deal__isnull=False, time_end__lte=datetime.datetime.now())
+  else:
+    claimed_deal_set = Deal.objects.filter(vendor_id=vendor_id,
+        claimed_deal__isnull=False)
+  return claimed_deal_set
 
 def _get_vendor(vendor_id=None):
   """
@@ -58,7 +76,7 @@ def _post_deal(post_dict):
 
   Args: Django QueryDict consisting of a structured POST request body
 
-  Returns: new deal object and its database id 
+  Returns: new deal object and its database id
   """
   new_deal = Deal(**post_dict.dict())
   new_deal.time_start = parser.parse(new_deal.time_start)
@@ -158,6 +176,7 @@ def deal(request, deal_id=None):
       known_error = {'code': 500, 'message': 'Server error'}
     return _make_post_response(deal, 'deals/' + str(deal_id), known_error)
 
+# TODO implement PUT
 @require_http_methods(["GET", "POST"])
 def vendor(request, vendor_id=None):
   """
@@ -173,7 +192,7 @@ def vendor(request, vendor_id=None):
       vendor_set = _get_vendor(vendor_id)
     except Exception:
       known_error = {'code': 500, 'message': 'Server error'}
-    return _make_get_response(vendor_set, known_error,\
+    return _make_get_response(vendor_set, known_error,
                               flatten=True, include_nested=False)
   else:
     # POST request.
@@ -184,19 +203,39 @@ def vendor(request, vendor_id=None):
     except Exception:
       known_error = {'code': 500, 'message': 'Server error'}
     return _make_post_response(vendor, 'vendors/' + str(vendor_id), known_error)
-    
+
+# TODO implement PUT
 @require_http_methods(["GET"])
-def vendor_deals(request, vendor_id=None):
+def vendor_deals(request, vendor_id=None, active=True):
+  """
+  by Chris and Rahul
+  """
   known_error = None
   deal_set = None
   if not vendor_id:
-    known_error = {'code': 500, 'message': 'Server error'} 
+    known_error = {'code': 500, 'message': 'Server error'}
   try:
-    deal_set = _get_deal(vendor_id=vendor_id)
+    deal_set = _get_deal(vendor_id=vendor_id, active=active)
   except Exception:
     known_error = {'code': 500, 'message': 'Server error'}
-  return _make_get_response(deal_set, known_error,\
+  return _make_get_response(deal_set, known_error,
                             flatten=True, include_nested=True)
+
+@require_http_methods(['GET'])
+def vendor_claimed_deals(request, vendor_id, active=True):
+  """
+  by Rahul
+  """
+  known_error = None
+  claimed_deal_set = None
+  if not vendor_id:
+    known_error = {'code': 500, 'message': 'Server error'}
+  try:
+    claimed_deal_set = _get_claimed_deals(vendor_id, active=active)
+  except Exception:
+    known_error = {'code': 500, 'message': 'Server error'}
+  return _make_get_response(claimed_deal_set, known_error, flatten=True,
+                            include_nested=True)
 
 @require_http_methods(["GET"])
 def mock_deal(request, deal_id=None):
@@ -208,14 +247,14 @@ def mock_deal(request, deal_id=None):
   deal1_full = FixtureDicts.deal1
   deal2_full = FixtureDicts.deal2
   if deal_id == None:
-    deal_set = [deal1_full, deal2_full] 
+    deal_set = [deal1_full, deal2_full]
   if deal_id == "1":
-    deal_set = [deal1_full] 
+    deal_set = [deal1_full]
   if deal_id == "2":
     deal_set = [deal2_full]
   for obj in deal_set:
     obj['vendor'] = FixtureDicts.vendor1
-  return HttpResponse(json.dumps(deal_set), content_type="application/json", status=200) 
+  return HttpResponse(json.dumps(deal_set), content_type="application/json", status=200)
 
 @require_http_methods(["GET"])
 def mock_vendor(request, vendor_id=None):
@@ -227,9 +266,9 @@ def mock_vendor(request, vendor_id=None):
   vendor1_full = FixtureDicts.vendor1
   vendor2_full = FixtureDicts.vendor2
   if vendor_id == None:
-    vendor_set = [vendor1_full, vendor2_full] 
+    vendor_set = [vendor1_full, vendor2_full]
   if vendor_id == "1":
-    vendor_set = [vendor1_full] 
+    vendor_set = [vendor1_full]
   if vendor_id == "2":
     vendor_set = [vendor2_full]
-  return HttpResponse(json.dumps(vendor_set), content_type="application/json", status=200) 
+  return HttpResponse(json.dumps(vendor_set), content_type="application/json", status=200)
