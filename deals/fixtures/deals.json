@@ -1,0 +1,141 @@
+[
+ {
+   "model": "deals.vendor",
+   "pk": 1,
+   "fields": {
+     "name": "Happy Donuts",
+     "address": "3916 El Camino Real, Palo Alto, CA 94306",
+     "business_type": "restaurant",
+     "latitude": "37.416521",
+     "longitude": "-122.129738",
+     "web_url": "http://www.happydonutspaloalto.tripod.com",
+     "yelp_url": "http://www.yelp.com/biz/happy-donuts-palo-alto",
+     "phone": "111-111-1111",
+     "image": "peyton-manning2.jpg",
+     "approved_by": "Mr Happy"
+   }
+ },
+ {
+   "model": "deals.vendor",
+   "pk": 2,
+   "fields": {
+     "name": "Thaiphoon",
+     "address": "543 Emerson St, Palo Alto, CA 94301",
+     "business_type": "restaurant",
+     "latitude": "37.444238",
+     "longitude": "-122.162404",
+     "web_url": "http://www.thaiphoonpaloalto.com",
+     "yelp_url": "http://www.yelp.com/biz/thaiphoon-palo-alto",
+     "phone": "111-111-1111",
+     "image": "peyton-manning2.jpg",
+     "approved_by": "Mr Thaiphoon"
+   }
+ },
+ {
+   "model": "deals.vendor",
+   "pk": 3,
+   "fields": {
+     "name": "Pizza My Heart",
+     "address": "220 University Ave, Palo Alto, CA 94301",
+     "business_type": "restaurant",
+     "latitude": "37.444811",
+     "longitude": "-122.162648",
+     "web_url": "http://www.pizzamyheart.com",
+     "yelp_url": "http://www.yelp.com/biz/pizza-my-heart-palo-alto",
+     "phone": "111-111-1111",
+     "image": "peyton-manning2.jpg",
+     "approved_by": "Mr Pizza"
+   }
+ },
+ {
+   "model": "deals.deal",
+   "pk": 1,
+   "fields": {
+     "vendor": "1",
+     "title": "50% off donuts",
+     "desc": "donuts donuts donuts donuts donuts donuts donuts donuts",
+     "time_start": "2014-02-01 00:00:00+00:00",
+     "time_end": "2015-02-01 00:00:00+00:00",
+     "max_deals": "30",
+     "instructions": "Show to waiter."
+   }
+ },
+ {
+   "model": "deals.deal",
+   "pk": 2,
+   "fields": {
+     "vendor": "1",
+     "title": "40% off coffee",
+     "desc": "coffee coffee coffee coffee coffee coffee donuts donuts donuts donuts donuts donuts donuts donuts",
+     "time_start": "2014-02-01 00:00:00+00:00",
+     "time_end": "2015-02-01 00:00:00+00:00",
+     "max_deals": "1",
+     "instructions": "Show to waiter."
+   }
+ },
+ {
+   "model": "deals.deal",
+   "pk": 3,
+   "fields": {
+     "vendor": "1",
+     "title": "20% off shitty sandwiches",
+     "desc": "sandwich sandwich sandwich sandwich sandwich sandwich sandwich coffee coffee coffee coffee coffee coffee donuts donuts donuts donuts donuts donuts donuts donuts",
+     "time_start": "2014-02-01 00:00:00+00:00",
+     "time_end": "2014-02-02 00:00:00+00:00",
+     "max_deals": "20",
+     "instructions": "Show to waiter."
+   }
+ },
+ {
+   "model": "deals.deal",
+   "pk": 4,
+   "fields": {
+     "vendor": "2",
+     "title": "20% off Pad Thai",
+     "desc": "pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai",
+     "time_start": "2014-02-01 00:00:00+00:00",
+     "time_end": "2015-02-01 00:00:00+00:00",
+     "max_deals": "20",
+     "instructions": "Show to waiter."
+   }
+ },
+ {
+   "model": "deals.deal",
+   "pk": 5,
+   "fields": {
+     "vendor": "2",
+     "title": "50% off drinks",
+     "desc": "drinks drinks drinks drinks pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai",
+     "time_start": "2014-02-01 00:00:00+00:00",
+     "time_end": "2015-02-01 00:00:00+00:00",
+     "max_deals": "-1",
+     "instructions": "Show to waiter."
+   }
+ },
+ {
+   "model": "deals.deal",
+   "pk": 6,
+   "fields": {
+     "vendor": "3",
+     "title": "50% off pizza",
+     "desc": "pizza n stuff",
+     "time_start": "2014-02-01 00:00:00+00:00",
+     "time_end": "2015-02-01 00:00:00+00:00",
+     "max_deals": "50",
+     "instructions": "Show to waiter."
+   }
+ },
+ {
+   "model": "deals.deal",
+   "pk": 7,
+   "fields": {
+     "vendor": "3",
+     "title": "50% off drinks",
+     "desc": "drinks drinks drinks drinks", 
+     "time_start": "2014-02-01 00:00:00+00:00",
+     "time_end": "2014-02-02 00:00:00+00:00",
+     "max_deals": "-1",
+     "instructions": "Show to waiter."
+   }
+ }
+]
