@@ -1,12 +1,10 @@
 from django.conf.urls import patterns, include, url
-
 from deals import views
 
 urlpatterns = patterns('',
   # Route API
   url(r'^api/v1/deals/$', 'deals.views.deal'),
   url(r'^api/v1/deals/(?P<deal_id>\d+)/$', 'deals.views.deal'),
-
   url(r'^api/v1/vendors/$', 'deals.views.vendor'),
   url(r'^api/v1/vendor/(?P<vendor_id>\d+)/$', 'deals.views.vendor'),
   url(r'^api/v1/vendor/(?P<vendor_id>\d+)/deals/$',

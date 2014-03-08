@@ -10,7 +10,7 @@
      "web_url": "http://www.happydonutspaloalto.tripod.com",
      "yelp_url": "http://www.yelp.com/biz/happy-donuts-palo-alto",
      "phone": "111-111-1111",
-     "image": "peyton-manning2.jpg",
+     "image": "peyton-manning2.jpg"
    }
  },
  {
@@ -19,13 +19,12 @@
    "fields": {
      "name": "Thaiphoon",
      "address": "543 Emerson St, Palo Alto, CA 94301",
-     "business_type": "restaurant",
      "latitude": "37.444238",
      "longitude": "-122.162404",
      "web_url": "http://www.thaiphoonpaloalto.com",
      "yelp_url": "http://www.yelp.com/biz/thaiphoon-palo-alto",
      "phone": "111-111-1111",
-     "image": "peyton-manning2.jpg",
+     "image": "peyton-manning2.jpg"
    }
  },
  {
@@ -39,7 +38,7 @@
      "web_url": "http://www.pizzamyheart.com",
      "yelp_url": "http://www.yelp.com/biz/pizza-my-heart-palo-alto",
      "phone": "111-111-1111",
-     "image": "peyton-manning2.jpg",
+     "image": "peyton-manning2.jpg"
    }
  },
  {

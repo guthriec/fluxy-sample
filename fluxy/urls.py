@@ -1,5 +1,4 @@
 from django.conf.urls import patterns, include, url
-
 from fluxy import views
 
 from django.contrib import admin
@@ -25,6 +24,5 @@ urlpatterns = patterns('',
   # Route /admin resources
   url(r'^admin/', include(admin.site.urls)),
 
-  # Deals resources (includes dashboard)
-  url(r'^', include('deals.urls', namespace='deals')),
+  url(r'', include('deals.urls')),
 )
