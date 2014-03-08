@@ -3,12 +3,8 @@ from deals.fixture_dicts import FixtureDicts
 from deals.models import Deal, Vendor
 from django.core import serializers
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 import json
-
-def dashboard(request):
-  return render(request, 'deals/dashboard.html')
 
 def _get_deal(deal_id=None, vendor_id=None):
   """
