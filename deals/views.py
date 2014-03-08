@@ -1,9 +1,7 @@
-from dateutil import parser 
-from deals.fixture_dicts import FixtureDicts
+from dateutil import parser
 from deals.models import Deal, Vendor
 from django.core import serializers
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 import json
 
@@ -14,10 +12,10 @@ def _get_deal(deal_id=None, vendor_id=None):
   corresponding Deal object and returns the result. Otherwise, response
   contains an array of all Deal objects. Invalid deal ID's result in
   an empty QuerySet.
-  
+
   Args: deal primary key (integer)
 
-  Returns: QuerySet of retrieved objects 
+  Returns: QuerySet of retrieved objects
   """
   deal_set = None
   if deal_id and vendor_id:
@@ -56,11 +54,11 @@ def _post_deal(post_dict):
       *time_start
       *time_end
 
-  Args: Django QueryDict consisting of a structured POST request body
+  Args: Dict consisting of a structured POST request body
 
-  Returns: new deal object and its database id 
+  Returns: new deal object and its database id
   """
-  new_deal = Deal(**post_dict.dict())
+  new_deal = Deal(**post_dict)
   new_deal.time_start = parser.parse(new_deal.time_start)
   new_deal.time_end = parser.parse(new_deal.time_end)
   new_deal.save()
@@ -80,11 +78,11 @@ def _post_vendor(post_dict):
       *web_url
       *yelp_url
 
-  Args: Django QueryDict consisting of a structured POST request body
+  Args: Dict consisting of a structured POST request body
 
   Returns: new vendor object and its database id.
   """
-  new_vendor = Vendor(**post_dict.dict())
+  new_vendor = Vendor(**post_dict)
   new_vendor.save()
   return new_vendor, new_vendor.id
 
@@ -95,12 +93,6 @@ def _make_get_response(qset, known_error=None, include_nested=False, flatten=Tru
   dict (with keys 'message' and 'code'), and create an appropriate
   response to a GET request.
   """
-  try:
-    if not known_error and qset.count() == 0:
-      known_error = {'code': 404, 'message': 'No resource found'}
-  except TypeError:
-    # qset is a list, indicating a mock api call
-    pass
   if known_error:
     code = known_error['code']
     err_message = known_error['message']
@@ -127,7 +119,6 @@ def _make_post_response(obj, redirect_addr, known_error = None):
     err_message = known_error['message']
     return HttpResponse(json.dumps(known_error),\
                         content_type="application/json", status=code)
-
   else:
     return HttpResponseRedirect(redirect_addr, serializers.serialize("json", [obj]),\
                                 content_type="application/json", status=201)
@@ -153,7 +144,7 @@ def deal(request, deal_id=None):
     known_error = None
     deal = None
     try:
-      deal, deal_id = _post_deal(request.POST)
+      deal, deal_id = _post_deal(json.loads(request.body))
     except Exception:
       known_error = {'code': 500, 'message': 'Server error'}
     return _make_post_response(deal, 'deals/' + str(deal_id), known_error)
@@ -180,56 +171,30 @@ def vendor(request, vendor_id=None):
     known_error = None
     vendor = None
     try:
-      vendor, vendor_id = _post_vendor(request.POST)
+      vendor, vendor_id = _post_vendor(json.loads(request.body))
     except Exception:
       known_error = {'code': 500, 'message': 'Server error'}
     return _make_post_response(vendor, 'vendors/' + str(vendor_id), known_error)
     
-@require_http_methods(["GET"])
-def vendor_deals(request, vendor_id=None):
-  known_error = None
-  deal_set = None
-  if not vendor_id:
-    known_error = {'code': 500, 'message': 'Server error'} 
-  try:
-    deal_set = _get_deal(vendor_id=vendor_id)
-  except Exception:
-    known_error = {'code': 500, 'message': 'Server error'}
-  return _make_get_response(deal_set, known_error,\
-                            flatten=True, include_nested=True)
-
-@require_http_methods(["GET"])
-def mock_deal(request, deal_id=None):
-  """
-  by Chris
-  Short-circuits the database to return a mock JSON deal set.
-  """
-  deal_set = []
-  deal1_full = FixtureDicts.deal1
-  deal2_full = FixtureDicts.deal2
-  if deal_id == None:
-    deal_set = [deal1_full, deal2_full] 
-  if deal_id == "1":
-    deal_set = [deal1_full] 
-  if deal_id == "2":
-    deal_set = [deal2_full]
-  for obj in deal_set:
-    obj['vendor'] = FixtureDicts.vendor1
-  return HttpResponse(json.dumps(deal_set), content_type="application/json", status=200) 
-
-@require_http_methods(["GET"])
-def mock_vendor(request, vendor_id=None):
-  """
-  by Chris
-  Short-circuits the database to return a mock JSON vendor set.
-  """
-  vendor_set = []
-  vendor1_full = FixtureDicts.vendor1
-  vendor2_full = FixtureDicts.vendor2
-  if vendor_id == None:
-    vendor_set = [vendor1_full, vendor2_full] 
-  if vendor_id == "1":
-    vendor_set = [vendor1_full] 
-  if vendor_id == "2":
-    vendor_set = [vendor2_full]
-  return HttpResponse(json.dumps(vendor_set), content_type="application/json", status=200) 
+@require_http_methods(["GET", "POST"])
+def vendor_deals(request, vendor_id):
+  if request.method == 'GET':
+    known_error = None
+    deal_set = None
+    if not vendor_id:
+      known_error = {'code': 500, 'message': 'Server error'} 
+    try:
+      deal_set = _get_deal(vendor_id=vendor_id)
+    except Exception:
+      known_error = {'code': 500, 'message': 'Server error'}
+    return _make_get_response(deal_set, known_error,\
+                              flatten=True, include_nested=True)
+  else:
+    known_error = None
+    deal = []
+    deal_id = -1
+    try:
+      deal, deal_id = _post_deal(json.loads(request.body))
+    except Exception:
+      known_error = {'code': 500, 'message': 'Server error'}
+    return _make_post_response(deal, 'deals/' + str(deal_id), known_error)

@@ -62,7 +62,6 @@ ROOT_URLCONF = 'fluxy.urls'
 
 WSGI_APPLICATION = 'fluxy.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
