@@ -3,8 +3,11 @@ from django.conf.urls import patterns, include, url
 from deals import views
 
 urlpatterns = patterns('',
+<<<<<<< HEAD
   url(r'^dashboard/$', views.dashboard),
 
+=======
+>>>>>>> dev
   # Route API
   url(r'^api/v1/deals/$', views.deal),
   url(r'^api/v1/vendors/$', views.vendor),
