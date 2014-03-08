@@ -5,14 +5,12 @@
    "fields": {
      "name": "Happy Donuts",
      "address": "3916 El Camino Real, Palo Alto, CA 94306",
-     "business_type": "restaurant",
      "latitude": "37.416521",
      "longitude": "-122.129738",
      "web_url": "http://www.happydonutspaloalto.tripod.com",
      "yelp_url": "http://www.yelp.com/biz/happy-donuts-palo-alto",
      "phone": "111-111-1111",
      "image": "peyton-manning2.jpg",
-     "approved_by": "Mr Happy"
    }
  },
  {
@@ -28,7 +26,6 @@
      "yelp_url": "http://www.yelp.com/biz/thaiphoon-palo-alto",
      "phone": "111-111-1111",
      "image": "peyton-manning2.jpg",
-     "approved_by": "Mr Thaiphoon"
    }
  },
  {
@@ -37,14 +34,12 @@
    "fields": {
      "name": "Pizza My Heart",
      "address": "220 University Ave, Palo Alto, CA 94301",
-     "business_type": "restaurant",
      "latitude": "37.444811",
      "longitude": "-122.162648",
      "web_url": "http://www.pizzamyheart.com",
      "yelp_url": "http://www.yelp.com/biz/pizza-my-heart-palo-alto",
      "phone": "111-111-1111",
      "image": "peyton-manning2.jpg",
-     "approved_by": "Mr Pizza"
    }
  },
  {

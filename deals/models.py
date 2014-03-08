@@ -6,25 +6,20 @@ class Vendor(models.Model):
   Vendor model. Here's the schema:
     name - vendor name
     address - vendor address
-    business_type - category of the business (e.g. restaurant, sports, etc.
-                    these categories will eventually be fully defined)
     latitude, longitude - vendor coordinates
     web_url - URL of vendor's website
     yelp_url - URL of vendor's Yelp page
     image - Link to vendor image
     phone - Phone number
-    approved_by - Name of contact we can say approved use of Fluxy
   """
   name = models.CharField(max_length=100)
   address = models.CharField(max_length=100)
-  business_type = models.CharField(max_length=100)
   latitude = models.FloatField()
   longitude = models.FloatField()
   web_url = models.URLField()
   yelp_url = models.URLField()
   image = models.ImageField(upload_to='vendors')
   phone = models.CharField(max_length=20)
-  approved_by = models.CharField(max_length=100)
 
   def __unicode__(self):
     """
@@ -40,14 +35,12 @@ class Vendor(models.Model):
         'id': self.id,
         'name': self.name,
         'address': self.address,
-        'business_type': self.business_type,
         'latitude': self.latitude,
         'longitude': self.longitude,
         'web_url': self.web_url,
         'yelp_url': self.yelp_url,
         'image': self.image,
         'phone': self.phone,
-        'approved_by': self.approved_by
     }
 
 
