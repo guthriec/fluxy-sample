@@ -1,5 +1,4 @@
 from dateutil import parser
-from deals.fixture_dicts import FixtureDicts
 from deals.models import Deal, Vendor
 from django.core import serializers
 from django.http import HttpResponse, HttpResponseRedirect
@@ -199,39 +198,3 @@ def vendor_deals(request, vendor_id):
     except Exception:
       known_error = {'code': 500, 'message': 'Server error'}
     return _make_post_response(deal, 'deals/' + str(deal_id), known_error)
-
-@require_http_methods(["GET"])
-def mock_deal(request, deal_id=None):
-  """
-  by Chris
-  Short-circuits the database to return a mock JSON deal set.
-  """
-  deal_set = []
-  deal1_full = FixtureDicts.deal1
-  deal2_full = FixtureDicts.deal2
-  if deal_id == None:
-    deal_set = [deal1_full, deal2_full]
-  if deal_id == "1":
-    deal_set = [deal1_full]
-  if deal_id == "2":
-    deal_set = [deal2_full]
-  for obj in deal_set:
-    obj['vendor'] = FixtureDicts.vendor1
-  return HttpResponse(json.dumps(deal_set), content_type="application/json", status=200)
-
-@require_http_methods(["GET"])
-def mock_vendor(request, vendor_id=None):
-  """
-  by Chris
-  Short-circuits the database to return a mock JSON vendor set.
-  """
-  vendor_set = []
-  vendor1_full = FixtureDicts.vendor1
-  vendor2_full = FixtureDicts.vendor2
-  if vendor_id == None:
-    vendor_set = [vendor1_full, vendor2_full]
-  if vendor_id == "1":
-    vendor_set = [vendor1_full]
-  if vendor_id == "2":
-    vendor_set = [vendor2_full]
-  return HttpResponse(json.dumps(vendor_set), content_type="application/json", status=200)

@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Vendor(models.Model):
   """
   Vendor model. Here's the schema:
@@ -39,6 +40,7 @@ class Vendor(models.Model):
         'web_url': self.web_url,
         'yelp_url': self.yelp_url
     } 
+
 
 class Deal(models.Model):
   """
