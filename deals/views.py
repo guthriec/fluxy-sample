@@ -7,11 +7,10 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.http import require_http_methods
 import json
 
-
 @require_http_methods(["GET"])
 def deal(request, deal_id=None, active_only=True):
   """
-  @author: Chris
+  @author: Chris, Ayush
   @desc: Handler for requests to /deal/ and /deals/ endpoints. Routes request
   to appropriate helper function based on request method.
 
@@ -19,7 +18,7 @@ def deal(request, deal_id=None, active_only=True):
   @param deal_id: deal id to restrict to (optional)
   @param active_only: restricts results to only active deals
 
-  @returns: JSON HttpResponse with any appropriate error codes.
+  @return: JSON HttpResponse with any appropriate error codes.
   """
   known_error = None
   deal_set = _get_deals(deal_id, active_only)
@@ -37,104 +36,28 @@ def deal(request, deal_id=None, active_only=True):
 
   return _make_get_response(deal_list, known_error)
 
-def _get_claimed_deals(vendor_id, active=True):
+@require_http_methods(["GET", "POST"])
+def vendor(request, vendor_id=None):
   """
-  by Rahul
-  """
-  claimed_deal_set = None
-  if active:
-    claimed_deal_set = Deal.objects.filter(vendor_id=vendor_id,
-        claimed_deal__isnull=False, time_end__lte=datetime.now())
-  else:
-    claimed_deal_set = Deal.objects.filter(vendor_id=vendor_id,
-        claimed_deal__isnull=False)
-  return claimed_deal_set
-
-def _get_vendor(vendor_id=None):
-  """
-  by Chris
-  Behaves identically to _get_deal(), except with vendors.
-  """
-  vendor_set = None
-  if vendor_id:
-    vendor_set = Vendor.objects.filter(pk=vendor_id)
-  else:
-    vendor_set = Vendor.objects.all()
-  return vendor_set
-
-def _post_deal(post_dict):
-  """
-  by Chris
-  POST request handler for deals. Adds the specified deal to the DB, performing
-  required deserialization.
-  Assumes the POST request has the following keys, corresponding to field names:
-      *vendor (this should be the vendor id)
-      *title
-      *desc
-      *radius
-      *time_start
-      *time_end
-
-  Args: Dict consisting of a structured POST request body
-
-  Returns: new deal object and its database id
-  """
-  new_deal = Deal(**post_dict)
-  new_deal.time_start = parser.parse(new_deal.time_start)
-  new_deal.time_end = parser.parse(new_deal.time_end)
-  new_deal.save()
-  return new_deal, new_deal.id
-
-def _post_vendor(post_dict):
-  """
-  by Chris
-  POST request handler for vendors. Adds the specified vendor to the DB. Should
-  deserialize any necessary fields.
+  @TODO: Implement PUT
+  @author: Chris, Ayush
+  @desc: Routes request to appropriate handler based on request method. Returns
+  JSON HttpResponse for GET, 201 redirect with JSON for POST (regardless of
+  success). Returns/creates vendor objects
   Assumes the POST request has the following keys, corresponding to field names:
       *name
       *address
-      *business_type
       *latitude
       *longitude
       *web_url
       *yelp_url
+ 
+  @param request: the request object
+  @param vendor_id: the vendor id we are querying. None if POST
 
-  Args: Dict consisting of a structured POST request body
-
-  Returns: new vendor object and its database id.
+  @return: 201 with JSON for POST or 200 for GET
   """
-  new_vendor = Vendor(**post_dict)
-  new_vendor.save()
-  return new_vendor, new_vendor.id
-
-def _make_post_response(obj, redirect_addr, known_error = None):
-  """
-  As with _make_get_response, generates an appropriate response given
-  any known errors passed in, along with the created object and an
-  address to redirect to.
-  """
-  if known_error:
-    code = known_error['code']
-    err_message = known_error['message']
-    return HttpResponse(json.dumps(known_error),\
-                        content_type="application/json", status=code)
-  else:
-    return HttpResponseRedirect(redirect_addr, serializers.serialize("json", [obj]),\
-                                content_type="application/json", status=201)
-
-
-
-
-# TODO implement PUT
-@require_http_methods(["GET", "POST"])
-def vendor(request, vendor_id=None):
-  """
-  by Chris
-  Routes request to appropriate handler based on request method.
-  Returns JSON HttpResponse for GET, 201 redirect with JSON for POST
-  (regardless of success).
-  """
-  if request.method == 'GET':
+  if request. method == 'GET':
     known_error = None
     vendor_list = None
     try:
@@ -147,36 +70,56 @@ def vendor(request, vendor_id=None):
   else:
     # POST request.
     known_error = None
-    vendor = None
-    vendor, vendor_id = _post_vendor(json.loads(request.body))
-    return _make_post_response(vendor, 'vendors/' + str(vendor_id), known_error)
-    
+    vendor = Vendor(**json.loads(request.body))
+    vendor.save()
+    return _make_post_response(vendor, 'vendors/' + str(vendor.id), known_error)
+
 @require_http_methods(["GET", "POST"])
 def vendor_deals(request, vendor_id):
+  """
+  @TODO: change the error to not 500s
+  @author: Chris, Ayush
+  @desc: Returns/creates a deal for a given vendor
+  Assumes the POST request has the following keys, corresponding to field names:
+      *vendor (this should be the vendor id)
+      *title
+      *desc
+      *radius
+      *time_start
+      *time_end
+
+  @param request: a request object
+  @param vendor_id: the id of the vendor for which we are querying or creating
+  a deal for
+
+  @return: 201 with JSON for POST or 200 for GET
+  """
   if request.method == 'GET':
     known_error = None
     deal_list = None
+
     if not vendor_id:
       known_error = {'code': 500, 'message': 'Server error'} 
     try:
       deal_set = _get_deals(vendor_id=vendor_id)
     except Exception:
       known_error = {'code': 500, 'message': 'Server error'}
+
     deal_list = _list_from_qset(deal_set, include_nested=True)
     return _make_get_response(deal_list, known_error,\
                               flatten=True, include_nested=True)
   else:
     known_error = None
-    deal = []
-    deal_id = -1
     try:
-      deal, deal_id = _post_deal(json.loads(request.body))
+      deal = Deal(**json.loads(requests.body))
+      deal.time_start = parser.parse(deal.time_start)
+      deal.time_end = parser.parse(deal.time_end)
+      deal.save()
     except Exception:
       known_error = {'code': 500, 'message': 'Server error'}
-    return _make_post_response(deal, 'deals/' + str(deal_id), known_error)
+    return _make_post_response(deal, 'deals/' + str(deal.id), known_error)
 
 def _get_deals(deal_id=None, vendor_id=None, active_only=True):
-  # A
   """
   @author: Chris, Rahul
   @desc: GET request handler for deals. If deal_id is specified, it retrieves
@@ -213,10 +156,40 @@ def _get_deals(deal_id=None, vendor_id=None, active_only=True):
       deal_set = deal_set.filter(time_start__lte=now, time_end__gte=now)
   return deal_set
 
-def _list_from_qset(qset, include_nested=False, flatten=True):
-  # A
+def _limit_result_distance(results, max_radius, loc):
   """
-  @author: Chris
+  @author: Ayush
+  @desc: Filters results so that the location for given deals is within
+  max_radius of the tuple loc = (latitude, longitude). NOTE: results must be
+  flattened.
+
+  @param results: the results we want filtered
+  @param max_radius: the radius we are using to filter results
+  @param loc: tuple(latitude, longitude) that defines the center of the
+  max_radius
+  """
+  return [x for x in results if in_radius(x['latitude'], x['longitude'], \
+      loc[0], loc[1], max_radius)]
+
+def _get_vendor(vendor_id=None):
+  """
+  @author: Ayush, Chris
+  @desc: returns a QuerySet of vendors. Filtered to a specific PK if passed in
+  as vendor_id.
+
+  @param vendor_id: the vendor_id we want to filter to
+  @return QuerySet of vendors
+  """
+  vendor_set = None
+  if vendor_id:
+    vendor_set = Vendor.objects.filter(pk=vendor_id)
+  else:
+    vendor_set = Vendor.objects.all()
+  return vendor_set
+
+def _list_from_qset(qset, include_nested=False, flatten=True):
+  """
+  @author: Ayush, Chris
   @desc: Takes a Django QuerySet and from that generates a JSON-serializable list,
   with a form determined by other parameters.
 
@@ -239,26 +212,30 @@ def _list_from_qset(qset, include_nested=False, flatten=True):
       return_list.append(obj)
   return return_list
 
-def _limit_result_distance(results, max_radius, loc):
-  #A
+def _make_post_response(obj, redirect_addr, known_error=None):
   """
-  @author: Ayush
-  @desc: Filters results so that the location for given deals is within
-  max_radius of the tuple loc = (latitude, longitude). NOTE: results must be
-  flattened.
+  @author: Ayush, Chris
+  @desc: Helper function that generates appropriate response given any "known
+  error" dict. Creates an appropriate response to POST request.
 
-  @param results: the results we want filtered
-  @param max_radius: the radius we are using to filter results
-  @param loc: tuple(latitude, longitude) that defines the center of the
-  max_radius
+  @param obj: object that was created
+  @param redirect_addr: address to redirect to
+  @param known_error: Any known errors to include/encode in POST response
+
+  @return: JSON HttpResponse with status 200 on sucess otherwise with error
   """
-  return [x for x in results if in_radius(x['latitude'], x['longitude'], \
-      loc[0], loc[1], max_radius)]
+  if known_error:
+    code = known_error['code']
+    err_message = known_error['message']
+    return HttpResponse(json.dumps(known_error),\
+                        content_type="application/json", status=code)
+  else:
+    return HttpResponseRedirect(redirect_addr, serializers.serialize("json", [obj]),\
+                                content_type="application/json", status=201)
 
 def _make_get_response(resp_list, known_error=None):
-  #A
   """
-  @author: Chris
+  @author: Ayush, Chris
   @desc: Helper function to take a JSON-serializable list and an optional 
   "known error" dict (with keys 'message' and 'code'), and create an appropriate
   response to a GET request.
@@ -277,4 +254,3 @@ def _make_get_response(resp_list, known_error=None):
   else:
     json_out = json.dumps(resp_list)
     return HttpResponse(json_out, content_type="application/json", status=200)
-
