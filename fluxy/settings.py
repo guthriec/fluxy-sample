@@ -101,7 +101,7 @@ STATICFILES_DIRS = (
 AUTH_USER_MODEL = 'fluxy.FluxyUser'
 
 # Media files (Images, etc.)
-
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 MEDIA_URL = '/media/'
 
 # Template files
