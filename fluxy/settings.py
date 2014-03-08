@@ -40,6 +40,7 @@ ADMINS = (
 # Application definition
 
 INSTALLED_APPS = (
+    'fluxy',
     'deals',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -61,7 +62,6 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'fluxy.urls'
 
 WSGI_APPLICATION = 'fluxy.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
@@ -95,6 +95,10 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
+
+# Replacing django user model
+
+AUTH_USER_MODEL = 'fluxy.FluxyUser'
 
 # Media files (Images, etc.)
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
