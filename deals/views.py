@@ -5,18 +5,15 @@ from deals.models import Deal, Vendor
 from distance import in_radius
 from django.core import serializers
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 import json
+import datetime
 
-def dashboard(request):
-  return render(request, 'deals/dashboard.html')
 
-def _get_deal(deal_id=None, vendor_id=None, active_only=True):
+def _get_deal(deal_id=None, vendor_id=None, active=True):
   """
-  @author: Chris
-
-  @desc: GET request handler for deals. If deal_id is specified, it retrieves the
+  by Chris and Rahul
+  GET request handler for deals. If deal_id is specified, it retrieves the
   corresponding Deal object and returns the result. Otherwise, response
   contains an array of all Deal objects. If vendor_id is specified, results
   are limited to deals belonging to that vendor. Setting active_only limits
@@ -36,13 +33,30 @@ def _get_deal(deal_id=None, vendor_id=None, active_only=True):
     deal_set = Deal.objects.filter(pk=deal_id)
   else:
     if vendor_id:
-      deal_set = Deal.objects.filter(vendor_id=vendor_id)
+      if active:
+        deal_set = Deal.objects.filter(vendor_id=vendor_id,
+            time_end__lte=datetime.datetime.now())
+      else:
+        deal_set = Deal.objects.filter(vendor_id=vendor_id)
     else:
       deal_set = Deal.objects.all()
     if active_only:
       now = datetime.now()
       deal_set = deal_set.filter(time_start__lte=now, time_end__gte=now)
   return deal_set
+
+def _get_claimed_deals(vendor_id, active=True):
+  """
+  by Rahul
+  """
+  claimed_deal_set = None
+  if active:
+    claimed_deal_set = Deal.objects.filter(vendor_id=vendor_id,
+        claimed_deal__isnull=False, time_end__lte=datetime.datetime.now())
+  else:
+    claimed_deal_set = Deal.objects.filter(vendor_id=vendor_id,
+        claimed_deal__isnull=False)
+  return claimed_deal_set
 
 def _get_vendor(vendor_id=None):
   """
@@ -200,6 +214,7 @@ def deal(request, deal_id=None, active_only=True):
                               max_radius = radius, loc = (lat, lon))
   return _make_get_response(deal_list, known_error)
 
+# TODO implement PUT
 @require_http_methods(["GET", "POST"])
 def vendor(request, vendor_id=None):
   """
@@ -222,10 +237,7 @@ def vendor(request, vendor_id=None):
     # POST request.
     known_error = None
     vendor = None
-    try:
-      vendor, vendor_id = _post_vendor(json.loads(request.body))
-    except Exception:
-      known_error = {'code': 500, 'message': 'Server error'}
+    vendor, vendor_id = _post_vendor(json.loads(request.body))
     return _make_post_response(vendor, 'vendors/' + str(vendor_id), known_error)
     
 @require_http_methods(["GET", "POST"])
