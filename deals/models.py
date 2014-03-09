@@ -45,7 +45,7 @@ class Vendor(models.Model):
         'longitude': self.longitude,
         'web_url': self.web_url,
         'yelp_url': self.yelp_url,
-        'image': self.image,
+        'image': self.image.url,
         'phone': self.phone,
         'approved_by': self.approved_by
     }
