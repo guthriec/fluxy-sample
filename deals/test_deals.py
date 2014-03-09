@@ -24,7 +24,6 @@ class DealTestCase(TestCase):
     as expected.
     """
     response = self.client.get('/api/v1/deal/2/')
-    print response
     deal_obj = json.loads(response.content)[0]
     self.assertEqual(deal_obj['title'], "40% off coffee")
     self.assertEqual(deal_obj['vendor']['name'], "Happy Donuts")
@@ -56,7 +55,7 @@ class DealTestCase(TestCase):
     response = self.client.get('/api/v1/deals/')
     deal_list = json.loads(response.content)
     for deal in deal_list:
-      self.assertNotIn(deal['pk'], self.inactive_list)
+      self.assertNotIn(deal['id'], self.inactive_list)
 
   def test_deals_all(self):
     """
@@ -65,38 +64,38 @@ class DealTestCase(TestCase):
     """
     response = self.client.get('/api/v1/deals/all/')
     deal_list = json.loads(response.content)
-    pks = set()
+    ids = set()
     for deal in deal_list:
-      pks.add(deal['pk'])
-    self.assertSetEqual(pks, set(self.deal_list))
+      ids.add(deal['id'])
+    self.assertSetEqual(ids, set(self.deal_list))
 
   def test_deals_radius(self):
     """
     @author: Chris
     Tests that /deals radius filter works
     """
-    response = self.client.get('/api/v1/deals/', {'lat': self.mile_pt[0],
-                                                  'long': self.mile_pt[1],
+    response = self.client.get('/api/v1/deals/', {'latitude': self.mile_pt[0],
+                                                  'longitude': self.mile_pt[1],
                                                   'radius': 1})
     deal_list = json.loads(response.content)
-    pks = set()
+    ids = set()
     for deal in deal_list:
-      pks.add(deal['pk'])
-    self.assertSetEqual(pks, set(self.mile_incl_active))
+      ids.add(deal['id'])
+    self.assertSetEqual(ids, set(self.mile_incl_active))
 
   def test_deals_all_radius(self):
     """
     @author: Chris
     Tests that /deals/all radius filter works
     """
-    response = self.client.get('/api/v1/deals/all/', {'lat': self.mile_pt[0],
-                                                      'long': self.mile_pt[1],
+    response = self.client.get('/api/v1/deals/all/', {'latitude': self.mile_pt[0],
+                                                      'longitude': self.mile_pt[1],
                                                       'radius': 1})
     deal_list = json.loads(response.content)
-    pks = set()
+    ids = set()
     for deal in deal_list:
-      pks.add(deal['pk'])
-    self.assertSetEqual(pks, set(self.mile_incl_all))
+      ids.add(deal['id'])
+    self.assertSetEqual(ids, set(self.mile_incl_all))
 
   def tearDown(self):
     pass

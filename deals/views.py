@@ -21,12 +21,14 @@ def deal(request, deal_id=None, active_only=True):
   @return: JSON HttpResponse with any appropriate error codes.
   """
   known_error = None
-  deal_set = _get_deals(deal_id, active_only)
+  deal_set = _get_deals(deal_id, active_only=active_only)
+  if deal_id and deal_set.count() == 0:
+    known_error = {'code': 404, 'message': "Deal not found"}
   try:
     lat = float(request.GET.get('latitude', None))
     lon = float(request.GET.get('longitude', None))
     radius = float(request.GET.get('radius', -1.0))
-  except ValueError:
+  except TypeError:
     lat = None
     lon = None
     radius = -1.0
@@ -137,7 +139,7 @@ def _get_deals(deal_id=None, vendor_id=None, active_only=True):
   deal_set = None
 
   if deal_id and vendor_id:
-    raise ValueError('[ERR] Func: ideals.views._get_deals | Both deal_id and \
+    raise ValueError('[ERR] Func: deals.views._get_deals | Both deal_id and \
         vendor_id specified')
 
   if deal_id:
@@ -168,7 +170,7 @@ def _limit_result_distance(results, max_radius, loc):
   @param loc: tuple(latitude, longitude) that defines the center of the
   max_radius
   """
-  return [x for x in results if in_radius(x['latitude'], x['longitude'], \
+  return [x for x in results if in_radius(x['vendor']['latitude'], x['vendor']['longitude'], \
       loc[0], loc[1], max_radius)]
 
 def _get_vendor(vendor_id=None):
@@ -206,7 +208,7 @@ def _list_from_qset(qset, include_nested=False, flatten=True):
   for obj in obj_list:
     if flatten:
       attrs = obj['fields']
-      attrs['id'] = obj['pk'] 
+      attrs['id'] = obj['pk']
       return_list.append(attrs)
     else:
       return_list.append(obj)
@@ -248,7 +250,6 @@ def _make_get_response(resp_list, known_error=None):
   """
   if known_error:
     code = known_error['code']
-    err_message = known_error['message']
     return HttpResponse(json.dumps(known_error),\
                         content_type="application/json", status=code)
   else:

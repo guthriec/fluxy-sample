@@ -38,4 +38,8 @@ def in_radius(lat1, long1, lat2, long2, radius):
 
     @returns: True if the points are close enough, otherwise False
   """
+  if radius <= 0:
+    return True
+  if None in [lat1, long1, lat2, long2]:
+    return False
   return (distance(lat1, long1, lat2, long2) < radius)

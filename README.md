@@ -23,7 +23,7 @@ API
 * ``` /deals ```
   * Accepts GET.
   * Returns all active deals, including those that are maxed out.
-  * If all of the following GET parameters are set: "lat", "long", and "radius," the returned set is limited to deals within 'radius' of the given coordinates.
+  * If all of the following GET parameters are set: "latitude", "longitude", and "radius," the returned set is limited to deals within 'radius' of the given coordinates.
 
 * ``` /deals/all ```
   * Accepts GET.
