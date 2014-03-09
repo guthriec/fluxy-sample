@@ -2,8 +2,6 @@
 # THESE SETTINGS ARE FOR THE DEV ENVIRONMENT
 
 # !!!!!!!! ON YOUR DEV MACHINE
-# REMOVE THIS COMMENT LINE AND RENAME THE FILE TO local_settings.py
-"""
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = TEMPLATE_DEBUG = True
