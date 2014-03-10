@@ -42,6 +42,7 @@ ADMINS = (
 INSTALLED_APPS = (
     'fluxy',
     'deals',
+    'dashboard',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
