@@ -74,7 +74,8 @@ def vendor(request, vendor_id=None):
   else:
     # POST request.
     known_error = None
-    vendor, vendor_id = [None, -1]
+    vendor = None 
+    vendor_id = -1
     try:
       vendor = Vendor(**json.loads(request.body))
       vendor.save()
