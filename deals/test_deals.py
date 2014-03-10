@@ -1,6 +1,5 @@
 from deals.models import Deal
-from django.test import Client
-from django.test import TestCase
+from django.test import Client, TestCase
 import json
 
 class DealTestCase(TestCase):
