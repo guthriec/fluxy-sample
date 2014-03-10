@@ -94,6 +94,20 @@ class DealTestCase(TestCase):
       ids.add(deal['id'])
     self.assertSetEqual(ids, set(self.mile_incl_active))
 
+  def test_zero_radius(self):
+    """
+    @author: Chris
+    Tests that /deals radius filter works
+    """
+    response = self.client.get('/api/v1/deals/', {'latitude': self.mile_pt[0],
+                                                  'longitude': self.mile_pt[1],
+                                                  'radius': 0})
+    deal_list = json.loads(response.content)
+    ids = set()
+    for deal in deal_list:
+      ids.add(deal['id'])
+    self.assertSetEqual(ids, set(self.active_list))
+
   def test_deals_all_radius(self):
     """
     @author: Chris
