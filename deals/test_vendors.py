@@ -7,16 +7,14 @@ class VendorTestCase(TestCase):
   fixtures = ['deals.json']
   
   def setUp(self):
-    """
-    Create our test client object.
-    """
     self.client = Client()
+    # List of all vendors
     self.vendor_list = [1, 2, 3]
          
   def test_get_vendors(self):
     """
     @author: Chris
-    Tests that GET on /vendors/ returns a list of all vendors
+    Tests that GET on /vendors/ returns a list of all vendors.
     """
     response = self.client.get('/api/v1/vendors/')
     vendor_list = json.loads(response.content)
@@ -28,7 +26,7 @@ class VendorTestCase(TestCase):
   def test_post_vendors(self):
     """
     @author: Chris
-    Tests that POST on /vendors/ creates a new vendor and returns 201 
+    Tests that POST on /vendors/ creates a new vendor and returns 201.
     """
     new_vendor = {'name': 'Oren\'s Hummus',
                   'address': '261 University Ave, Palo Alto CA 94301',
@@ -80,7 +78,6 @@ class VendorTestCase(TestCase):
   
   def test_vendor_put(self):
     """
-    @author: Chris
     Tests that PUT on an existing vendor modifies the vendor
     """
     pass
