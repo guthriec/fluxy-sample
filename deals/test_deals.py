@@ -12,7 +12,7 @@ class DealTestCase(TestCase):
 
     # Set constants based on test fixture
     self.deal_list = list(range(1, 8))
-    self.inactive_list = [3, 7]
+    self.active_list = [1, 2, 4, 5, 6]
     self.mile_pt = (37.407959, -122.121454)
     self.mile_incl_active = [1, 2]
     self.mile_incl_all = [1, 2, 3]
@@ -63,8 +63,10 @@ class DealTestCase(TestCase):
     """
     response = self.client.get('/api/v1/deals/')
     deal_list = json.loads(response.content)
+    ids = set()
     for deal in deal_list:
-      self.assertNotIn(deal['id'], self.inactive_list)
+      ids.add(deal['id'])
+    self.assertSetEqual(ids, set(self.active_list))
 
   def test_deals_all(self):
     """
