@@ -13,6 +13,11 @@ git fetch origin
 git rebase origin/master
 ```
 
+Fixtures
+----------
+Feel free to update the fixtures, but beware that some tests we're writing currently hardcode properties of the fixtures. If you update the fixtures and see failing tests, first check to be sure you don't have to update these properties (all of which should be instance variables of the test class).
+
+For example, if you add a deal that should be inactive, in test_deals.py be sure to update self.deal_list and self.inactive_list.
 
 API
 -----------
@@ -23,12 +28,13 @@ API
 * ``` /deals ```
   * Accepts GET.
   * Returns all active deals, including those that are maxed out.
-  * If all of the following GET parameters are set: "latitude", "longitude", and "radius," the returned set is limited to deals within 'radius' of the given coordinates.
+  * If all of the following GET parameters are set: "lat", "long", and "radius," the returned set is limited to deals within 'radius' of the given coordinates. Radius <= 0 is taken as an unlimited radius.
 
 * ``` /deals/all ```
   * Accepts GET.
   * Returns all deals ever created.
-  * If all of the following GET parameters are set: "lat", "long", and "radius," the returned set is limited to deals within 'radius' of the given coordinates.
+  * If all of the following GET parameters are set: "lat", "long", and "radius," the returned set is limited to deals within 'radius' of the given coordinates. Radius <= 0 is taken as an unlimited radius.
+
 
 * ``` /user/auth ```
   * Accepts POST.

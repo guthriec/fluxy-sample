@@ -125,11 +125,72 @@
    "fields": {
      "vendor": "3",
      "title": "50% off drinks",
-     "desc": "drinks drinks drinks drinks", 
+     "desc": "drinks drinks drinks drinks",
      "time_start": "2014-02-01 00:00:00+00:00",
      "time_end": "2014-02-02 00:00:00+00:00",
      "max_deals": "-1",
      "instructions": "Show to waiter."
    }
+ },
+ {
+   "model": "deals.deal",
+   "pk": 8,
+   "fields": {
+     "vendor": "3",
+     "title": "50% off drinks in the future",
+     "desc": "drinks drinks drinks drinks future drinks!",
+     "time_start": "2014-02-01 00:00:00+00:00",
+     "time_end": "2014-02-02 00:00:00+00:00",
+     "max_deals": "-1",
+     "instructions": "Show to waiter."
+   }
+ },
+ {
+   "model": "fluxy.fluxyuser",
+   "pk": 1,
+   "fields": {
+     "first_name": "Al",
+     "last_name": "H",
+     "username": "kingofpaloalto",
+     "password": "pbkdf2_sha256$12000$NrhLLCqHVQa7$TTZiDuWBGNH5kj6UYLBlFFL7788eoCne8MJ/hyULZqs=",
+     "email": "alh@alh.com",
+     "vendors":["1","2"]
+   }
+ },
+ {
+   "model": "fluxy.fluxyuser",
+   "pk": 2,
+   "fields": {
+     "first_name": "Bob",
+     "last_name": "C",
+     "username": "mrhappy",
+     "password": "pbkdf2_sha256$12000$NrhLLCqHVQa7$TTZiDuWBGNH5kj6UYLBlFFL7788eoCne8MJ/hyULZqs=",
+     "email": "bob@happydonuts.com",
+     "vendors":["1"]
+   }
+ },
+ {
+   "model": "fluxy.fluxyuser",
+   "pk": 3,
+   "fields": {
+     "first_name": "Chris",
+     "last_name": "X",
+     "username": "pizzaguy",
+     "password": "pbkdf2_sha256$12000$NrhLLCqHVQa7$TTZiDuWBGNH5kj6UYLBlFFL7788eoCne8MJ/hyULZqs=",
+     "email": "chris@pmh.com",
+     "vendors":["3"]
+   }
+ },
+ {
+   "model": "fluxy.fluxyuser",
+   "pk": 4,
+   "fields": {
+     "first_name": "Don",
+     "last_name": "Normaldude",
+     "username": "idontownrestaurants",
+     "password": "pbkdf2_sha256$12000$NrhLLCqHVQa7$TTZiDuWBGNH5kj6UYLBlFFL7788eoCne8MJ/hyULZqs=",
+     "email": "don@hotmail.com",
+     "vendors":[]
+   }  
  }
 ]
