@@ -95,16 +95,20 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
 
   @return: 201 with JSON for POST or 200 for GET
   """
+  known_error = None
+
+  # Check vendor exists
+  vendor_qset = Vendor.objects.filter(pk=vendor_id)
+  if vendor_qset.count() == 0:
+    known_error = {'code': 404, 'message': 'Vendor not found'}
+
   if request.method == 'GET':
-    known_error = None
     deal_list = None
-
     deal_set = _get_deals(vendor_id=vendor_id, active_only=active_only)
-
     deal_list = _list_from_qset(deal_set, include_nested=True)
     return _make_get_response(deal_list, known_error)
+
   else:
-    known_error = None
     deal = None
     deal_id = -1
     try:
