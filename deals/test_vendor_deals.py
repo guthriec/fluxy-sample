@@ -69,5 +69,13 @@ class DealTestCase(TestCase):
       ids.add(deal['id'])
     self.assertSetEqual(ids, set(self.donut_list))
 
+  def test_bad_vendor(self):
+    """
+    @author: Chris
+    Tests that /vendor/100/deals returns 404
+    """
+    response = self.client.get('/api/v1/vendor/100/deals/')
+    self.assertEqual(response.status_code, 404)
+
   def tearDown(self):
     pass
