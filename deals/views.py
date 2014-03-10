@@ -134,26 +134,14 @@ def _get_deals(deal_id=None, vendor_id=None, active_only=True):
 
   @returns: QuerySet of retrieved objects
   """
-  deal_set = None
-
-  if deal_id and vendor_id:
-    raise ValueError('[ERR] Func: ideals.views._get_deals | Both deal_id and \
-        vendor_id specified')
-
+  deal_set = Deal.objects.all() 
   if deal_id:
-    deal_set = Deal.objects.filter(pk=deal_id)
-  else:
-    if vendor_id:
-      if active_only:
-        deal_set = Deal.objects.filter(vendor_id=vendor_id,
-            time_end__lte=datetime.now())
-      else:
-        deal_set = Deal.objects.filter(vendor_id=vendor_id)
-    else:
-      deal_set = Deal.objects.all()
-    if active_only:
-      now = datetime.now()
-      deal_set = deal_set.filter(time_start__lte=now, time_end__gte=now)
+    deal_set = deal_set.filter(pk=deal_id)
+  if vendor_id:
+    deal_set = deal_set.filter(vendor_id=vendor_id)
+  if active_only:
+    now = datetime.now()
+    deal_set = deal_set.filter(time_start__lte=now, time_end__gte=now)
   return deal_set
 
 def _limit_result_distance(results, max_radius, loc):
