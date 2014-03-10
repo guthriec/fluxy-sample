@@ -125,7 +125,20 @@
    "fields": {
      "vendor": "3",
      "title": "50% off drinks",
-     "desc": "drinks drinks drinks drinks", 
+     "desc": "drinks drinks drinks drinks",
+     "time_start": "2014-02-01 00:00:00+00:00",
+     "time_end": "2014-02-02 00:00:00+00:00",
+     "max_deals": "-1",
+     "instructions": "Show to waiter."
+   }
+ },
+ {
+   "model": "deals.deal",
+   "pk": 8,
+   "fields": {
+     "vendor": "3",
+     "title": "50% off drinks in the future",
+     "desc": "drinks drinks drinks drinks future drinks!",
      "time_start": "2014-02-01 00:00:00+00:00",
      "time_end": "2014-02-02 00:00:00+00:00",
      "max_deals": "-1",
