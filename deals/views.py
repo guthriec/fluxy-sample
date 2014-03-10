@@ -110,8 +110,7 @@ def vendor_deals(request, vendor_id):
       known_error = {'code': 500, 'message': 'Server error'}
 
     deal_list = _list_from_qset(deal_set, include_nested=True)
-    return _make_get_response(deal_list, known_error,\
-                              flatten=True, include_nested=True)
+    return _make_get_response(deal_list, known_error) 
   else:
     known_error = None
     try:
