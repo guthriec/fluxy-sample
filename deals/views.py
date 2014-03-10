@@ -124,7 +124,7 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
     return _make_post_response(deal, 'deals/' + str(deal_id), known_error)
 
 @require_http_methods(['GET'])
-def vendor_claimed_deals(vendor_id, active_only=True):
+def vendor_claimed_deals(request, vendor_id, active_only=True):
   """
   @author: Chris
   @param vendor_id: vendor primary key
@@ -155,13 +155,12 @@ def _get_claimed_deals(claimed_deal_id=None, vendor_id=None, active_only=True):
   """
   claimed_deal_set = ClaimedDeal.objects.all() 
   if vendor_id:
-    claimed_deal_set = claimed_deal_set.filter(vendor_id=vendor_id)
+    claimed_deal_set = claimed_deal_set.filter(deal__vendor_id=vendor_id)
   if claimed_deal_id:
     claimed_deal_set = claimed_deal_set.filter(pk=claimed_deal_id)
   if active_only:
     now = datetime.now()
-    claimed_deal_set = claimed_deal_set.filter(vendor_id=vendor_id,
-                                               deal__time_start__lte=now,
+    claimed_deal_set = claimed_deal_set.filter(deal__time_start__lte=now,
                                                deal__time_end__gte=now)
   return claimed_deal_set
 

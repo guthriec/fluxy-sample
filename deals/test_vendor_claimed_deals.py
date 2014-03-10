@@ -3,7 +3,7 @@ from django.test import Client
 from django.test import TestCase
 import json
 
-class DealTestCase(TestCase):
+class VendorClaimedDealTestCase(TestCase):
   fixtures = ['deals.json']
   
   def setUp(self):
@@ -11,71 +11,51 @@ class DealTestCase(TestCase):
     Create our test client object.
     """
     self.client = Client()
-    self.donut_list = list(range(1, 4))
-    self.inactive_donuts = [3]
+    self.donut_tuples_list = [(4, 1), (4, 2), (4, 3)]
+    self.active_donut_tuples_list = [(4, 1), (4, 2)]
          
-  def test_deals_post(self):
+  def test_claimed_deals(self):
     """
     @author: Chris
-    Tests that POSTing to /vendor/1/deals creates a new Happy
-    Donuts deal.
+    Tests that /vendor/1/claimed_deals returns all active claimed
+    Happy Donuts deals
     """
-    new_deal = {"title": "Meet homeless people",
-                "desc": "homelessss",
-                "time_start": "2014-02-01 00:00:00+00:00",
-                "time_end": "2015-02-01 00:00:00+00:00",
-                "max_deals": 40,
-                "instructions": "Introduce yourself carefully"}
+    response = self.client.get('/api/v1/vendor/1/claimed_deals/')
+    print response
+    self.assertEqual(response.status_code, 200)
+    user_deal_tuples = set()
+    for claimed_deal in json.loads(response.content):
+      user_deal_tuples.add((claimed_deal['user'], claimed_deal['deal']))
+    self.assertSetEqual(user_deal_tuples, set(self.active_donut_tuples_list))
 
-    response = self.client.post('/api/v1/vendor/1/deals/', json.dumps(new_deal),
-                                content_type="application/javascript")
-    self.assertEqual(response.status_code, 201)
-    self.assertEqual(Deal.objects.filter(vendor=1, title="Meet homeless people").count(), 1)
-
-  def test_bad_deals_post(self):
+  def test_claimed_deals_all(self):
     """
     @author: Chris
-    Tests that POSTing to /vendor/1/deals with an extra field gives a 400.
+    Tests that /vendor/1/claimed_deals/all returns all claimed
+    Happy Donuts deals
     """
-    new_deal = {"title": "Meet homeless people",
-                "desc": "homelessss",
-                "time_start": "2014-02-01 00:00:00+00:00",
-                "time_end": "2015-02-01 00:00:00+00:00",
-                "max_deals": 40,
-                "bad_instructions": "Introduce yourself carefully"}
-    response = self.client.post('/api/v1/vendor/1/deals/', json.dumps(new_deal),
-                                content_type="application/javascript")
-    self.assertEqual(response.status_code, 400)
-
-  def test_deals_active_only(self):
-    """
-    @author: Chris
-    Tests that /vendor/1/deals only returns active deals
-    """
-    response = self.client.get('/api/v1/vendor/1/deals/')
-    deal_list = json.loads(response.content)
-    for deal in deal_list:
-      self.assertNotIn(deal['id'], self.inactive_donuts)
-
-  def test_deals_all(self):
-    """
-    @author: Chris
-    Tests that /vendor/1/deals/all returns all deals
-    """
-    response = self.client.get('/api/v1/vendor/1/deals/all/')
-    deal_list = json.loads(response.content)
-    ids = set()
-    for deal in deal_list:
-      ids.add(deal['id'])
-    self.assertSetEqual(ids, set(self.donut_list))
+    response = self.client.get('/api/v1/vendor/1/claimed_deals/all/')
+    self.assertEqual(response.status_code, 200)
+    user_deal_tuples = set()
+    for claimed_deal in json.loads(response.content):
+      user_deal_tuples.add((claimed_deal['user'], claimed_deal['deal']))
+    self.assertSetEqual(user_deal_tuples, set(self.donut_tuples_list))
 
   def test_bad_vendor(self):
     """
     @author: Chris
-    Tests that /vendor/100/deals returns 404
+    Tests that /vendor/100/claimed_deals returns 404
     """
-    response = self.client.get('/api/v1/vendor/100/deals/')
+    response = self.client.get('/api/v1/vendor/100/claimed_deals/')
     self.assertEqual(response.status_code, 404)
 
+  def test_bad_vendor_all(self):
+    """
+    @author: Chris
+    Tests that /vendor/100/claimed_deals/all returns 404
+    """
+    response = self.client.get('/api/v1/vendor/100/claimed_deals/all/')
+    self.assertEqual(response.status_code, 404)
+  
   def tearDown(self):
     pass
