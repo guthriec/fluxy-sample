@@ -98,7 +98,7 @@ class DealTestCase(TestCase):
   def test_zero_radius(self):
     """
     @author: Chris
-    Tests that /deals radius filter works
+    Tests that /deals radius filter works with radius set to 0.
     """
     response = self.client.get('/api/v1/deals/', {'latitude': self.mile_pt[0],
                                                   'longitude': self.mile_pt[1],
