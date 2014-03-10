@@ -1,6 +1,6 @@
 from datetime import datetime
 from dateutil import parser
-from deals.models import Deal, Vendor
+from deals.models import ClaimedDeal, Deal, Vendor
 from distance import in_radius
 from django.core import serializers
 from django.http import HttpResponse, HttpResponseRedirect
@@ -105,7 +105,7 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
   if request.method == 'GET':
     deal_list = None
     deal_set = _get_deals(vendor_id=vendor_id, active_only=active_only)
-    deal_list = _list_from_qset(deal_set, include_nested=True)
+    deal_list = _list_from_qset(deal_set, include_nested=False)
     return _make_get_response(deal_list, known_error)
 
   else:
@@ -122,8 +122,47 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
       known_error={'code': 400, 'message': 'Bad deal POST'}
     return _make_post_response(deal, 'deals/' + str(deal_id), known_error)
 
+@require_http_methods['GET']
+def vendor_claimed_deals(vendor_id, active_only=True):
+  """
+  @author: Chris
+  @param vendor_id: vendor primary key
+  @param active_only: boolean to filter out expired or unstarted deals
+
+  @returns JSON response
+  """
+  claimed_deal_set = _get_claimed_deals(vendor_id=vendor_id, active_only=active_only)
+  claimed_deal_list = _list_from_qset(claimed_deal_set, include_nested=True, flatten=True)
+  return _make_get_response(claimed_deal_list, known_error = None)
+
+def _get_claimed_deals(claimed_deal_id=None, vendor_id=None, active_only=True):
+  """
+  @author: Chris
+  @desc: GET request handler for ClaimedDeals. Applies filters specified by parameters
+  to ClaimedDeal objects, returning what's left (so invalid deal ID's result in an
+  empty QuerySet).
+  
+  @param claimed_deal_id: claimed deal primary key
+  @param vendor_id: vendor primary key to filter by
+  @param active_only: boolean to filter out expired or unstarted deals
+
+  @returns: QuerySet of retrieved objects
+  """
+  claimed_deal_set = ClaimedDeal.objects.all() 
+  if vendor_id:
+    claimed_deal_set = claimed_deal_set.filter(vendor_id=vendor_id)
+  if claimed_deal_id:
+    claimed_deal_set = claimed_deal_set.filter(pk=claimed_deal_id)
+  if active_only:
+    now = datetime.now()
+    claimed_deal_set = claimed_deal_set.filter(vendor_id=vendor_id,
+                                               deal__time_start__lte=now,
+                                               deal__time_end__gte=now)
+  return claimed_deal_set
+
 def _get_deals(deal_id=None, vendor_id=None, active_only=True):
   """
+  @TODO: rewrite as a filter pipeline like _get_claimed_deals.
   @author: Chris, Rahul
   @desc: GET request handler for deals. If deal_id is specified, it retrieves
   the corresponding Deal object and returns the result. Otherwise, response 
