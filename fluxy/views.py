@@ -71,7 +71,7 @@ def user_auth(request):
   response = {}
   if user is not None:
     login(request, user)
-    return HttpResponse("", content_type="application/json",
+    return HttpResponse(json.dumps(response), content_type="application/json",
                         status = 200)
   else:
     response = {"code": 401, "message": "Invalid username/password", "success": False}

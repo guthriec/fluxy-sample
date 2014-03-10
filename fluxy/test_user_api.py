@@ -13,12 +13,27 @@ class UserApiTestCase(TestCase):
     @author: Rahul
     @desc:
     """
+    data = {'username': 'kingofpaloalto', 'password': 'password'}
+    response = self.client.post('/user/auth/', data=json.dumps(data))
+    self.assertEqual(response.statusCode, 200)
 
-  def test_auth_invalid(self):
+  def test_auth_invalid_username(self):
     """
     @author: Rahul
     @desc:
     """
+    data = {'username': 'invalid', 'password': 'password'}
+    response = self.client.post('/user/auth/', data=data)
+    self.assertEqual(response.statusCode, 401)
+
+  def test_auth_invalid_userjk(self):
+    """
+    @author: Rahul
+    @desc:
+    """
+    data = {'username': 'invalid', 'password': 'password'}
+    response = self.client.post('/user/auth/', data=data)
+    self.assertEqual(response.statusCode, 401)
 
   def test_register(self):
     """
