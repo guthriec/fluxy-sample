@@ -1,22 +1,22 @@
 from deals.models import Deal
-from django.test import Client 
+from django.test import Client
 from django.test import TestCase
 import json
 
 class DealTestCase(TestCase):
   fixtures = ['deals.json']
-  
+
   def setUp(self):
     # Create our test client object.
     self.client = Client()
 
     # Set constants based on test fixture
-    self.deal_list = list(range(1, 8))
+    self.deal_list = list(range(1, 9))
     self.active_list = [1, 2, 4, 5, 6]
     self.mile_pt = (37.407959, -122.121454)
     self.mile_incl_active = [1, 2]
     self.mile_incl_all = [1, 2, 3]
-         
+
   def test_single_deal(self):
     """
     @author: Chris
@@ -26,7 +26,7 @@ class DealTestCase(TestCase):
     response = self.client.get('/api/v1/deal/2/')
     deal_obj = json.loads(response.content)[0]
     self.assertEqual(deal_obj['title'], "40% off coffee")
-  
+
   def test_embedded_vendor(self):
     """
     @author: Chris
@@ -36,7 +36,7 @@ class DealTestCase(TestCase):
     response = self.client.get('/api/v1/deal/2/')
     deal_obj = json.loads(response.content)[0]
     self.assertEqual(deal_obj['vendor']['name'], "Happy Donuts")
-   
+
   def test_deal_not_found(self):
     """
     @author: Chris
@@ -59,7 +59,8 @@ class DealTestCase(TestCase):
   def test_deals_active_only(self):
     """
     @author: Chris
-    Tests that /deals only returns active deals
+    Tests that /deals only returns active deals. The set of active deals
+    excludes those that have expired or that haven't yet started.
     """
     response = self.client.get('/api/v1/deals/')
     deal_list = json.loads(response.content)
