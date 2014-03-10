@@ -5,9 +5,12 @@ DashboardApp.addRegions({
   newDealFormRegion: '#new-deal-form'
 });
 
-DealModel = Backbone.Model.extend({});
+DealModel = Backbone.Model.extend({
+  url: '/api/v1/vendor/1/deals'
+});
 DealsCollection = Backbone.Collection.extend({
   model: DealModel,
+  // TODO: dynamiv vendor ID
   url: '/api/v1/vendor/1/deals'
 });
 
@@ -24,7 +27,7 @@ DealsCollectionView = Backbone.Marionette.CompositeView.extend({
   itemView: DealView,
 
   appendHtml: function(collectionView, itemView) {
-    collectionView.$("tbody").append(itemView.el);
+    collectionView.$('tbody').append(itemView.el);
   }
 });
 
@@ -33,13 +36,32 @@ DealCreateFormView = Backbone.Marionette.ItemView.extend({
     'click .submit-btn': 'createDeal'
   },
   template: '#deal-create-form-template',
+
   render: function() {
     this.$el.html(_.template($(this.template).html()));
-    console.log(this.$el);
     return this;
   },
-  postDeal: function(e) {
+
+  createDeal: function(e) {
     e.preventDefault();
+
+    var newModel = new DealModel();
+
+    var $formInputs = $('#deal-form :input');
+    var formValues = {};
+    $formInputs.each(function() {
+      formValues[this.name] = $(this).val();
+    });
+    // TODO dynamic vendor ID
+    newModel.set('vendorId', 1);
+    newModel.set('title', formValues['title']);
+    newModel.set('desc', formValues['desc']);
+    newModel.set('radius', 5);
+    var timeStart = new Date().setTime(Date.now());
+    newModel.set('time_start', timeStart);
+    var minutes = formValues['minutes'] + 60 * formValues['hours'];
+    newModel.set('time_end', (new Date(Date.now() + minutes * 60000)));
+    newModel.save(); 
   }
 });
 

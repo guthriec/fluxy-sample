@@ -25,7 +25,7 @@ def deal(request, deal_id=None, active_only=True):
     active_only = False
   deal_set = _get_deals(deal_id, active_only=active_only)
   if deal_id and deal_set.count() == 0:
-    known_error = {'code': 404, 'message': "Deal not found"}
+    known_error = { 'code': 404, 'message': 'Deal not found' }
   try:
     lat = float(request.GET.get('latitude', None))
     lon = float(request.GET.get('longitude', None))
@@ -68,7 +68,7 @@ def vendor(request, vendor_id=None):
       vendor_set = _get_vendor(vendor_id)
       vendor_list = _list_from_qset(vendor_set, include_nested=False)
     except Exception:
-      known_error = {'code': 500, 'message': 'Server error'}
+      known_error = { 'code': 500, 'message': 'Server error' }
     return _make_get_response(vendor_list, known_error,\
                               flatten=True, include_nested=False)
   else:
@@ -98,28 +98,32 @@ def vendor_deals(request, vendor_id):
 
   @return: 201 with JSON for POST or 200 for GET
   """
+  print "FUCK"
   if request.method == 'GET':
     known_error = None
     deal_list = None
 
     if not vendor_id:
-      known_error = {'code': 500, 'message': 'Server error'}
+      known_error = { 'code': 500, 'message': 'Server error' }
     try:
       deal_set = _get_deals(vendor_id=vendor_id)
     except Exception:
-      known_error = {'code': 500, 'message': 'Server error'}
+      known_error = { 'code': 500, 'message': 'Server error' }
 
     deal_list = _list_from_qset(deal_set, include_nested=True)
     return _make_get_response(deal_list, known_error) 
   else:
+    print "hi"
     known_error = None
     try:
+      print "*", json.loads(requests.body)
       deal = Deal(**json.loads(requests.body))
+      print "**", deal
       deal.time_start = parser.parse(deal.time_start)
       deal.time_end = parser.parse(deal.time_end)
       deal.save()
     except Exception:
-      known_error = {'code': 500, 'message': 'Server error'}
+      known_error = { 'code': 500, 'message': 'Server error' }
     return _make_post_response(deal, 'deals/' + str(deal.id), known_error)
 
 def _get_deals(deal_id=None, vendor_id=None, active_only=True):
