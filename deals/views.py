@@ -79,7 +79,6 @@ def vendor(request, vendor_id=None):
 @require_http_methods(["GET", "POST"])
 def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
   """
-  @TODO: change the error to not 500s
   @author: Chris, Ayush
   @desc: Returns/creates a deal for a given vendor
   Assumes the POST request has the following keys, corresponding to field names:
