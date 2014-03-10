@@ -21,6 +21,8 @@ def deal(request, deal_id=None, active_only=True):
   @return: JSON HttpResponse with any appropriate error codes.
   """
   known_error = None
+  if deal_id:
+    active_only = False
   deal_set = _get_deals(deal_id, active_only=active_only)
   if deal_id and deal_set.count() == 0:
     known_error = {'code': 404, 'message': "Deal not found"}
