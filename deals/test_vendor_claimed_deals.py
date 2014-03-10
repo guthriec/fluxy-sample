@@ -24,7 +24,8 @@ class VendorClaimedDealTestCase(TestCase):
     print response
     self.assertEqual(response.status_code, 200)
     user_deal_tuples = set()
-    for claimed_deal in json.loads(response.content):
+    claimed_deal_list = json.loads(response.content)
+    for claimed_deal in claimed_deal_list:
       user_deal_tuples.add((claimed_deal['user'], claimed_deal['deal']))
     self.assertSetEqual(user_deal_tuples, set(self.active_donut_tuples_list))
 
