@@ -36,6 +36,11 @@ def in_radius(lat1, long1, lat2, long2, radius):
     @param lat2/long2: the lat/long pair of the second point
     @radius: the radius by which we are checking
 
-    @returns: True if the points are close enough, otherwise False
+    @returns: True if the points are close enough, otherwise False. If radius <=0
+    returns True, if a lat/long isn't fully defined returns False.
   """
+  if radius <= 0:
+    return True
+  if None in [lat1, long1, lat2, long2]:
+    return False
   return (distance(lat1, long1, lat2, long2) < radius)

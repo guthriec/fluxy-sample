@@ -21,12 +21,14 @@ def deal(request, deal_id=None, active_only=True):
   @return: JSON HttpResponse with any appropriate error codes.
   """
   known_error = None
-  deal_set = _get_deals(deal_id, active_only)
+  deal_set = _get_deals(deal_id, active_only=active_only)
+  if deal_id and deal_set.count() == 0:
+    known_error = {'code': 404, 'message': "Deal not found"}
   try:
     lat = float(request.GET.get('latitude', None))
     lon = float(request.GET.get('longitude', None))
     radius = float(request.GET.get('radius', -1.0))
-  except ValueError:
+  except TypeError:
     lat = None
     lon = None
     radius = -1.0
@@ -51,7 +53,7 @@ def vendor(request, vendor_id=None):
       *longitude
       *web_url
       *yelp_url
- 
+
   @param request: the request object
   @param vendor_id: the vendor id we are querying. None if POST
 
@@ -99,7 +101,7 @@ def vendor_deals(request, vendor_id):
     deal_list = None
 
     if not vendor_id:
-      known_error = {'code': 500, 'message': 'Server error'} 
+      known_error = {'code': 500, 'message': 'Server error'}
     try:
       deal_set = _get_deals(vendor_id=vendor_id)
     except Exception:
@@ -123,7 +125,7 @@ def _get_deals(deal_id=None, vendor_id=None, active_only=True):
   """
   @author: Chris, Rahul
   @desc: GET request handler for deals. If deal_id is specified, it retrieves
-  the corresponding Deal object and returns the result. Otherwise, response 
+  the corresponding Deal object and returns the result. Otherwise, response
   contains an array of all Deal objects. If vendor_id is specified, results are
   limited to deals belonging to that vendor. Setting active_only limits results
   to deals that are currently active. Invalid deal ID's result in an empty QuerySet.
@@ -134,7 +136,7 @@ def _get_deals(deal_id=None, vendor_id=None, active_only=True):
 
   @returns: QuerySet of retrieved objects
   """
-  deal_set = Deal.objects.all() 
+  deal_set = Deal.objects.all()
   if deal_id:
     deal_set = deal_set.filter(pk=deal_id)
   if vendor_id:
@@ -156,7 +158,7 @@ def _limit_result_distance(results, max_radius, loc):
   @param loc: tuple(latitude, longitude) that defines the center of the
   max_radius
   """
-  return [x for x in results if in_radius(x['latitude'], x['longitude'], \
+  return [x for x in results if in_radius(x['vendor']['latitude'], x['vendor']['longitude'], \
       loc[0], loc[1], max_radius)]
 
 def _get_vendor(vendor_id=None):
@@ -194,7 +196,7 @@ def _list_from_qset(qset, include_nested=False, flatten=True):
   for obj in obj_list:
     if flatten:
       attrs = obj['fields']
-      attrs['id'] = obj['pk'] 
+      attrs['id'] = obj['pk']
       return_list.append(attrs)
     else:
       return_list.append(obj)
@@ -224,10 +226,10 @@ def _make_post_response(obj, redirect_addr, known_error=None):
 def _make_get_response(resp_list, known_error=None):
   """
   @author: Ayush, Chris
-  @desc: Helper function to take a JSON-serializable list and an optional 
+  @desc: Helper function to take a JSON-serializable list and an optional
   "known error" dict (with keys 'message' and 'code'), and create an appropriate
   response to a GET request.
-  
+
   @param resp_list: JSON-serializable list to include in GET response
   @param known_error: Any known errors to include/encode in GET response
 
@@ -236,7 +238,6 @@ def _make_get_response(resp_list, known_error=None):
   """
   if known_error:
     code = known_error['code']
-    err_message = known_error['message']
     return HttpResponse(json.dumps(known_error),\
                         content_type="application/json", status=code)
   else:
