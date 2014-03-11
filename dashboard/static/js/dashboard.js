@@ -1,24 +1,50 @@
+// Start the dashboard Marionette/Backbone app
 DashboardApp = new Backbone.Marionette.Application();
 
+// Add regions of the DOM to the Marionette app for ease of manipulation
 DashboardApp.addRegions({
   dealsRegion: '#deals',
   newDealFormRegion: '#new-deal-form'
 });
 
+/*
+ * @author: Ayush
+ * @desc: Defines the model that represents the deal that is going to be
+ * displayed. Note: the defined URL is used for a POST request when a new deal
+ * is created.
+ */
 DealModel = Backbone.Model.extend({
   url: '/api/v1/vendor/1/deals/'
 });
+
+/*
+ * @author: Ayush
+ * @desc: Defines the collection that represents a grouping of DealModel items.
+ * Note: the defined URL is used as a GET request to get a list of deals to be
+ * displayed.
+ */
 DealsCollection = Backbone.Collection.extend({
   model: DealModel,
   // TODO: dynamiv vendor ID
   url: '/api/v1/vendor/1/deals/'
 });
 
+/*
+ * @author: Ayush
+ * @desc: Defines the view that is associated with the DealModel. It represents
+ * a DealModel as a <tr> tag.
+ */
 DealView = Backbone.Marionette.ItemView.extend({
   template: '#deal-template',
   tagName: 'tr',
   className: 'deal'
 });
+
+/*
+ * @author: Ayush
+ * @desc: Defines the view that is associated with DealsCollection. Is
+ * responsible for showing all the DealView objects in a <table>.
+ */
 DealsCollectionView = Backbone.Marionette.CompositeView.extend({
   tagname: 'table',
   id: 'deals-list-view',
@@ -31,6 +57,12 @@ DealsCollectionView = Backbone.Marionette.CompositeView.extend({
   }
 });
 
+/*
+ * @author: Ayush
+ * @desc: Defines the view that is associated with the form that allows vendors
+ * to create a new deal. It is responsible for handling all events associated
+ * with the form.
+ */
 DealCreateFormView = Backbone.Marionette.ItemView.extend({
   events: {
     'click .submit-btn': 'createDeal'
@@ -63,6 +95,7 @@ DealCreateFormView = Backbone.Marionette.ItemView.extend({
   }
 });
 
+// Load the initializer
 DashboardApp.addInitializer(function(options) {
   // Load all existing deals
   var deals = new DealsCollection();
