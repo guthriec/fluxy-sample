@@ -98,7 +98,6 @@ def vendor_deals(request, vendor_id):
 
   @return: 201 with JSON for POST or 200 for GET
   """
-  print "FUCK"
   if request.method == 'GET':
     known_error = None
     deal_list = None
@@ -113,11 +112,10 @@ def vendor_deals(request, vendor_id):
     deal_list = _list_from_qset(deal_set, include_nested=True)
     return _make_get_response(deal_list, known_error) 
   else:
-    print "hi"
     known_error = None
     try:
-      print "*", json.loads(requests.body)
-      deal = Deal(**json.loads(requests.body))
+      print "*", json.loads(request.body)
+      deal = Deal(**json.loads(request.body))
       print "**", deal
       deal.time_start = parser.parse(deal.time_start)
       deal.time_end = parser.parse(deal.time_end)
