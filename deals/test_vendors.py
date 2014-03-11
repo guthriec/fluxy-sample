@@ -28,14 +28,14 @@ class VendorTestCase(TestCase):
     @author: Chris
     Tests that POST on /vendors/ creates a new vendor and returns 201.
     """
-    new_vendor = {'name': 'Oren\'s Hummus',
+    new_vendor = { 'name': 'Oren\'s Hummus',
                   'address': '261 University Ave, Palo Alto CA 94301',
                   'latitude': 37.445316,
                   'longitude': -122.162197,
                   'web_url': 'http://www.yelp.com/biz/orens-hummus-shop-palo-alto',
                   'yelp_url': 'http://www.yelp.com/biz/orens-hummus-shop-palo-alto',
                   'phone': '650-752-6492'
-                  }
+    }
     response = self.client.post('/api/v1/vendors/', json.dumps(new_vendor), content_type="application/json")
     self.assertEqual(response.status_code, 201)
     orens = Vendor.objects.filter(name="Oren's Hummus")
@@ -46,9 +46,10 @@ class VendorTestCase(TestCase):
     @author: Chris
     Tests that POST on /vendors/ with extra fields returns a 400 
     """
-    new_vendor = {'name': 'Oren\'s Hummus',
+    new_vendor = { 'name': 'Oren\'s Hummus',
                   'address': '261 University Ave, Palo Alto CA 94301',
-                  'stripper_name': "Whoren's"}
+                  'stripper_name': "Whoren's"
+    }
     response = self.client.post('/api/v1/vendors/', json.dumps(new_vendor), content_type="application/json")
     self.assertEqual(response.status_code, 400)
     orens = Vendor.objects.filter(name="Oren's Hummus")
@@ -72,7 +73,7 @@ class VendorTestCase(TestCase):
     response = self.client.get('/api/v1/vendor/100/')
     self.assertEqual(response.status_code, 404)
     
-    # comment below out until put is implemented
+    # TODO: comment below out until put is implemented
     #response = self.client.put('/api/v1/vendor/100/', {})
     #self.assertEqual(response.status_code, 404)
   
