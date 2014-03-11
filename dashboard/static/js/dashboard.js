@@ -6,12 +6,12 @@ DashboardApp.addRegions({
 });
 
 DealModel = Backbone.Model.extend({
-  url: '/api/v1/vendor/1/deals'
+  url: '/api/v1/vendor/1/deals/'
 });
 DealsCollection = Backbone.Collection.extend({
   model: DealModel,
   // TODO: dynamiv vendor ID
-  url: '/api/v1/vendor/1/deals'
+  url: '/api/v1/vendor/1/deals/'
 });
 
 DealView = Backbone.Marionette.ItemView.extend({
