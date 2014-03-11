@@ -67,6 +67,7 @@ def vendor(request, vendor_id=None):
     vendor_set = _get_vendor(vendor_id)
     if vendor_id and vendor_set.count() == 0:
       known_error = {'code': 404, 'message': 'Vendor not found'}
+      return _make_get_response(vendor_list, known_error)
 
     vendor_list = _list_from_qset(vendor_set, include_nested=False, flatten=True)
   
