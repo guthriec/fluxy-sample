@@ -114,6 +114,7 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
     deal = None
     deal_id = -1
     try:
+      print json.loads(request.body)
       deal = Deal(**json.loads(request.body))
       deal.vendor_id = vendor_id
       deal.time_start = parser.parse(deal.time_start)
@@ -121,7 +122,7 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
       deal.save()
       deal_id = deal.id
     except TypeError:
-      known_error={'code': 400, 'message': 'Bad deal POST'}
+      known_error={ 'code': 400, 'message': 'Bad deal POST' }
     return _make_post_response(deal, 'deals/' + str(deal_id), known_error)
 
 def _get_deals(deal_id=None, vendor_id=None, active_only=True):

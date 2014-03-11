@@ -59,8 +59,8 @@ class Deal(models.Model):
   desc = models.CharField(max_length=500)
   time_start = models.DateTimeField()
   time_end = models.DateTimeField()
-  max_deals = models.PositiveIntegerField()
-  instructions = models.CharField(max_length=1000)
+  max_deals = models.PositiveIntegerField(null=True, blank=True)
+  instructions = models.CharField(max_length=1000, null=True, blank=True)
 
   def __unicode__(self):
     """
