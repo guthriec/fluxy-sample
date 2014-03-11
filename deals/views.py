@@ -110,7 +110,7 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
   # Check vendor exists
   vendor_qset = Vendor.objects.filter(pk=vendor_id)
   if vendor_qset.count() == 0:
-    known_error = {'code': 404, 'message': 'Vendor not found'}
+    known_error = { 'code': 404, 'message': 'Vendor not found' }
     return _make_get_response(deal_list, known_error)
   
   if request.method == 'GET':
@@ -128,7 +128,7 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
       deal.save()
       deal_id = deal.id
     except TypeError:
-      known_error={'code': 400, 'message': 'Bad deal POST'}
+      known_error={ 'code': 400, 'message': 'Bad deal POST' }
     return _make_post_response(deal, 'deals/' + str(deal_id), known_error)
 
 @require_http_methods(['GET'])
@@ -144,7 +144,7 @@ def vendor_claimed_deals(request, vendor_id, active_only=True):
   claimed_deal_list = None
   vendor_set = Vendor.objects.filter(pk=vendor_id)
   if vendor_set.count() == 0:
-    known_error = {'code': 404, 'message': 'Vendor not found'}
+    known_error = { 'code': 404, 'message': 'Vendor not found' }
     return _make_get_response(claimed_deal_list, known_error)
   claimed_deal_set = _get_claimed_deals(vendor_id=vendor_id, active_only=active_only)
   claimed_deal_list = _list_from_qset(claimed_deal_set, include_nested=False, flatten=True)
