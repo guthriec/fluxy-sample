@@ -3,13 +3,11 @@ from django.test import Client
 from django.test import TestCase
 import json
 
-class DealTestCase(TestCase):
+class VendorDealTestCase(TestCase):
   fixtures = ['deals.json']
   
   def setUp(self):
-    """
-    Create our test client object.
-    """
+    # Create our test client object.
     self.client = Client()
     self.donut_list = list(range(1, 4))
     self.inactive_donuts = [3]
@@ -20,12 +18,12 @@ class DealTestCase(TestCase):
     Tests that POSTing to /vendor/1/deals creates a new Happy
     Donuts deal.
     """
-    new_deal = {"title": "Meet homeless people",
-                "desc": "homelessss",
-                "time_start": "2014-02-01 00:00:00+00:00",
-                "time_end": "2015-02-01 00:00:00+00:00",
-                "max_deals": 40,
-                "instructions": "Introduce yourself carefully"}
+    new_deal = { "title": "Meet homeless people",
+                 "desc": "homelessss",
+                 "time_start": "2014-02-01 00:00:00+00:00",
+                 "time_end": "2015-02-01 00:00:00+00:00",
+                 "max_deals": 40,
+                 "instructions": "Introduce yourself carefully" }
 
     response = self.client.post('/api/v1/vendor/1/deals/', json.dumps(new_deal),
                                 content_type="application/javascript")
@@ -37,12 +35,12 @@ class DealTestCase(TestCase):
     @author: Chris
     Tests that POSTing to /vendor/1/deals with an extra field gives a 400.
     """
-    new_deal = {"title": "Meet homeless people",
-                "desc": "homelessss",
-                "time_start": "2014-02-01 00:00:00+00:00",
-                "time_end": "2015-02-01 00:00:00+00:00",
-                "max_deals": 40,
-                "bad_instructions": "Introduce yourself carefully"}
+    new_deal = { "title": "Meet homeless people",
+                 "desc": "homelessss",
+                 "time_start": "2014-02-01 00:00:00+00:00",
+                 "time_end": "2015-02-01 00:00:00+00:00",
+                 "max_deals": 40,
+                 "bad_instructions": "Introduce yourself carefully" }
     response = self.client.post('/api/v1/vendor/1/deals/', json.dumps(new_deal),
                                 content_type="application/javascript")
     self.assertEqual(response.status_code, 400)

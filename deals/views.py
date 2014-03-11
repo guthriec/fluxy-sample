@@ -25,7 +25,7 @@ def deal(request, deal_id=None, active_only=True):
     active_only = False
   deal_set = _get_deals(deal_id, active_only=active_only)
   if deal_id and deal_set.count() == 0:
-    known_error = {'code': 404, 'message': "Deal not found"}
+    known_error = { 'code': 404, 'message': 'Deal not found' }
   try:
     lat = float(request.GET.get('latitude', None))
     lon = float(request.GET.get('longitude', None))
@@ -64,19 +64,26 @@ def vendor(request, vendor_id=None):
   if request. method == 'GET':
     known_error = None
     vendor_list = None
-    try:
-      vendor_set = _get_vendor(vendor_id)
-      vendor_list = _list_from_qset(vendor_set, include_nested=False)
-    except Exception:
-      known_error = {'code': 500, 'message': 'Server error'}
-    return _make_get_response(vendor_list, known_error,\
-                              flatten=True, include_nested=False)
+    vendor_set = _get_vendor(vendor_id)
+    if vendor_id and vendor_set.count() == 0:
+      known_error = { 'code': 404, 'message': 'Vendor not found' }
+      return _make_get_response(vendor_list, known_error)
+
+    vendor_list = _list_from_qset(vendor_set, include_nested=False, flatten=True)
+  
+    return _make_get_response(vendor_list, known_error)
   else:
     # POST request.
     known_error = None
-    vendor = Vendor(**json.loads(request.body))
-    vendor.save()
-    return _make_post_response(vendor, 'vendors/' + str(vendor.id), known_error)
+    vendor = None 
+    vendor_id = -1
+    try:
+      vendor = Vendor(**json.loads(request.body))
+      vendor.save()
+      vendor_id = str(vendor.id)
+    except TypeError:
+      known_error = { 'code': 400, 'message': 'Bad post request' }
+    return _make_post_response(vendor, 'vendors/' + str(vendor_id), known_error)
 
 @require_http_methods(["GET", "POST"])
 def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
@@ -98,14 +105,15 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
   @return: 201 with JSON for POST or 200 for GET
   """
   known_error = None
+  deal_list = None
 
   # Check vendor exists
   vendor_qset = Vendor.objects.filter(pk=vendor_id)
   if vendor_qset.count() == 0:
     known_error = {'code': 404, 'message': 'Vendor not found'}
-
+    return _make_get_response(deal_list, known_error)
+  
   if request.method == 'GET':
-    deal_list = None
     deal_set = _get_deals(vendor_id=vendor_id, active_only=active_only)
     deal_list = _list_from_qset(deal_set, include_nested=False)
     return _make_get_response(deal_list, known_error)
