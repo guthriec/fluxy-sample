@@ -141,9 +141,11 @@ def vendor_claimed_deals(request, vendor_id, active_only=True):
   @returns JSON response
   """
   known_error = None
+  claimed_deal_list = None
   vendor_set = Vendor.objects.filter(pk=vendor_id)
   if vendor_set.count() == 0:
     known_error = {'code': 404, 'message': 'Vendor not found'}
+    return _make_get_response(claimed_deal_list, known_error)
   claimed_deal_set = _get_claimed_deals(vendor_id=vendor_id, active_only=active_only)
   claimed_deal_list = _list_from_qset(claimed_deal_set, include_nested=False, flatten=True)
   return _make_get_response(claimed_deal_list, known_error)
