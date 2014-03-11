@@ -1,5 +1,5 @@
+import datetime
 from django.db import models
-
 
 class Vendor(models.Model):
   """
@@ -81,13 +81,13 @@ class ClaimedDeal(models.Model):
   """
   user = models.ForeignKey('fluxy.FluxyUser')
   deal = models.ForeignKey(Deal)
-  time_claimed = models.DateTimeField(auto_now_add=True)
-  claimed_latitude = models.FloatField()
-  claimed_longitude = models.FloatField()
+  time_claimed = models.DateTimeField(default=datetime.datetime.now)
+  claimed_latitude = models.FloatField(null=True, blank=True)
+  claimed_longitude = models.FloatField(null=True, blank=True)
   completed = models.BooleanField(default = False)
-  time_completed = models.DateTimeField()
-  completed_latitude = models.FloatField()
-  completed_longitude = models.FloatField()
+  time_completed = models.DateTimeField(null=True, blank=True)
+  completed_latitude = models.FloatField(null=True, blank=True)
+  completed_longitude = models.FloatField(null=True, blank=True)
 
   def __unicode__(self):
     """
