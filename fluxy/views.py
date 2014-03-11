@@ -61,12 +61,25 @@ def subscribe(request):
 @require_http_methods(["POST"])
 def user_auth(request):
   """
-  Author: Chris Guthrie
-  This method is used to log a user in.
+  @author: Chris, Rahul
+  @desc: This method is used to log a user in. Returns 200 upon success, 401
+  upon invalid credentials, and 400 upon an improperly formatted POST.
+  Accepts either standard form or JSON formatted POSTs with the following keys:
+      *username
+      *password
+
+  @param request: the request object
+
+  @return: 200 on successful auth, 400 or 401 otherwise
   """
-  post_data = json.loads(request.body)
-  username = post_data['username']
-  password = post_data['password']
+  post_data = request.POST
+  try:
+    if request.META['CONTENT_TYPE'] == 'application/json':
+      post_data = json.loads(request.body)
+    username = post_data['username']
+    password = post_data['password']
+  except Exception:
+    return HttpResponse("Bad request.", status = 400)
   user = authenticate(username=username, password=password)
   response = {}
   if user is not None:

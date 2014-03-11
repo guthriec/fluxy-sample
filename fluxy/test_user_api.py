@@ -11,29 +11,49 @@ class UserApiTestCase(TestCase):
   def test_auth_valid(self):
     """
     @author: Rahul
-    @desc:
+    @desc: Test the auth endpoint with a valid username and password.
     """
     data = {'username': 'kingofpaloalto', 'password': 'password'}
-    response = self.client.post('/user/auth/', data=json.dumps(data))
-    self.assertEqual(response.statusCode, 200)
+    response = self.client.post('/user/auth/', data=data)
+    self.assertEqual(response.status_code, 200)
+
+  def test_auth_valid_json(self):
+    """
+    @author: Rahul
+    @desc: Test the auth endpoint with username and password encoded as JSON
+    instead of form data. Important for Backbone.
+    """
+    data = {'username': 'kingofpaloalto', 'password': 'password'}
+    response = self.client.post('/user/auth/', data=json.dumps(data),
+    content_type='application/json')
+    self.assertEqual(response.status_code, 200)
 
   def test_auth_invalid_username(self):
     """
     @author: Rahul
-    @desc:
+    @desc: Test the auth endpoint with a nonexistent username.
     """
     data = {'username': 'invalid', 'password': 'password'}
     response = self.client.post('/user/auth/', data=data)
-    self.assertEqual(response.statusCode, 401)
+    self.assertEqual(response.status_code, 401)
 
-  def test_auth_invalid_userjk(self):
+  def test_auth_invalid_password(self):
     """
     @author: Rahul
-    @desc:
+    @desc: Test the auth endpoint with a valid username and invalid password.
     """
-    data = {'username': 'invalid', 'password': 'password'}
+    data = {'username': 'kingofpaloalto', 'password': 'invalid'}
     response = self.client.post('/user/auth/', data=data)
-    self.assertEqual(response.statusCode, 401)
+    self.assertEqual(response.status_code, 401)
+
+  def test_auth_invalid_data(self):
+    """
+    @author: Rahul
+    @desc: Test the auth endpoint without password data.
+    """
+    data = {'username': 'kingofpaloalto'}
+    response = self.client.post('/user/auth/', data=data)
+    self.assertEqual(response.status_code, 400)
 
   def test_register(self):
     """
