@@ -7,6 +7,7 @@ class UserApiTestCase(TestCase):
 
   def setUp(self):
     self.client = Client()
+    self.kingofpaloalto_vendor_ids = [1, 2]
 
   def test_auth_valid(self):
     """
@@ -143,6 +144,53 @@ class UserApiTestCase(TestCase):
     """
     response = self.client.get('/user/logout/')
     self.assertEqual(response.status_code, 302)
+
+  def test_user_vendors(self):
+    """
+    @author: Rahul
+    @desc: Test user vendors api endpoint. Expects a JSON encoded array of all
+    vendor objects associated with user.
+    """
+    data = {'username': 'kingofpaloalto', 'password': 'password'}
+    response = self.client.post('/user/auth/', data=data)
+    self.assertEqual(response.status_code, 200)
+    response = self.client.get('/api/v1/user/vendors/')
+    self.assertEqual(response.status_code, 200)
+
+    vendors = json.loads(response.content)
+    vendor_ids = set()
+    for vendor in vendors:
+      vendor_ids.add(vendor['pk'])
+    self.assertSetEqual(vendor_ids, set(self.kingofpaloalto_vendor_ids))
+
+
+  def test_user_vendors_empty(self):
+    """
+    @author: Rahul
+    @desc: Test user vendors api endpoint with a user without any associated
+    vendors. Expects an empty JSON array.
+    """
+    data = {'username': 'idontownrestaurants', 'password': 'password'}
+    response = self.client.post('/user/auth/', data=data)
+    self.assertEqual(response.status_code, 200)
+    response = self.client.get('/api/v1/user/vendors/')
+    self.assertEqual(response.status_code, 200)
+
+    vendors = json.loads(response.content)
+    vendor_ids = set()
+    for vendor in vendors:
+      vendor_ids.add(vendor['pk'])
+    self.assertSetEqual(vendor_ids, set([]))
+
+  def test_user_vendors_without_logged_in_user(self):
+    """
+    @author: Rahul
+    @desc: Test user vendors api endpoint without a logged in user. Expects a
+    403.
+    """
+    response = self.client.get('/api/v1/user/vendors/')
+    self.assertEqual(response.status_code, 403)
+
 
   def test_active_claimed_deals(self):
     """

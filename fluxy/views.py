@@ -3,6 +3,7 @@
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Permission
+from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -174,7 +175,7 @@ def user_vendors(request):
     return HttpResponse(json.dumps(response), content_type="application/json",
                         status = response['code'])
   else:
-    return HttpResponse(json.dumps(response.user.vendors.all()),
+    return HttpResponse(serializers.serialize('json', request.user.vendors.all()),
                         content_type="application/json")
 
 @require_http_methods(['GET', 'POST'])

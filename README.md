@@ -45,7 +45,7 @@ API
 
 * ``` /user/vendor ```
   * Accepts GET.
-  * If user is authenticated, returns the vendor object associated with the user. If the user is not associated with a vendor, returns an empty object. If the user is not authenticated, returns 403.
+  * If user is authenticated, returns the vendor objects associated with the user. If the user is not associated with a vendor, returns an empty object. If the user is not authenticated, returns 403.
 
 * ``` /user/claimed_deals ```
   * Accepts GET, POST.
