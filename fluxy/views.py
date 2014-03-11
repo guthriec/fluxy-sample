@@ -93,13 +93,26 @@ def user_auth(request):
 @require_http_methods(["POST"])
 def user_register(request):
   """
-  Author: Chris Guthrie
-  This method registers a new user.
+  @author: Chris, Rahul
+  @desc: This method registers a new user. Returns 200 upon success, 400
+  otherwise. It does not log the user in upon successful registration.
+  Accepts either standard form or JSON formatted POSTs with the following keys:
+      *username
+      *password
+
+  @param request: the request object
+
+  @return: 200 on successful auth, 400 otherwise
   """
-  post_data = json.loads(request.body)
-  username = post_data['username']
-  password = post_data['password']
-  response = {"code": 401, "message": "Could not register"}
+  post_data = request.POST
+  try:
+    if request.META['CONTENT_TYPE'] == 'application/json':
+      post_data = json.loads(request.body)
+    username = post_data['username']
+    password = post_data['password']
+  except Exception:
+    return HttpResponse("Bad request.", status = 400)
+  response = {"code": 400, "message": "Could not register"}
   try:
     FluxyUser.objects.get(username__exact=username)
     response['message'] = "Username already registered"
@@ -125,16 +138,16 @@ def user_logout(request):
 @require_http_methods(["GET"])
 def user(request):
   """
-  Author: Rahul Gupta-Iwasaki
-  This method returns a JSON object contianing the currently authenticated
-  user's details.
+  @author: Rahul
+  @desc: This method returns a JSON object containing the currently
+  authenticated user's details.
   """
   if not request.user.is_authenticated():
     response = {'code': 403, 'message': 'Authentication error'}
     return HttpResponse(json.dumps(response), content_type="application/json",
                         status = response['code'])
   else:
-    return HttpResponse(json.dumps(request.user),
+    return HttpResponse(json.dumps(request.user.get_safe_user()),
                         content_type="application/json")
 
 @require_http_methods(["GET"])

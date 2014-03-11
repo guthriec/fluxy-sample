@@ -58,14 +58,67 @@ class UserApiTestCase(TestCase):
   def test_register(self):
     """
     @author: Rahul
-    @desc:
+    @desc: Test registration of a new user.
     """
+    data = {'username': 'testuser', 'password': 'password'}
+    response = self.client.post('/user/register/', data=data)
+    self.assertEqual(response.status_code, 200)
+    response = self.client.post('/user/auth/', data=data)
+    self.assertEqual(response.status_code, 200)
+
+  def test_register_json(self):
+    """
+    @author: Rahul
+    @desc: Test registration of a new user using a JSON formatted POST.
+    """
+    data = {'username': 'testuser', 'password': 'password'}
+    response = self.client.post('/user/register/', data=json.dumps(data),
+                                content_type='application/json')
+    self.assertEqual(response.status_code, 200)
+    response = self.client.post('/user/auth/', data=data)
+    self.assertEqual(response.status_code, 200)
 
   def test_register_existing_user(self):
     """
     @author: Rahul
-    @desc:
+    @desc: Test registration of an already existing username.
     """
+    data = {'username': 'kingofpaloalto', 'password': 'password'}
+    response = self.client.post('/user/register/', data=data)
+    self.assertEqual(response.status_code, 400)
+
+  def test_register_invalid_data(self):
+    """
+    @author: Rahul
+    @desc: Test registration without a username field.
+    """
+    data = {'password': 'password'}
+    response = self.client.post('/user/register/', data=data)
+    self.assertEqual(response.status_code, 400)
+
+  def test_user_details(self):
+    """
+    @author: Rahul
+    @desc: Test user details api endpoint with a currently authenticated user.
+    """
+    data = {'username': 'kingofpaloalto', 'password': 'password'}
+    response = self.client.post('/user/auth/', data=data)
+    self.assertEqual(response.status_code, 200)
+    response = self.client.get('/api/v1/user/')
+    self.assertEqual(response.status_code, 200)
+    user_obj = json.loads(response.content)
+    self.assertEqual(user_obj['first_name'], 'Al')
+    self.assertEqual(user_obj['last_name'], 'H')
+    self.assertEqual(user_obj['email'], 'alh@alh.com')
+
+  def test_user_details_without_logged_in_user(self):
+    """
+    @author: Rahul
+    @desc: Test user details api endpoint without a currently authenticated
+    user.
+    """
+    response = self.client.get('/api/v1/user/')
+    self.assertEqual(response.status_code, 403)
 
   def test_logout(self):
     """
