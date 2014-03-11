@@ -35,6 +35,9 @@ API
   * Returns all deals ever created.
   * If all of the following GET parameters are set: "lat", "long", and "radius," the returned set is limited to deals within 'radius' of the given coordinates. Radius <= 0 is taken as an unlimited radius.
 
+* ``` /user/ ```
+  * Accepts GET.
+  * If user is authenticated, returns the user object associated with the user. Otherwise, returns a 403.
 
 * ``` /user/auth ```
   * Accepts POST.

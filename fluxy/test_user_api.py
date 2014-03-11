@@ -123,14 +123,26 @@ class UserApiTestCase(TestCase):
   def test_logout(self):
     """
     @author: Rahul
-    @desc:
+    @desc: Test user logout with a currently authenticated user. Logs the user
+    in, logs the user out, and then tries to get details of the currently
+    logged in user.
     """
+    data = {'username': 'kingofpaloalto', 'password': 'password'}
+    response = self.client.post('/user/auth/', data=data)
+    self.assertEqual(response.status_code, 200)
+    response = self.client.get('/user/logout/')
+    self.assertEqual(response.status_code, 200)
+    response = self.client.get('/api/v1/user/')
+    self.assertEqual(response.status_code, 403)
 
   def test_logout_without_logged_in_user(self):
     """
     @author: Rahul
-    @desc:
+    @desc: Test user logout without a currently authenticated
+    user. Expects a 302 temporary redirect.
     """
+    response = self.client.get('/user/logout/')
+    self.assertEqual(response.status_code, 302)
 
   def test_active_claimed_deals(self):
     """

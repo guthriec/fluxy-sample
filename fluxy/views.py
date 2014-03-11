@@ -130,10 +130,13 @@ def user_logout(request):
   Author: Rahul Gupta-Iwasaki
   This method logs any authenticated user out.
   """
-  logout(request)
-  response = {"code": 200, "message": "Logged out."}
-  return HttpResponse(json.dumps(response), content_type="application/json",
-                      status = response['code'])
+  if not request.user.is_authenticated():
+    return redirect('/user/auth/')
+  else:
+    logout(request)
+    response = {"code": 200, "message": "Logged out."}
+    return HttpResponse(json.dumps(response), content_type="application/json",
+                        status = response['code'])
 
 @require_http_methods(["GET"])
 def user(request):
