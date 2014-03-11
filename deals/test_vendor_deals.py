@@ -3,13 +3,11 @@ from django.test import Client
 from django.test import TestCase
 import json
 
-class DealTestCase(TestCase):
+class VendorDealTestCase(TestCase):
   fixtures = ['deals.json']
   
   def setUp(self):
-    """
-    Create our test client object.
-    """
+    # Create our test client object.
     self.client = Client()
     self.donut_list = list(range(1, 4))
     self.inactive_donuts = [3]
