@@ -9,6 +9,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 from fluxy.models import FluxyUser
+from deals.models import Deal, ClaimedDeal
 import datetime
 import json
 import mailchimp
@@ -179,7 +180,7 @@ def user_vendors(request):
                         content_type="application/json")
 
 @require_http_methods(['GET', 'POST'])
-def user_deals(request):
+def user_deals(request, active_only=True):
   """
   Author: Rahul Gupta-Iwasaki
   If GET, this returns a JSON array contain the user's ACTIVE deals.
@@ -198,32 +199,27 @@ def user_deals(request):
     return HttpResponse(json.dumps(response), content_type="application/json",
                         status = response['code'])
   if request.method == 'POST':
-    post_data = json.loads(request.body)
-    deal = post_data['deal_id']
-    latitude = post_data['latitude']
-    longitude = post_data['longitude']
-    claimed_deal = ClaimedDeal.objects.create(deal=deal,
-                      claimed_latitude=latitude, claimed_longitude=longitude)
+    post_data = request.POST
+    try:
+      if request.META['CONTENT_TYPE'] == 'application/json':
+        post_data = json.loads(request.body)
+      deal = Deal.objects.filter(pk=post_data['deal_id'])[0]
+      latitude = post_data.get('latitude', None)
+      longitude = post_data.get('longitude', None)
+    except Exception:
+      return HttpResponse("Bad request.", status = 400)
+    claimed_deal = ClaimedDeal.objects.create(user=request.user, deal=deal,
+        claimed_latitude=latitude, claimed_longitude=longitude)
     claimed_deal.save()
     return HttpResponse('Successfully claimed deal.',
                         content_type='application/json')
   else:
-    return HttpResponse(json.dumps(response.user.claimeddeal_set.filter(
-                              deal__time_end__lte=datetime.datetime.now())),
-                              content_type="application/json")
-
-@require_http_methods(["GET"])
-def user_deals_all(request):
-  """
-  Author: Rahul Gupta-Iwasaki
-  This returns a JSON array contain all the currently authenticated user's
-  deals, including those that have expired or been completed.
-  """
-  if not request.user.is_authenticated():
-    response = {'code': 403, 'message': 'Authentication error'}
-    return HttpResponse(json.dumps(response), content_type="application/json",
-                        status = response['code'])
-  else:
-    return HttpResponse(json.dumps(response.user.claimeddeal_set.all()),
+    claimed_deals = request.user.claimeddeal_set.all()
+    if active_only:
+      now = datetime.datetime.now()
+      claimed_deals = claimed_deals.filter(deal__time_end__gte=now,
+                                           deal__time_start__lte=now)
+    return HttpResponse(serializers.serialize('json', claimed_deals),
                         content_type="application/json")
+
 

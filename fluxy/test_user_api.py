@@ -8,6 +8,8 @@ class UserApiTestCase(TestCase):
   def setUp(self):
     self.client = Client()
     self.kingofpaloalto_vendor_ids = [1, 2]
+    self.active_claimed_deals = [1, 2]
+    self.all_claimed_deals = [1, 2, 3]
 
   def test_auth_valid(self):
     """
@@ -64,6 +66,7 @@ class UserApiTestCase(TestCase):
     data = {'username': 'testuser', 'password': 'password'}
     response = self.client.post('/user/register/', data=data)
     self.assertEqual(response.status_code, 200)
+
     response = self.client.post('/user/auth/', data=data)
     self.assertEqual(response.status_code, 200)
 
@@ -76,6 +79,7 @@ class UserApiTestCase(TestCase):
     response = self.client.post('/user/register/', data=json.dumps(data),
                                 content_type='application/json')
     self.assertEqual(response.status_code, 200)
+
     response = self.client.post('/user/auth/', data=data)
     self.assertEqual(response.status_code, 200)
 
@@ -105,8 +109,10 @@ class UserApiTestCase(TestCase):
     data = {'username': 'kingofpaloalto', 'password': 'password'}
     response = self.client.post('/user/auth/', data=data)
     self.assertEqual(response.status_code, 200)
+
     response = self.client.get('/api/v1/user/')
     self.assertEqual(response.status_code, 200)
+
     user_obj = json.loads(response.content)
     self.assertEqual(user_obj['first_name'], 'Al')
     self.assertEqual(user_obj['last_name'], 'H')
@@ -131,8 +137,10 @@ class UserApiTestCase(TestCase):
     data = {'username': 'kingofpaloalto', 'password': 'password'}
     response = self.client.post('/user/auth/', data=data)
     self.assertEqual(response.status_code, 200)
+
     response = self.client.get('/user/logout/')
     self.assertEqual(response.status_code, 200)
+
     response = self.client.get('/api/v1/user/')
     self.assertEqual(response.status_code, 403)
 
@@ -154,6 +162,7 @@ class UserApiTestCase(TestCase):
     data = {'username': 'kingofpaloalto', 'password': 'password'}
     response = self.client.post('/user/auth/', data=data)
     self.assertEqual(response.status_code, 200)
+
     response = self.client.get('/api/v1/user/vendors/')
     self.assertEqual(response.status_code, 200)
 
@@ -173,6 +182,7 @@ class UserApiTestCase(TestCase):
     data = {'username': 'idontownrestaurants', 'password': 'password'}
     response = self.client.post('/user/auth/', data=data)
     self.assertEqual(response.status_code, 200)
+
     response = self.client.get('/api/v1/user/vendors/')
     self.assertEqual(response.status_code, 200)
 
@@ -194,32 +204,99 @@ class UserApiTestCase(TestCase):
   def test_active_claimed_deals(self):
     """
     @author: Rahul
-    @desc:
+    @desc: Test user claimed deal endpoint with authenticated user. Expects a
+    list of active claimed deals.
     """
+    data = {'username': 'idontownrestaurants', 'password': 'password'}
+    response = self.client.post('/user/auth/', data=data)
+    self.assertEqual(response.status_code, 200)
+
+    response = self.client.get('/api/v1/user/claimed_deals/')
+    self.assertEqual(response.status_code, 200)
+
+    claimed_deals = json.loads(response.content)
+    claimed_deal_ids = set()
+    for claimed_deal in claimed_deals:
+      claimed_deal_ids.add(claimed_deal['pk'])
+    self.assertSetEqual(claimed_deal_ids, set(self.active_claimed_deals))
 
   def test_active_claimed_deals_without_logged_in_user(self):
     """
     @author: Rahul
-    @desc:
+    @desc: Test user claimed deal endpoint without an authenticated user.
+    Expects a 403.
     """
+    response = self.client.get('/api/v1/user/claimed_deals/')
+    self.assertEqual(response.status_code, 403)
 
   def test_all_claimed_deals(self):
     """
     @author: Rahul
-    @desc:
+    @desc: Test user all claimed deals endpoint with an authenticated user.
+    Expects a list of all claimed deals, including those expired and those
+    which have yet to start.
     """
+    data = {'username': 'idontownrestaurants', 'password': 'password'}
+    response = self.client.post('/user/auth/', data=data)
+    self.assertEqual(response.status_code, 200)
+
+    response = self.client.get('/api/v1/user/claimed_deals/all/')
+    self.assertEqual(response.status_code, 200)
+
+    claimed_deals = json.loads(response.content)
+    claimed_deal_ids = set()
+    for claimed_deal in claimed_deals:
+      claimed_deal_ids.add(claimed_deal['pk'])
+    self.assertSetEqual(claimed_deal_ids, set(self.all_claimed_deals))
 
   def test_claim_deal(self):
     """
     @author: Rahul
-    @desc:
+    @desc: Test claiming a deal for an authenticated user. Authenticates the
+    user, creates a deal, and then checks that the deal is returned when
+    hitting the all user claimed deals endpoint.
     """
+    data = {'username': 'kingofpaloalto', 'password': 'password'}
+    response = self.client.post('/user/auth/', data=data)
+    self.assertEqual(response.status_code, 200)
+
+    data = {'deal_id': 2}
+    response = self.client.post('/api/v1/user/claimed_deals/', data=data)
+    self.assertEqual(response.status_code, 200)
+
+    response = self.client.get('/api/v1/user/claimed_deals/all/')
+    self.assertEqual(response.status_code, 200)
+
+    claimed_deals = json.loads(response.content)
+    claimed_deal_ids = set()
+    for claimed_deal in claimed_deals:
+      claimed_deal_ids.add(claimed_deal['pk'])
+    self.assertSetEqual(claimed_deal_ids, set([4]))
+
+  def test_claim_deal_json(self):
+    """
+    @author: Rahul
+    @desc: Test claiming a deal for an authenticated user. Authenticates the
+    user, creates a deal, and then checks that the deal is returned when
+    hitting the all user claimed deals endpoint. POSTs the data as JSON.
+    """
+    data = {'username': 'kingofpaloalto', 'password': 'password'}
+    response = self.client.post('/user/auth/', data=json.dumps(data),
+                                content_type='application/json')
+    self.assertEqual(response.status_code, 200)
+
+    data = {'deal_id': 2}
+    response = self.client.post('/api/v1/user/claimed_deals/', data=data)
+    self.assertEqual(response.status_code, 200)
 
   def test_claim_deal_without_logged_in_user(self):
     """
     @author: Rahul
-    @desc:
+    @desc: Test claiming a deal for a user without an authenticated user.
+    Expects a 403.
     """
+    response = self.client.post('/api/v1/user/claimed_deals/')
+    self.assertEqual(response.status_code, 403)
 
   def test_claim_deal_with_nonexistent_deal(self):
     """
