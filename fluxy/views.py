@@ -198,12 +198,14 @@ def user_deals(request, active_only=True):
     response = {'code': 403, 'message': 'Authentication error'}
     return HttpResponse(json.dumps(response), content_type="application/json",
                         status = response['code'])
+  now = datetime.datetime.now()
   if request.method == 'POST':
     post_data = request.POST
     try:
       if request.META['CONTENT_TYPE'] == 'application/json':
         post_data = json.loads(request.body)
-      deal = Deal.objects.filter(pk=post_data['deal_id'])[0]
+      deal = Deal.objects.get(pk=post_data['deal_id'], time_start__lte=now,
+                              time_end__gte=now)
       latitude = post_data.get('latitude', None)
       longitude = post_data.get('longitude', None)
     except Exception:
@@ -216,7 +218,6 @@ def user_deals(request, active_only=True):
   else:
     claimed_deals = request.user.claimeddeal_set.all()
     if active_only:
-      now = datetime.datetime.now()
       claimed_deals = claimed_deals.filter(deal__time_end__gte=now,
                                            deal__time_start__lte=now)
     return HttpResponse(serializers.serialize('json', claimed_deals),

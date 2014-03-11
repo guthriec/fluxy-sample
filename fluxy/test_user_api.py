@@ -301,20 +301,41 @@ class UserApiTestCase(TestCase):
   def test_claim_deal_with_nonexistent_deal(self):
     """
     @author: Rahul
-    @desc:
+    @desc: Test claiming a nonexistent deal for an authenticated user. Expects
+    a 400 response.
     """
+    data = {'username': 'kingofpaloalto', 'password': 'password'}
+    response = self.client.post('/user/auth/', data=json.dumps(data),
+                                content_type='application/json')
+    self.assertEqual(response.status_code, 200)
+
+    data = {'deal_id': -10}
+    response = self.client.post('/api/v1/user/claimed_deals/', data=data)
+    self.assertEqual(response.status_code, 400)
 
   def test_claim_deal_with_maxed_claim_count(self):
     """
     @author: Rahul
-    @desc:
+    @desc: Test claiming a completely claimed deal with an authenticated user.
+    Expects a 400 response.
     """
+    self.assertEqual(0, 1)
+    # TODO implement this.
 
   def test_claim_deal_with_expired_deal(self):
     """
     @author: Rahul
-    @desc:
+    @desc: Test claiming an expired deal for an authenticated user. Expects a
+    400 response.
     """
+    data = {'username': 'kingofpaloalto', 'password': 'password'}
+    response = self.client.post('/user/auth/', data=json.dumps(data),
+                                content_type='application/json')
+    self.assertEqual(response.status_code, 200)
+
+    data = {'deal_id': 3}
+    response = self.client.post('/api/v1/user/claimed_deals/', data=data)
+    self.assertEqual(response.status_code, 400)
 
   def tear_down(self):
     pass
