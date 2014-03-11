@@ -7,9 +7,6 @@ class VendorClaimedDealTestCase(TestCase):
   fixtures = ['deals.json']
   
   def setUp(self):
-    """
-    Create our test client object.
-    """
     self.client = Client()
     self.donut_tuples_list = [(4, 1), (4, 2), (4, 3)]
     self.active_donut_tuples_list = [(4, 1), (4, 2)]
@@ -21,7 +18,6 @@ class VendorClaimedDealTestCase(TestCase):
     Happy Donuts deals
     """
     response = self.client.get('/api/v1/vendor/1/claimed_deals/')
-    print response
     self.assertEqual(response.status_code, 200)
     user_deal_tuples = set()
     claimed_deal_list = json.loads(response.content)
