@@ -192,5 +192,29 @@
      "email": "don@hotmail.com",
      "vendors":[]
    }  
+ },
+ {
+   "model": "deals.claimeddeal",
+   "pk": 1,
+   "fields": {
+     "user": "4",
+     "deal": "1"
+   }
+ },
+ {
+   "model": "deals.claimeddeal",
+   "pk": 2,
+   "fields": {
+     "user": "4",
+     "deal": "2"
+   }
+ },
+ {
+   "model": "deals.claimeddeal",
+   "pk": 3,
+   "fields": {
+     "user": "4",
+     "deal": "3"
+   }
  }
 ]
