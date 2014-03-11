@@ -127,8 +127,12 @@ def user_register(request):
 @require_http_methods(["GET"])
 def user_logout(request):
   """
-  Author: Rahul Gupta-Iwasaki
-  This method logs any authenticated user out.
+  @author: Rahul
+  @desc: This method logs any authenticated user out.
+
+  @param request: the request object
+
+  @return: 200 on success, 302 redirect to /user/auth/ otherwise
   """
   if not request.user.is_authenticated():
     return redirect('/user/auth/')
@@ -144,6 +148,11 @@ def user(request):
   @author: Rahul
   @desc: This method returns a JSON object containing the currently
   authenticated user's details.
+
+  @param request: the request object
+
+  @return: A JSON encoded subset of the user object if there is a logged in
+  user, otherwise a 403 error
   """
   if not request.user.is_authenticated():
     response = {'code': 403, 'message': 'Authentication error'}
