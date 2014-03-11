@@ -70,8 +70,7 @@ def vendor(request, vendor_id=None):
       return _make_get_response(vendor_list, known_error)
 
     vendor_list = _list_from_qset(vendor_set, include_nested=False, flatten=True)
-  
-    return _make_get_response(vendor_list, known_error)
+    return _make_get_response(vendor_list, known_error)  
   else:
     # POST request.
     known_error = None
@@ -128,7 +127,7 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
       deal.save()
       deal_id = deal.id
     except TypeError:
-      known_error={'code': 400, 'message': 'Bad deal POST'}
+      known_error={ 'code': 400, 'message': 'Bad deal POST' }
     return _make_post_response(deal, 'deals/' + str(deal_id), known_error)
 
 def _get_deals(deal_id=None, vendor_id=None, active_only=True):
