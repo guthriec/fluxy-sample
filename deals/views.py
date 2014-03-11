@@ -176,7 +176,6 @@ def _get_claimed_deals(claimed_deal_id=None, vendor_id=None, active_only=True):
 
 def _get_deals(deal_id=None, vendor_id=None, active_only=True):
   """
-  @TODO: rewrite as a filter pipeline like _get_claimed_deals.
   @author: Chris, Rahul
   @desc: GET request handler for deals. If deal_id is specified, it retrieves
   the corresponding Deal object and returns the result. Otherwise, response
