@@ -191,7 +191,6 @@ class UserApiTestCase(TestCase):
     response = self.client.get('/api/v1/user/vendors/')
     self.assertEqual(response.status_code, 403)
 
-
   def test_active_claimed_deals(self):
     """
     @author: Rahul
