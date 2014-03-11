@@ -43,11 +43,6 @@ DealCreateFormView = Backbone.Marionette.ItemView.extend({
   },
 
   createDeal: function(e) {
-    var _formatDate = function(d) {
-      return '' + d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() +  ':' + d.getSeconds();
-    };
-
-
     e.preventDefault();
 
     var newModel = new DealModel();
@@ -59,10 +54,10 @@ DealCreateFormView = Backbone.Marionette.ItemView.extend({
     });
     newModel.set('title', formValues['title']);
     newModel.set('desc', formValues['desc']);
-    var timeStart = _formatDate(new Date());
+    var timeStart = (new Date()).toUTCString();
     newModel.set('time_start', timeStart);
     var minutes = formValues['minutes'] + 60 * formValues['hours'];
-    var timeEnd = _formatDate(new Date(Date.now() + minutes * 60000))
+    var timeEnd = (new Date(Date.now() + minutes * 60000).toUTCString())
     newModel.set('time_end', timeEnd);
     newModel.save(); 
   }
