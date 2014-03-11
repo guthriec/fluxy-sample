@@ -20,5 +20,5 @@ urlpatterns = patterns('',
   url(r'^api/v1/vendor/(?P<vendor_id>\d+)/claimed_deals/$',
     'deals.views.vendor_claimed_deals'),
   url(r'^api/v1/vendor/(?P<vendor_id>\d+)/claimed_deals/all/$',
-    'deals.views.vendor_claimed_deals', {'active_only': False}),
+    'deals.views.vendor_claimed_deals', { 'active_only': False }),
 )
