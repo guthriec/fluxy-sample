@@ -103,6 +103,7 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
   vendor_qset = Vendor.objects.filter(pk=vendor_id)
   if vendor_qset.count() == 0:
     known_error = {'code': 404, 'message': 'Vendor not found'}
+    return _make_get_response(deal_list, known_error)
   
   if request.method == 'GET':
     deal_list = None
