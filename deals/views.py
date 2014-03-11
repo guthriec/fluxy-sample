@@ -85,24 +85,25 @@ def vendor(request, vendor_id=None):
       known_error = { 'code': 400, 'message': 'Bad post request' }
     return _make_post_response(vendor, 'vendors/' + str(vendor_id), known_error)
 
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["GET", "POST", "PUT"])
 def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
   """
   @author: Chris, Ayush
-  @desc: Returns/creates a deal for a given vendor
+  @desc: Returns/creates/edits a deal or set of deals for a given vendor
   Assumes the POST request has the following keys, corresponding to field names:
       *vendor (this should be the vendor id)
       *title
       *desc
-      *radius
       *time_start
       *time_end
 
   @param request: a request object
   @param vendor_id: the id of the vendor for which we are querying or creating
   a deal for
+  @param deal_id: the deal_id of the deal (for PUT)
+  @param active_only: boolean to filter GET results to active deals
 
-  @return: 201 with JSON for POST or 200 for GET
+  @return: 201 with JSON for POST or 200 with JSON for GET/PUT
   """
   known_error = None
   deal_list = None
@@ -110,14 +111,37 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
   # Check vendor exists
   vendor_qset = Vendor.objects.filter(pk=vendor_id)
   if vendor_qset.count() == 0:
-    known_error = {'code': 404, 'message': 'Vendor not found'}
+    known_error = { 'code': 404, 'message': 'Vendor not found' }
     return _make_get_response(deal_list, known_error)
   
   if request.method == 'GET':
+    # ---- GET ----
     deal_set = _get_deals(vendor_id=vendor_id, active_only=active_only)
     deal_list = _list_from_qset(deal_set, include_nested=True)
     return _make_get_response(deal_list, known_error)
+  
+  elif request.method == 'PUT':
+    # ---- PUT ----
+    deal = None
+    try:
+      deal = Deal.objects.get(pk=deal_id)
+    except Deal.DoesNotExist:
+      known_error = { 'code': 404, 'message': 'Deal not found' }
+      return _make_put_response(None, 'deals/' + str(deal_id), known_error)
+    updates = json.loads(request.body)
+    for key, val in updates.iteritems():
+      try:
+        getattr(deal, key)
+      except AttributeError:
+        known_error = { 'code' : 400, 'message': 'Bad PUT request for deal' }
+        return _make_put_response(None, 'deals/' + str(deal_id), known_error)
+      setattr(deal, key, val) 
+    deal.save()
+    single_deal_list = _list_from_qset([deal], flatten=True, include_nested=False)
+    return _make_put_response(single_deal_list, 'deals/' + str(deal_id), known_error)
+  
   else:
+    # ---- POST ----
     deal = None
     deal_id = -1
     try:
@@ -128,7 +152,7 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
       deal.save()
       deal_id = deal.id
     except TypeError:
-      known_error={'code': 400, 'message': 'Bad deal POST'}
+      known_error={ 'code': 400, 'message': 'Bad deal POST' }
     return _make_post_response(deal, 'deals/' + str(deal_id), known_error)
 
 def _get_deals(deal_id=None, vendor_id=None, active_only=True):
@@ -232,6 +256,16 @@ def _make_post_response(obj, redirect_addr, known_error=None):
   else:
     return HttpResponseRedirect(redirect_addr, serializers.serialize("json", [obj]),\
                                 content_type="application/json", status=201)
+
+def _make_put_response(single_obj_list, redirect_addr, known_error=None):
+  if known_error:
+    code = known_error['code']
+    err_message = known_error['message']
+    return HttpResponse(json.dumps(known_error),\
+                        content_type="application/json", status=code)
+  else:
+    return HttpResponseRedirect(redirect_addr, json.dumps(single_obj_list),\
+                                content_type="application/json", status=200)
 
 def _make_get_response(resp_list, known_error=None):
   """
