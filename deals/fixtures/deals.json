@@ -42,30 +42,16 @@
    }
  },
  {
-   "model": "deals.vendor",
-   "pk": 4,
-   "fields": {
-     "name": "CS 210",
-     "address": "353 Serra Street, Stanford, CA  94305",
-     "latitude": "37.43002",
-     "longitude": "-122.173633",
-     "web_url": "http://www.pizzamyheart.com",
-     "yelp_url": "http://www.yelp.com/biz/pizza-my-heart-palo-alto",
-     "phone": "111-111-1111",
-     "image": "peyton-manning2.jpg"
-   }
- },
- {
    "model": "deals.deal",
    "pk": 1,
    "fields": {
-     "vendor": "4",
-     "title": "100% off donuts",
-     "desc": "Delicious donuts to delight you.",
-     "time_start": "2014-02-01 00:00:00+17:00",
-     "time_end": "2014-03-14 00:00:00-07:00",
+     "vendor": "1",
+     "title": "50% off donuts",
+     "desc": "donuts donuts donuts donuts donuts donuts donuts donuts",
+     "time_start": "2014-02-01 00:00:00+00:00",
+     "time_end": "2015-02-01 00:00:00+00:00",
      "max_deals": "30",
-     "instructions": "Show to Jay Borenstein."
+     "instructions": "Show to waiter."
    }
  },
  {
@@ -74,9 +60,9 @@
    "fields": {
      "vendor": "1",
      "title": "40% off coffee",
-     "desc": "Carefully created coffee to comfort you.",
+     "desc": "coffee coffee coffee coffee coffee coffee donuts donuts donuts donuts donuts donuts donuts donuts",
      "time_start": "2014-02-01 00:00:00+00:00",
-     "time_end": "2014-03-13 22:00:00-07:00",
+     "time_end": "2015-02-01 00:00:00+00:00",
      "max_deals": "1",
      "instructions": "Show to waiter."
    }
@@ -86,10 +72,10 @@
    "pk": 3,
    "fields": {
      "vendor": "1",
-     "title": "20% off yummy sandwiches",
-     "desc": "Sandwiches.",
+     "title": "20% off shitty sandwiches",
+     "desc": "sandwich sandwich sandwich sandwich sandwich sandwich sandwich coffee coffee coffee coffee coffee coffee donuts donuts donuts donuts donuts donuts donuts donuts",
      "time_start": "2014-02-01 00:00:00+00:00",
-     "time_end": "2014-03-14 00:00:00+07:00",
+     "time_end": "2014-02-02 00:00:00+00:00",
      "max_deals": "20",
      "instructions": "Show to waiter."
    }
@@ -100,9 +86,9 @@
    "fields": {
      "vendor": "2",
      "title": "20% off Pad Thai",
-     "desc": "Pad Thai for the ages.",
+     "desc": "pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai",
      "time_start": "2014-02-01 00:00:00+00:00",
-     "time_end": "2014-03-13 23:30:00-07:00",
+     "time_end": "2015-02-01 00:00:00+00:00",
      "max_deals": "20",
      "instructions": "Show to waiter."
    }
@@ -113,10 +99,10 @@
    "fields": {
      "vendor": "2",
      "title": "50% off drinks",
-     "desc": "Dangerous drinks!",
+     "desc": "drinks drinks drinks drinks pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai",
      "time_start": "2014-02-01 00:00:00+00:00",
-     "time_end": "2014-03-13 18:00:00-07:00",
-     "max_deals": "18",
+     "time_end": "2015-02-01 00:00:00+00:00",
+     "max_deals": "-1",
      "instructions": "Show to waiter."
    }
  },
@@ -126,9 +112,9 @@
    "fields": {
      "vendor": "3",
      "title": "50% off pizza",
-     "desc": "Plebian pizza.",
+     "desc": "pizza n stuff",
      "time_start": "2014-02-01 00:00:00+00:00",
-     "time_end": "2014-03-13 21:15:00-07:00",
+     "time_end": "2015-02-01 00:00:00+00:00",
      "max_deals": "50",
      "instructions": "Show to waiter."
    }
@@ -139,10 +125,10 @@
    "fields": {
      "vendor": "3",
      "title": "50% off drinks",
-     "desc": "Delightful drinks.",
+     "desc": "drinks drinks drinks drinks",
      "time_start": "2014-02-01 00:00:00+00:00",
-     "time_end": "2014-03-14 00:00:00+00:00",
-     "max_deals": "20",
+     "time_end": "2014-02-02 00:00:00+00:00",
+     "max_deals": "-1",
      "instructions": "Show to waiter."
    }
  },
@@ -152,9 +138,9 @@
    "fields": {
      "vendor": "3",
      "title": "50% off drinks in the future",
-     "desc": "Drool-inducing drinks!",
+     "desc": "drinks drinks drinks drinks future drinks!",
      "time_start": "2014-02-01 00:00:00+00:00",
-     "time_end": "2014-03-14 00:00:00+00:00",
+     "time_end": "2014-02-02 00:00:00+00:00",
      "max_deals": "-1",
      "instructions": "Show to waiter."
    }
