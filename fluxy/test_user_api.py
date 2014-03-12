@@ -19,6 +19,7 @@ class UserApiTestCase(TestCase):
     data = {'username': 'kingofpaloalto', 'password': 'password'}
     response = self.client.post('/user/auth/', data=data)
     self.assertEqual(response.status_code, 200)
+    self.assertEqual(self.client.session['_auth_user_id'], 1)
 
   def test_auth_valid_json(self):
     """
@@ -30,6 +31,7 @@ class UserApiTestCase(TestCase):
     response = self.client.post('/user/auth/', data=json.dumps(data),
     content_type='application/json')
     self.assertEqual(response.status_code, 200)
+    self.assertEqual(self.client.session['_auth_user_id'], 1)
 
   def test_auth_invalid_username(self):
     """
@@ -39,6 +41,7 @@ class UserApiTestCase(TestCase):
     data = {'username': 'invalid', 'password': 'password'}
     response = self.client.post('/user/auth/', data=data)
     self.assertEqual(response.status_code, 401)
+    self.assertNotIn('auth_user_id', self.client.session)
 
   def test_auth_invalid_password(self):
     """
@@ -48,6 +51,7 @@ class UserApiTestCase(TestCase):
     data = {'username': 'kingofpaloalto', 'password': 'invalid'}
     response = self.client.post('/user/auth/', data=data)
     self.assertEqual(response.status_code, 401)
+    self.assertNotIn('auth_user_id', self.client.session)
 
   def test_auth_invalid_data(self):
     """
@@ -57,6 +61,7 @@ class UserApiTestCase(TestCase):
     data = {'username': 'kingofpaloalto'}
     response = self.client.post('/user/auth/', data=data)
     self.assertEqual(response.status_code, 400)
+    self.assertNotIn('auth_user_id', self.client.session)
 
   def test_register(self):
     """
