@@ -170,7 +170,7 @@ def user_deals(request):
                         content_type='application/json')
   else:
     return HttpResponse(json.dumps(response.user.claimeddeal_set.filter(
-                              deal__time_end__lte=datetime.datetime.now())),
+                              deal__time_end__lte=datetime.datetime.utcnow())),
                               content_type="application/json")
 
 @require_http_methods(["GET"])
