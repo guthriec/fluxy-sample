@@ -47,7 +47,7 @@
    "fields": {
      "vendor": "1",
      "title": "50% off donuts",
-     "desc": "donuts donuts donuts donuts donuts donuts donuts donuts",
+     "desc": "Delicious donuts to delight you.",
      "time_start": "2014-02-01 00:00:00+17:00",
      "time_end": "2014-03-14 00:00:00-07:00",
      "max_deals": "30",
@@ -60,7 +60,7 @@
    "fields": {
      "vendor": "1",
      "title": "40% off coffee",
-     "desc": "coffee coffee coffee coffee coffee coffee donuts donuts donuts donuts donuts donuts donuts donuts",
+     "desc": "Carefully created coffee to comfort you.",
      "time_start": "2014-02-01 00:00:00+00:00",
      "time_end": "2014-03-13 22:00:00-07:00",
      "max_deals": "1",
@@ -72,10 +72,10 @@
    "pk": 3,
    "fields": {
      "vendor": "1",
-     "title": "20% off shitty sandwiches",
-     "desc": "sandwich sandwich sandwich sandwich sandwich sandwich sandwich coffee coffee coffee coffee coffee coffee donuts donuts donuts donuts donuts donuts donuts donuts",
+     "title": "20% off yummy sandwiches",
+     "desc": "Sandwiches.",
      "time_start": "2014-02-01 00:00:00+00:00",
-     "time_end": "2014-02-02 00:00:00+07:00",
+     "time_end": "2014-03-14 00:00:00+07:00",
      "max_deals": "20",
      "instructions": "Show to waiter."
    }
@@ -86,7 +86,7 @@
    "fields": {
      "vendor": "2",
      "title": "20% off Pad Thai",
-     "desc": "pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai",
+     "desc": "Pad Thai for the ages.",
      "time_start": "2014-02-01 00:00:00+00:00",
      "time_end": "2014-03-13 23:30:00-07:00",
      "max_deals": "20",
@@ -99,10 +99,10 @@
    "fields": {
      "vendor": "2",
      "title": "50% off drinks",
-     "desc": "drinks drinks drinks drinks pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai",
+     "desc": "Dangerous drinks!",
      "time_start": "2014-02-01 00:00:00+00:00",
      "time_end": "2014-03-13 18:00:00-07:00",
-     "max_deals": "-1",
+     "max_deals": "18",
      "instructions": "Show to waiter."
    }
  },
@@ -112,7 +112,7 @@
    "fields": {
      "vendor": "3",
      "title": "50% off pizza",
-     "desc": "pizza n stuff",
+     "desc": "Plebian pizza.",
      "time_start": "2014-02-01 00:00:00+00:00",
      "time_end": "2014-03-13 21:15:00-07:00",
      "max_deals": "50",
@@ -125,10 +125,10 @@
    "fields": {
      "vendor": "3",
      "title": "50% off drinks",
-     "desc": "drinks drinks drinks drinks",
+     "desc": "Delightful drinks.",
      "time_start": "2014-02-01 00:00:00+00:00",
-     "time_end": "2014-02-02 00:00:00+00:00",
-     "max_deals": "-1",
+     "time_end": "2014-03-14 00:00:00+00:00",
+     "max_deals": "20",
      "instructions": "Show to waiter."
    }
  },
@@ -138,9 +138,9 @@
    "fields": {
      "vendor": "3",
      "title": "50% off drinks in the future",
-     "desc": "drinks drinks drinks drinks future drinks!",
+     "desc": "Drool-inducing drinks!",
      "time_start": "2014-02-01 00:00:00+00:00",
-     "time_end": "2014-02-02 00:00:00+00:00",
+     "time_end": "2014-03-14 00:00:00+00:00",
      "max_deals": "-1",
      "instructions": "Show to waiter."
    }
