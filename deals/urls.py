@@ -16,6 +16,9 @@ urlpatterns = patterns('',
     'deals.views.vendor_deals', { 'active_only': False }),
   url(r'^api/v1/vendor/(?P<vendor_id>\d+)/deal/(?P<deal_id>\d+)/$',
     'deals.views.vendor_deals'),
-
-  #TODO: Add claimed deal API
+  
+  url(r'^api/v1/vendor/(?P<vendor_id>\d+)/claimed_deals/$',
+    'deals.views.vendor_claimed_deals'),
+  url(r'^api/v1/vendor/(?P<vendor_id>\d+)/claimed_deals/all/$',
+    'deals.views.vendor_claimed_deals', { 'active_only': False }),
 )
