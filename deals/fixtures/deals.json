@@ -59,13 +59,13 @@
    "model": "deals.deal",
    "pk": 1,
    "fields": {
-     "vendor": "1",
-     "title": "50% off donuts",
+     "vendor": "4",
+     "title": "100% off donuts",
      "desc": "Delicious donuts to delight you.",
      "time_start": "2014-02-01 00:00:00+17:00",
      "time_end": "2014-03-14 00:00:00-07:00",
      "max_deals": "30",
-     "instructions": "Show to waiter."
+     "instructions": "Show to Jay Borenstein."
    }
  },
  {
