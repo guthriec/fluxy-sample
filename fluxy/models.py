@@ -24,7 +24,8 @@ class FluxyUser(AbstractUser):
         'first_name'   : self.first_name,
         'last_name'    : self.last_name,
         'email'        : self.email,
-        'phone' : self.phone,
+        'phone'        : self.phone,
+        'vendors'      : [x['id'] for x in self.vendors.all().values('id')],
     }
 
     return user
