@@ -4,6 +4,7 @@ from deals.models import ClaimedDeal, Deal, Vendor
 from distance import in_radius
 from django.core import serializers
 from django.http import HttpResponse, HttpResponseRedirect
+from django.utils.timezone import utc
 from django.views.decorators.http import require_http_methods
 import json
 
@@ -168,7 +169,7 @@ def _get_claimed_deals(claimed_deal_id=None, vendor_id=None, active_only=True):
   if claimed_deal_id:
     claimed_deal_set = claimed_deal_set.filter(pk=claimed_deal_id)
   if active_only:
-    now = datetime.utcnow()
+    now = datetime.utcnow().replace(tzinfo=utc)
     claimed_deal_set = claimed_deal_set.filter(deal__time_start__lte=now,
                                                deal__time_end__gte=now)
   return claimed_deal_set
@@ -194,7 +195,7 @@ def _get_deals(deal_id=None, vendor_id=None, active_only=True):
   if vendor_id:
     deal_set = deal_set.filter(vendor_id=vendor_id)
   if active_only:
-    now = datetime.utcnow()
+    now = datetime.utcnow().replace(tzinfo=utc)
     deal_set = deal_set.filter(time_start__lte=now, time_end__gte=now)
   return deal_set
 
