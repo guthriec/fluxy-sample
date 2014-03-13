@@ -2,29 +2,42 @@
 {% load staticfiles %}
 
 {% block content %}
-<h1>Restaurant dashboard</h1>
-<div id="new-deal-form">
-</div>
-<div id="deals">
-</div>
+
+<div id="dashboard">
+  <h2>Launch a deal</h2>
+  <div id="new-deal-form">
+  </div>
+
+  <h2>Your existing deals</h2>
+  <div id="deals">
+  </div>
+</dashboard>
 
 {% endblock %}
 
 {% block scripts %}
 
 <script type="text/template" id="deal-template">
-  <td>title: <%= title  %></td>
+  <td><%= title  %></td>
+  <td><%= desc  %></td>
+  <td><%= time_start  %></td>
+  <td><%= time_end  %></td>
 </script>
 
 <script type="text/template" id="deals-collection-template">
   <thead>
+    <tr>
+      <th>Title</th>
+      <th>Description</th>
+      <th>Start Time</th>
+      <th>End Time</th>
+    </tr>
   </thead>
   <tbody>
   </tbody>
 </script>
 
 <script type="text/template" id="deal-create-form-template">
-  <h2>Launch a deal</h2>
   <form action="" method="POST" id="deal-form">
     <table class="deal-form-table">
       <tr>
@@ -34,12 +47,12 @@
       <tr>
         <td>Description: </td>
         <!-- inline css here for now -->
-        <td><textarea name="desc" style="resize: none;" rows="10" cols="50" form="deal-form"></textarea></td>
+        <td><textarea name="desc" class="form-control" rows="5"></textarea></td>
       </tr>
       <tr>
         <td>Duration: </td>
         <td>
-          <select name="hours" form="deal-form">
+          <select name="hours" class="form-control">
             <option value="0">0</option>
             <option value="1">1</option>
             <option value="2">2</option>
@@ -47,14 +60,14 @@
             <option value="4">4</option>
             <option value="5">5</option>
           </select> hours
-          <select name="minutes" form="deal-form">
+          <select name="minutes" class="form-control">
             <option value="0">0</option>
             <option value="30">30</option>
           </select> minutes
         </td>
       </tr>
       <tr><td></td>
-        <td><button class="submit-btn" type="submit">Launch now!</button></td>
+        <td><button type="submit" id="submit-btn" class="btn btn-default">Launch now!</button></td>
       </tr>
     </table>
   </form>

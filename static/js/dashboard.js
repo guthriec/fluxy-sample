@@ -48,7 +48,7 @@ DealView = Backbone.Marionette.ItemView.extend({
 DealsCollectionView = Backbone.Marionette.CompositeView.extend({
   tagname: 'table',
   id: 'deals-list-view',
-  className: 'table-striped table-bordered',
+  className: 'table table-striped table-bordered',
   template: '#deals-collection-template',
   itemView: DealView,
 
@@ -65,7 +65,7 @@ DealsCollectionView = Backbone.Marionette.CompositeView.extend({
  */
 DealCreateFormView = Backbone.Marionette.ItemView.extend({
   events: {
-    'click .submit-btn': 'createDeal'
+    'click #submit-btn': 'createDeal'
   },
   template: '#deal-create-form-template',
 
