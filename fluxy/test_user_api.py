@@ -1,4 +1,5 @@
 from fluxy.models import FluxyUser
+from deals.models import ClaimedDeal
 from django.test import Client, TestCase
 import json
 
@@ -147,9 +148,7 @@ class UserApiTestCase(TestCase):
 
     response = self.client.get('/user/logout/')
     self.assertEqual(response.status_code, 200)
-
-    response = self.client.get('/api/v1/user/')
-    self.assertEqual(response.status_code, 403)
+    self.assertNotIn('_auth_user_id', self.client.session)
 
   def test_logout_without_logged_in_user(self):
     """

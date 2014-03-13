@@ -120,7 +120,6 @@ def user_register(request):
     response['message'] = "Username already registered"
   except FluxyUser.DoesNotExist:
     new_user = FluxyUser.objects.create_user(username=username, password=password)
-    new_user.user_permissions.add(Permission.objects.get(codename='change_deal'))
     new_user.save()
     response = {"code": 200, "message": "Successfully registered"}
   return HttpResponse(json.dumps(response), content_type="application/json",
@@ -217,13 +216,15 @@ def user_deals(request, active_only=True):
                               time_end__gte=now)
       latitude = post_data.get('latitude', None)
       longitude = post_data.get('longitude', None)
+      claimed_deal = ClaimedDeal.objects.create(user=request.user, deal=deal,
+          claimed_latitude=latitude, claimed_longitude=longitude)
+      claimed_deal.save()
+      return HttpResponseRedirect('/api/v1/users/claimed_deal/',
+                  json.dumps(claimed_deal), content_type='application/json',
+                  status=201)
     except Exception:
-      return HttpResponse("Bad request.", status = 400)
-    claimed_deal = ClaimedDeal.objects.create(user=request.user, deal=deal,
-        claimed_latitude=latitude, claimed_longitude=longitude)
-    claimed_deal.save()
-    return HttpResponse('Successfully claimed deal.',
-                        content_type='application/json')
+      pass
+    return HttpResponse("Bad request.", status=400)
   else:
     claimed_deals = request.user.claimeddeal_set.all()
     if active_only:

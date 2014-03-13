@@ -68,6 +68,19 @@ class Deal(models.Model):
     """
     return "{0} by vendor: {1}".format(self.title, self.vendor)
 
+  def natural_key(self):
+    """ For nested serialization. """
+    return {
+        'id': self.id,
+        'vendor': self.vendor,
+        'title': self.title,
+        'desc': self.desc,
+        'time_start': self.time_start,
+        'time_end': self.time_end,
+        'max_deals': self.max_deals,
+        'instructions': self.instructions,
+    }
+
 class ClaimedDeal(models.Model):
   """
   ClaimedDeal model. Data about a single claimed deal. Schema:
