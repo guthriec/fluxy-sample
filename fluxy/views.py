@@ -6,6 +6,7 @@ from django.contrib.auth.models import Permission
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.utils.timezone import utc
 from django.views.decorators.http import require_http_methods
 from fluxy.models import FluxyUser
 import datetime
@@ -170,7 +171,7 @@ def user_deals(request):
                         content_type='application/json')
   else:
     return HttpResponse(json.dumps(response.user.claimeddeal_set.filter(
-                              deal__time_end__lte=datetime.datetime.now())),
+                              deal__time_end__lte=datetime.datetime.utcnow().replace(tzinfo=utc))),
                               content_type="application/json")
 
 @require_http_methods(["GET"])
