@@ -182,8 +182,8 @@ def user_vendors(request):
 @require_http_methods(['GET', 'POST'])
 def user_deals(request, active_only=True):
   """
-  Author: Rahul Gupta-Iwasaki
-  If GET, this returns a JSON array contain the user's ACTIVE deals.
+  @author: Rahul Gupta-Iwasaki
+  @desc: If GET, this returns a JSON array contain the user's ACTIVE deals.
 
   Note, when making this query on my local machine, it was throwing a
   RuntimeError complaining about the time_end field receiving a naive datetime
@@ -192,7 +192,16 @@ def user_deals(request, active_only=True):
   and the problem is the sqlite db doesn't support time zones. If so, this
   should go away in production, but we should verify this.
 
-  If POST, create a new claimed deal.
+  If POST, create a new claimed deal. Use the following keys:
+      *deal_id
+      *latitude OPTIONAL
+      *longitude OPTIONAL
+
+  @param request: the request object
+  @param active_only: specifies whether to include expired deals or not in the
+  response. Only relevant to GET.
+
+  @returns: a JSON encoded array of deals the user has claimed
   """
   if not request.user.is_authenticated():
     response = {'code': 403, 'message': 'Authentication error'}
