@@ -65,3 +65,29 @@ input[type="text"], input[type="email"] {
 #landing-page #logo-name {
   margin: 10px 0 20px 0;
 }
+
+/** Dashboard CSS **/
+.navbar-default {
+  background-color: #1abc9c;
+}
+
+.navbar .container {
+  color: #FFF;
+  font-size: 28px;
+}
+
+.navbar .container  #logo {
+  background-image: url('../img/fluxy_logo_white_header.png');
+  background-repeat: no-repeat;
+  margin-top: 5px;
+  min-height: 40px;
+  min-width: 60px;
+  position: fixed;
+  text-indent: 9999px;
+}
+
+.navbar .container #page-title {
+  margin: 5px auto;
+  text-align: center;
+  width: 100%;
+}
