@@ -118,7 +118,9 @@ class UserApiTestCase(TestCase):
     response = self.client.get('/api/v1/user/')
     self.assertEqual(response.status_code, 200)
 
-    user_obj = json.loads(response.content)
+    user_list = json.loads(response.content)
+    self.assertEqual(len(user_list), 1)
+    user_obj = user_list[0]
     self.assertEqual(user_obj['first_name'], 'Al')
     self.assertEqual(user_obj['last_name'], 'H')
     self.assertEqual(user_obj['email'], 'alh@alh.com')

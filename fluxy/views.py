@@ -161,7 +161,7 @@ def user(request):
     return HttpResponse(json.dumps(response), content_type="application/json",
                         status = response['code'])
   else:
-    return HttpResponse(json.dumps(request.user.get_safe_user()),
+    return HttpResponse(json.dumps([request.user.get_safe_user()]),
                         content_type="application/json")
 
 @require_http_methods(["GET"])
