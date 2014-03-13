@@ -103,7 +103,6 @@ DashboardApp.addInitializer(function(options) {
   var dealsCollectionView = new DealsCollectionView({
     collection: deals
   });
-  console.log(deals);
   DashboardApp.dealsRegion.show(dealsCollectionView);
 
   // Load the form
