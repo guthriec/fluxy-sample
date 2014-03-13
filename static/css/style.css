@@ -66,7 +66,7 @@ input[type="text"], input[type="email"] {
   margin: 10px 0 20px 0;
 }
 
-/** Dashboard CSS **/
+/** Base Template CSS **/
 .navbar-default {
   background-color: #1abc9c;
 }
@@ -90,4 +90,15 @@ input[type="text"], input[type="email"] {
   margin: 5px auto;
   text-align: center;
   width: 100%;
+}
+
+#content {
+  margin-top: 50px;
+}
+
+/** Dashboard CSS **/
+#content #dashboard input[type="text"], 
+#content #dashboard textarea,
+#content #dashboard select {
+  margin: 5px;
 }
