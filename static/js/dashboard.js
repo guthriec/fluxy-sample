@@ -58,6 +58,11 @@ DealsCollectionView = Backbone.Marionette.CompositeView.extend({
   template: '#deals-collection-template',
   itemView: DealView,
 
+  collectionEvents: {
+    "add": "render",
+    "reset": "render"
+  },
+
   appendHtml: function(collectionView, itemView) {
     collectionView.$('tbody').append(itemView.el);
   }
@@ -94,10 +99,22 @@ DealCreateFormView = Backbone.Marionette.ItemView.extend({
     newModel.set('desc', formValues['desc']);
     var timeStart = (new Date()).toUTCString();
     newModel.set('time_start', timeStart);
-    var minutes = formValues['minutes'] + 60 * formValues['hours'];
+    var minutes = Number(formValues['minutes']) + 60 * formValues['hours'];
     var timeEnd = (new Date(Date.now() + minutes * 60000).toUTCString())
     newModel.set('time_end', timeEnd);
-    newModel.save(); 
+    newModel.set('max_deals', 0);
+    newModel.set('instructions', 'Show to waiter');
+    var self = this;
+    newModel.save({}, {
+      success: function(model, response) {
+        console.log(response);
+        $('#submit-btn').blur();
+        self.collection.fetch({ reset: true });
+      },
+      error: function() {
+        console.log('error');
+      }
+    }); 
   }
 });
 
@@ -112,7 +129,9 @@ DashboardApp.addInitializer(function(options) {
   DashboardApp.dealsRegion.show(dealsCollectionView);
 
   // Load the form
-  var dealCreateForm = new DealCreateFormView();
+  var dealCreateForm = new DealCreateFormView({
+    collection: deals
+  });
   DashboardApp.newDealFormRegion.show(dealCreateForm);
 }); 
 
