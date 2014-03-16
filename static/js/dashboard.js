@@ -13,9 +13,7 @@ DashboardApp.addRegions({
  * displayed. Note: the defined URL is used for a POST request when a new deal
  * is created.
  */
-DealModel = Backbone.Model.extend({
-  url: '/api/v1/vendor/1/deals/'
-});
+DealModel = Backbone.Model.extend({});
 
 /*
  * @author: Ayush
@@ -25,8 +23,16 @@ DealModel = Backbone.Model.extend({
  */
 DealsCollection = Backbone.Collection.extend({
   model: DealModel,
-  // TODO: dynamiv vendor ID
-  url: '/api/v1/vendor/1/deals/'
+  
+  initialize: function(options) {
+    options || options = {};
+    vendorId = options.vendorId || -1;
+    this.vendorId = options.vendorId;
+  },
+
+  url: function() {
+    return '/api/v1/vendor/' + this.vendorId + '/deals/';
+  }
 });
 
 /*
