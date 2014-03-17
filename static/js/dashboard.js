@@ -12,26 +12,7 @@ DashboardApp.addRegions({
  * @desc: Defines the model that represents the deal that is going to be
  * displayed. 
  */
-
-DealModel = Backbone.Model.extend({
-
-  initialize: function(options) {
-    if (options && options.id) {
-      this.id = options.id;
-    }
-  },
-
-  urlRoot: function() {
-    if (this.collection) {
-      vendorId = this.collection.vendorId || '-1';
-      return '/api/v1/vendor/' + vendorId + '/deals/';
-    }
-    else {
-      return '/api/v1/deals/';
-    }
-  }
-
-});
+DealModel = Backbone.Model.extend({ });
 
 /*
  * @author: Ayush
