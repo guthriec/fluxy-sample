@@ -102,3 +102,27 @@ input[type="text"], input[type="email"] {
 #content #dashboard select {
   margin: 5px;
 }
+
+#content #dashboard #launch-stats-container {
+  min-height: 400px;
+}
+
+#content #dashboard #launch-stats-container
+#launch-deal-container {
+  float: left;
+  width: 500px;
+}
+
+#content #dashboard #launch-stats-container
+#daily-stats-container {
+  float: right;
+  font-size: 20px;
+  width: 500px;
+}
+
+#content #dashboard #launch-stats-container
+#daily-stats-container span {
+  font-size: 40px;
+  position: relative;
+  top: 5px;
+}
