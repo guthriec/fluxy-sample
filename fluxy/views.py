@@ -7,6 +7,7 @@ from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
+from django.utils.timezone import utc
 from django.views.decorators.http import require_http_methods
 from fluxy.models import FluxyUser
 from deals.models import Deal, ClaimedDeal
@@ -186,14 +187,8 @@ def user_vendors(request):
 def user_deals(request, active_only=True):
   """
   @author: Rahul Gupta-Iwasaki
-  @desc: If GET, this returns a JSON array contain the user's ACTIVE deals.
-
-  Note, when making this query on my local machine, it was throwing a
-  RuntimeError complaining about the time_end field receiving a naive datetime
-  while time zone support is active. This was remedied by turning the USE_TZ
-  setting off in settings.py. However, it seems we would rather have this on,
-  and the problem is the sqlite db doesn't support time zones. If so, this
-  should go away in production, but we should verify this.
+  @desc: If GET, this returns a JSON array contain the user's deals. Depending
+  on the active_only param, will return only active deals or all deals.
 
   If POST, create a new claimed deal. Use the following keys:
       *deal_id
@@ -210,7 +205,7 @@ def user_deals(request, active_only=True):
     response = {'code': 403, 'message': 'Authentication error'}
     return HttpResponse(json.dumps(response), content_type="application/json",
                         status = response['code'])
-  now = datetime.datetime.now()
+  now = datetime.datetime.utcnow().replace(tzinfo=utc)
   if request.method == 'POST':
     post_data = request.POST
     try:

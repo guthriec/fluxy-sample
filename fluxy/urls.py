@@ -26,4 +26,5 @@ urlpatterns = patterns('',
   url(r'^admin/', include(admin.site.urls)),
 
   url(r'', include('deals.urls')),
+  url(r'', include('dashboard.urls'))
 )

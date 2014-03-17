@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+
+<div id="dashboard">
+  <h2>Launch a deal</h2>
+  <div id="new-deal-form">
+  </div>
+
+  <h2>Your existing deals</h2>
+  <div id="deals">
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script type="text/template" id="deal-template">
+  <td><%= title  %></td>
+  <td><%= desc  %></td>
+  <td><%= time_start  %></td>
+  <td><%= time_end  %></td>
+</script>
+
+<script type="text/template" id="deals-collection-template">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Description</th>
+      <th>Start Time</th>
+      <th>End Time</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</script>
+
+<script type="text/template" id="deal-create-form-template">
+  <form action="" method="POST" id="deal-form">
+    <table class="deal-form-table">
+      <tr>
+        <td>Title: </td>
+        <td><input name="title" type="text" maxlength="40" size="40"></td>
+      </tr>
+      <tr>
+        <td>Description: </td>
+        <!-- inline css here for now -->
+        <td><textarea name="desc" class="form-control" rows="5"></textarea></td>
+      </tr>
+      <tr>
+        <td>Duration: </td>
+        <td>
+          <select name="hours" class="form-control">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select> hours
+          <select name="minutes" class="form-control">
+            <option value="0">0</option>
+            <option value="30">30</option>
+          </select> minutes
+        </td>
+      </tr>
+      <tr><td></td>
+        <td><button type="submit" id="submit-btn" class="btn btn-default">Launch now!</button></td>
+      </tr>
+    </table>
+  </form>
+</script>
+
+  <script type="text/javascript" src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}

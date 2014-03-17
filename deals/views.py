@@ -1,9 +1,10 @@
 from datetime import datetime
 from dateutil import parser
-from deals.models import Deal, Vendor
+from deals.models import ClaimedDeal, Deal, Vendor
 from distance import in_radius
 from django.core import serializers
 from django.http import HttpResponse, HttpResponseRedirect
+from django.utils.timezone import utc
 from django.views.decorators.http import require_http_methods
 import json
 
@@ -25,7 +26,7 @@ def deal(request, deal_id=None, active_only=True):
     active_only = False
   deal_set = _get_deals(deal_id, active_only=active_only)
   if deal_id and deal_set.count() == 0:
-    known_error = {'code': 404, 'message': "Deal not found"}
+    known_error = { 'code': 404, 'message': 'Deal not found' }
   try:
     lat = float(request.GET.get('latitude', None))
     lon = float(request.GET.get('longitude', None))
@@ -64,24 +65,29 @@ def vendor(request, vendor_id=None):
   if request. method == 'GET':
     known_error = None
     vendor_list = None
-    try:
-      vendor_set = _get_vendor(vendor_id)
-      vendor_list = _list_from_qset(vendor_set, include_nested=False)
-    except Exception:
-      known_error = {'code': 500, 'message': 'Server error'}
-    return _make_get_response(vendor_list, known_error,\
-                              flatten=True, include_nested=False)
+    vendor_set = _get_vendor(vendor_id)
+    if vendor_id and vendor_set.count() == 0:
+      known_error = { 'code': 404, 'message': 'Vendor not found' }
+      return _make_get_response(vendor_list, known_error)
+
+    vendor_list = _list_from_qset(vendor_set, include_nested=False, flatten=True)
+    return _make_get_response(vendor_list, known_error)  
   else:
     # POST request.
     known_error = None
-    vendor = Vendor(**json.loads(request.body))
-    vendor.save()
-    return _make_post_response(vendor, 'vendors/' + str(vendor.id), known_error)
+    vendor = None 
+    vendor_id = -1
+    try:
+      vendor = Vendor(**json.loads(request.body))
+      vendor.save()
+      vendor_id = str(vendor.id)
+    except TypeError:
+      known_error = { 'code': 400, 'message': 'Bad post request' }
+    return _make_post_response(vendor, 'vendors/' + str(vendor_id), known_error)
 
 @require_http_methods(["GET", "POST"])
-def vendor_deals(request, vendor_id):
+def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
   """
-  @TODO: change the error to not 500s
   @author: Chris, Ayush
   @desc: Returns/creates a deal for a given vendor
   Assumes the POST request has the following keys, corresponding to field names:
@@ -98,30 +104,75 @@ def vendor_deals(request, vendor_id):
 
   @return: 201 with JSON for POST or 200 for GET
   """
+  known_error = None
+  deal_list = None
+
+  # Check vendor exists
+  vendor_qset = Vendor.objects.filter(pk=vendor_id)
+  if vendor_qset.count() == 0:
+    known_error = { 'code': 404, 'message': 'Vendor not found' }
+    return _make_get_response(deal_list, known_error)
+  
   if request.method == 'GET':
-    known_error = None
-    deal_list = None
-
-    if not vendor_id:
-      known_error = {'code': 500, 'message': 'Server error'}
-    try:
-      deal_set = _get_deals(vendor_id=vendor_id)
-    except Exception:
-      known_error = {'code': 500, 'message': 'Server error'}
-
-    deal_list = _list_from_qset(deal_set, include_nested=True)
-    return _make_get_response(deal_list, known_error,\
-                              flatten=True, include_nested=True)
+    deal_set = _get_deals(vendor_id=vendor_id, active_only=active_only)
+    deal_list = _list_from_qset(deal_set, include_nested=False)
+    return _make_get_response(deal_list, known_error)
   else:
-    known_error = None
+    deal = None
+    deal_id = -1
     try:
-      deal = Deal(**json.loads(requests.body))
+      deal = Deal(**json.loads(request.body))
+      deal.vendor_id = vendor_id
       deal.time_start = parser.parse(deal.time_start)
       deal.time_end = parser.parse(deal.time_end)
       deal.save()
-    except Exception:
-      known_error = {'code': 500, 'message': 'Server error'}
-    return _make_post_response(deal, 'deals/' + str(deal.id), known_error)
+      deal_id = deal.id
+    except TypeError:
+      known_error={ 'code': 400, 'message': 'Bad deal POST' }
+    return _make_post_response(deal, 'deals/' + str(deal_id), known_error)
+
+@require_http_methods(['GET'])
+def vendor_claimed_deals(request, vendor_id, active_only=True):
+  """
+  @author: Chris
+  @param vendor_id: vendor primary key
+  @param active_only: boolean to filter out expired or unstarted deals
+
+  @returns JSON response
+  """
+  known_error = None
+  claimed_deal_list = None
+  vendor_set = Vendor.objects.filter(pk=vendor_id)
+  if vendor_set.count() == 0:
+    known_error = { 'code': 404, 'message': 'Vendor not found' }
+    return _make_get_response(claimed_deal_list, known_error)
+  claimed_deal_set = _get_claimed_deals(vendor_id=vendor_id, active_only=active_only)
+  claimed_deal_list = _list_from_qset(claimed_deal_set, include_nested=False, flatten=True)
+  return _make_get_response(claimed_deal_list, known_error)
+
+def _get_claimed_deals(claimed_deal_id=None, vendor_id=None, active_only=True):
+  """
+  @author: Chris
+  @desc: GET request handler for ClaimedDeals. Applies filters specified by parameters
+  to ClaimedDeal objects, returning what's left (so invalid deal ID's result in an
+  empty QuerySet).
+  
+  @param claimed_deal_id: claimed deal primary key
+  @param vendor_id: vendor primary key to filter by
+  @param active_only: boolean to filter out expired or unstarted deals
+
+  @returns: QuerySet of retrieved objects
+  """
+  claimed_deal_set = ClaimedDeal.objects.all() 
+  if vendor_id:
+    claimed_deal_set = claimed_deal_set.filter(deal__vendor_id=vendor_id)
+  if claimed_deal_id:
+    claimed_deal_set = claimed_deal_set.filter(pk=claimed_deal_id)
+  if active_only:
+    now = datetime.utcnow().replace(tzinfo=utc)
+    claimed_deal_set = claimed_deal_set.filter(deal__time_start__lte=now,
+                                               deal__time_end__gte=now)
+  return claimed_deal_set
 
 def _get_deals(deal_id=None, vendor_id=None, active_only=True):
   """
@@ -144,7 +195,7 @@ def _get_deals(deal_id=None, vendor_id=None, active_only=True):
   if vendor_id:
     deal_set = deal_set.filter(vendor_id=vendor_id)
   if active_only:
-    now = datetime.now()
+    now = datetime.utcnow().replace(tzinfo=utc)
     deal_set = deal_set.filter(time_start__lte=now, time_end__gte=now)
   return deal_set
 

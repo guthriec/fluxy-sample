@@ -3,3 +3,4 @@ mailchimp==2.0.7
 # due to http://stackoverflow.com/questions/2609259/converting-string-to-datetime-object-in-python
 python-dateutil==2.2
 Pillow==2.3.0
+django-debug-toolbar==1.0.1
