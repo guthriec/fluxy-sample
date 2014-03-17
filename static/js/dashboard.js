@@ -26,7 +26,7 @@ DealsCollection = Backbone.Collection.extend({
   
   initialize: function(models, options) {
     this.vendorId = options.vendorId || -1;
-    DashboardApp.events.on('createDeal', this.create, this);
+    DashboardApp.events.on('createDealTrigger', this.create, this);
   },
 
   url: function() {
@@ -128,7 +128,7 @@ DealCreateFormView = Backbone.Marionette.ItemView.extend({
     newModel['max_deals'] = 0;
     newModel['instructions'] = 'Show to waiter';
 
-    DashboardApp.events.trigger('createDeal', newModel);
+    DashboardApp.events.trigger('createDealTrigger', newModel);
     this.$el.find('#submit-btn').blur();
   }
 });
