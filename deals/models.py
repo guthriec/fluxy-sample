@@ -95,7 +95,6 @@ class ClaimedDeal(models.Model):
   """
   user = models.ForeignKey('fluxy.FluxyUser')
   deal = models.ForeignKey(Deal)
-  time_claimed = models.DateTimeField(default=datetime.datetime.now)
   time_claimed = models.DateTimeField(default=datetime.datetime.
                                       utcnow().replace(tzinfo=utc))
   claimed_latitude = models.FloatField(null=True, blank=True)
