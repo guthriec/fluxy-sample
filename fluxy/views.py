@@ -2,7 +2,6 @@
 # Notes: Includes view functions for the overall Fluxy project
 
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import Permission
 from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
