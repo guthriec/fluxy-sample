@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Permission
 from django.core import serializers
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 from fluxy.models import FluxyUser
@@ -220,8 +220,8 @@ def user_deals(request, active_only=True):
           claimed_latitude=latitude, claimed_longitude=longitude)
       claimed_deal.save()
       return HttpResponseRedirect('/api/v1/users/claimed_deal/',
-                  json.dumps(claimed_deal), content_type='application/json',
-                  status=201)
+                  serializers.serialize('json', [claimed_deal]),
+                  content_type='application/json', status=201)
     except Exception:
       pass
     return HttpResponse("Bad request.", status=400)

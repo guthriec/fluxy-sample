@@ -1,7 +1,7 @@
 from fluxy.models import FluxyUser
 from deals.models import ClaimedDeal
 from django.test import Client, TestCase
-import json
+import json, random
 
 class UserApiTestCase(TestCase):
   fixtures = ['deals.json']
@@ -266,18 +266,12 @@ class UserApiTestCase(TestCase):
     response = self.client.post('/user/auth/', data=data)
     self.assertEqual(response.status_code, 200)
 
-    data = {'deal_id': 2}
+    random_lat = round(random.random() * 180, 3)
+    data = {'deal_id': 2, 'latitude': random_lat}
     response = self.client.post('/api/v1/user/claimed_deals/', data=data)
-    self.assertEqual(response.status_code, 200)
+    self.assertEqual(response.status_code, 201)
 
-    response = self.client.get('/api/v1/user/claimed_deals/all/')
-    self.assertEqual(response.status_code, 200)
-
-    claimed_deals = json.loads(response.content)
-    claimed_deal_ids = set()
-    for claimed_deal in claimed_deals:
-      claimed_deal_ids.add(claimed_deal['pk'])
-    self.assertSetEqual(claimed_deal_ids, set([4]))
+    self.assertEqual(ClaimedDeal.objects.last().claimed_latitude, random_lat)
 
   def test_claim_deal_json(self):
     """
@@ -291,9 +285,12 @@ class UserApiTestCase(TestCase):
                                 content_type='application/json')
     self.assertEqual(response.status_code, 200)
 
-    data = {'deal_id': 2}
+    random_lat = round(random.random() * 180, 3)
+    data = {'deal_id': 2, 'latitude': random_lat}
     response = self.client.post('/api/v1/user/claimed_deals/', data=data)
-    self.assertEqual(response.status_code, 200)
+    self.assertEqual(response.status_code, 201)
+
+    self.assertEqual(ClaimedDeal.objects.last().claimed_latitude, random_lat)
 
   def test_claim_deal_without_logged_in_user(self):
     """
@@ -325,8 +322,7 @@ class UserApiTestCase(TestCase):
     @desc: Test claiming a completely claimed deal with an authenticated user.
     Expects a 400 response.
     """
-    self.assertEqual(0, 1)
-    # TODO implement this.
+    self.assertEqual(0, 1) # TODO implement this!
 
   def test_claim_deal_with_expired_deal(self):
     """
