@@ -88,13 +88,6 @@ API
   * Accepts GET.
   * Returns all claimed_deals objects associated with {id}. Returns 200 on success, 404 if no vendor of {id} exists.
 
-
-Mock API
--------------
-Supports only GET:
-```
-/api/mock/deals
-/api/mock/vendors
-/api/mock/deals/{id}
-/api/mock/vendors/{id}
-```
+APPENDIX A - Notes About Libraries
+----------------------------------
+* ```JQuery UI``` - Requires: Spinner with Smoothness Theme

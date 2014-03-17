@@ -81,6 +81,30 @@ DealCreateFormView = Backbone.Marionette.ItemView.extend({
 
   render: function() {
     this.$el.html(_.template($(this.template).html()));
+
+    // Set up the JQuery UI Spinners
+    this.$el.find('#hours').spinner({
+      spin: function(event, ui) {
+        if(ui.value >= 5) {
+          $(this).spinner('value', 5);
+          return false;
+        } else if (ui.value < 0) {
+          $(this).spinner('value', 0);
+          return false;
+        }
+      }
+    });
+    this.$el.find('#minutes').spinner({
+      spin: function(event, ui) {
+        if (ui.value >= 60) {
+          $(this).spinner('value', 60);
+          return false;
+        } else if (ui.value < 0) {
+          $(this).spinner('value', 0);
+          return false;
+        }
+      }
+    });
     return this;
   },
 
