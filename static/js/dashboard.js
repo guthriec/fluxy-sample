@@ -11,22 +11,14 @@ DashboardApp.addRegions({
  * @author: Ayush, Chris
  * @desc: Defines the model that represents the deal that is going to be
  * displayed. 
- * Weird behavior: without the defaults, the collection can't load anything
- * on initialization.
  */
 
 DealModel = Backbone.Model.extend({
+
   initialize: function(options) {
     if (options && options.id) {
       this.id = options.id;
     }
-  },
-
-  defaults: {
-    "title": "No title",
-    "desc": "No description",
-    "time_start": "0",
-    "time_end": "0"
   },
 
   urlRoot: function() {
@@ -38,6 +30,7 @@ DealModel = Backbone.Model.extend({
       return '/api/v1/deals/';
     }
   }
+
 });
 
 /*
@@ -47,16 +40,17 @@ DealModel = Backbone.Model.extend({
  * displayed.
  */
 DealsCollection = Backbone.Collection.extend({
+
   model: DealModel,
   
-  initialize: function(options) {
-    vendorId = options.vendorId || '-1';
-    this.vendorId = vendorId;
+  initialize: function(models, options) {
+    this.vendorId = options.vendorId || -1;
   },
 
   url: function() {
     return '/api/v1/vendor/' + this.vendorId + '/deals/';
   }
+
 });
 
 /*
@@ -143,7 +137,7 @@ DealCreateFormView = Backbone.Marionette.ItemView.extend({
 // Load the initializer
 DashboardApp.addInitializer(function(options) {
   // Load all existing deals
-  var deals = new DealsCollection({'vendorId': '1'});
+  var deals = new DealsCollection([], { 'vendorId': '1' });
   deals.fetch({ reset: true });
   var dealsCollectionView = new DealsCollectionView({
     collection: deals
