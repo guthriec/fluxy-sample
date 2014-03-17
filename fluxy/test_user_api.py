@@ -312,9 +312,12 @@ class UserApiTestCase(TestCase):
                                 content_type='application/json')
     self.assertEqual(response.status_code, 200)
 
-    data = {'deal_id': -10}
+    random_lat = round(random.random() * 180, 3)
+    data = {'deal_id': -10, 'latitude': random_lat}
     response = self.client.post('/api/v1/user/claimed_deals/', data=data)
     self.assertEqual(response.status_code, 400)
+
+    self.assertNotEqual(ClaimedDeal.objects.last().claimed_latitude, random_lat)
 
   def test_claim_deal_with_maxed_claim_count(self):
     """
@@ -335,9 +338,12 @@ class UserApiTestCase(TestCase):
                                 content_type='application/json')
     self.assertEqual(response.status_code, 200)
 
-    data = {'deal_id': 3}
+    random_lat = round(random.random() * 180, 3)
+    data = {'deal_id': 3, 'latitude': random_lat}
     response = self.client.post('/api/v1/user/claimed_deals/', data=data)
     self.assertEqual(response.status_code, 400)
+
+    self.assertNotEqual(ClaimedDeal.objects.last().claimed_latitude, random_lat)
 
   def tear_down(self):
     pass
