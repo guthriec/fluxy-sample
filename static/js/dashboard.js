@@ -122,9 +122,7 @@ DashboardApp.addInitializer(function(options) {
   DashboardApp.dealsRegion.show(dealsCollectionView);
 
   // Load the form
-  var dealCreateForm = new DealCreateFormView({
-    collection: deals
-  });
+  var dealCreateForm = new DealCreateFormView({ });
   DashboardApp.newDealFormRegion.show(dealCreateForm);
 }); 
 
