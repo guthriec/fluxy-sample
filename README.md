@@ -43,7 +43,7 @@ API
   * Accepts POST.
   * Takes POST parameters 'username' and 'password', attempts to authenticate the user, returns 200 on success, 401 on inability ot authenticate. Authentication lasts until cookie is cleared (for now).
 
-* ``` /user/vendor ```
+* ``` /user/vendors ```
   * Accepts GET.
   * If user is authenticated, returns the vendor objects associated with the user. If the user is not associated with a vendor, returns an empty object. If the user is not authenticated, returns 403.
 

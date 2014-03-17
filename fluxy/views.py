@@ -81,11 +81,13 @@ def user_auth(request):
     username = post_data['username']
     password = post_data['password']
   except Exception:
-    return HttpResponse("Bad request.", status = 400)
+    response = { 'code': 400, 'message': 'Bad request' }
+    return HttpResponse(json.dumps(response), status = 400,
+        content_type='application/json')
   user = authenticate(username=username, password=password)
-  response = {}
   if user is not None:
     login(request, user)
+    response = [user.get_safe_user()]
     return HttpResponse(json.dumps(response), content_type="application/json",
                         status = 200)
   else:
@@ -104,7 +106,7 @@ def user_register(request):
 
   @param request: the request object
 
-  @return: 200 on successful auth, 400 otherwise
+  @return: 201 on successful registration, 400 otherwise
   """
   post_data = request.POST
   try:
@@ -121,9 +123,11 @@ def user_register(request):
   except FluxyUser.DoesNotExist:
     new_user = FluxyUser.objects.create_user(username=username, password=password)
     new_user.save()
-    response = {"code": 200, "message": "Successfully registered"}
-  return HttpResponse(json.dumps(response), content_type="application/json",
-                      status = response['code'])
+    return HttpResponseRedirect('/user/auth/',
+        json.dumps([new_user.get_safe_user()]), content_type="application/json",
+        status = 201)
+  return HttpResponse(json.dumps(response), content_type='application/json',
+      status = response['code'])
 
 @require_http_methods(["GET"])
 def user_logout(request):

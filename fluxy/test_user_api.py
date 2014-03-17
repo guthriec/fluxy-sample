@@ -71,7 +71,7 @@ class UserApiTestCase(TestCase):
     """
     data = { 'username': 'testuser', 'password': 'password' }
     response = self.client.post('/user/register/', data=data)
-    self.assertEqual(response.status_code, 200)
+    self.assertEqual(response.status_code, 201)
 
     response = self.client.post('/user/auth/', data=data)
     self.assertEqual(response.status_code, 200)
@@ -84,7 +84,7 @@ class UserApiTestCase(TestCase):
     data = { 'username': 'testuser', 'password': 'password' }
     response = self.client.post('/user/register/', data=json.dumps(data),
                                 content_type='application/json')
-    self.assertEqual(response.status_code, 200)
+    self.assertEqual(response.status_code, 201)
 
     response = self.client.post('/user/auth/', data=data)
     self.assertEqual(response.status_code, 200)
