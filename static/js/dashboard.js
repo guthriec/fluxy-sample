@@ -8,12 +8,37 @@ DashboardApp.addRegions({
 });
 
 /*
- * @author: Ayush
+ * @author: Ayush, Chris
  * @desc: Defines the model that represents the deal that is going to be
- * displayed. Note: the defined URL is used for a POST request when a new deal
- * is created.
+ * displayed. 
+ * Weird behavior: without the defaults, the collection can't load anything
+ * on initialization.
  */
-DealModel = Backbone.Model.extend({});
+
+DealModel = Backbone.Model.extend({
+  initialize: function(options) {
+    if (options && options.id) {
+      this.id = options.id;
+    }
+  },
+
+  defaults: {
+    "title": "No title",
+    "desc": "No description",
+    "time_start": "0",
+    "time_end": "0"
+  },
+
+  urlRoot: function() {
+    if (this.collection) {
+      vendorId = this.collection.vendorId || '-1';
+      return '/api/v1/vendor/' + vendorId + '/deals/';
+    }
+    else {
+      return '/api/v1/deals/';
+    }
+  }
+});
 
 /*
  * @author: Ayush
@@ -25,9 +50,8 @@ DealsCollection = Backbone.Collection.extend({
   model: DealModel,
   
   initialize: function(options) {
-    options || options = {};
-    vendorId = options.vendorId || -1;
-    this.vendorId = options.vendorId;
+    vendorId = options.vendorId || '-1';
+    this.vendorId = vendorId;
   },
 
   url: function() {
@@ -59,8 +83,7 @@ DealsCollectionView = Backbone.Marionette.CompositeView.extend({
   itemView: DealView,
 
   collectionEvents: {
-    "add": "render",
-    "reset": "render"
+    "sync": "render"
   },
 
   appendHtml: function(collectionView, itemView) {
@@ -88,31 +111,30 @@ DealCreateFormView = Backbone.Marionette.ItemView.extend({
   createDeal: function(e) {
     e.preventDefault();
 
-    var newModel = new DealModel();
+    var newModel = {};
 
     var $formInputs = $('#deal-form :input');
     var formValues = {};
     $formInputs.each(function() {
       formValues[this.name] = $(this).val();
     });
-    newModel.set('title', formValues['title']);
-    newModel.set('desc', formValues['desc']);
+    newModel['title'] = formValues['title'];
+    newModel['desc'] = formValues['desc'];
     var timeStart = (new Date()).toUTCString();
-    newModel.set('time_start', timeStart);
+    newModel['time_start'] = timeStart;
     var minutes = Number(formValues['minutes']) + 60 * formValues['hours'];
     var timeEnd = (new Date(Date.now() + minutes * 60000).toUTCString())
-    newModel.set('time_end', timeEnd);
-    newModel.set('max_deals', 0);
-    newModel.set('instructions', 'Show to waiter');
-    var self = this;
-    newModel.save({}, {
-      success: function(model, response) {
-        console.log(response);
+    newModel['time_end'] = timeEnd;
+    newModel['max_deals'] = 0;
+    newModel['instructions'] = 'Show to waiter';
+    var self=this;
+    this.collection.create(newModel, {
+      success: function(response) {
+        console.log(self.collection);
         $('#submit-btn').blur();
-        self.collection.fetch({ reset: true });
       },
-      error: function() {
-        console.log('error');
+      error: function(err) {
+        console.log(err);
       }
     }); 
   }
@@ -121,7 +143,7 @@ DealCreateFormView = Backbone.Marionette.ItemView.extend({
 // Load the initializer
 DashboardApp.addInitializer(function(options) {
   // Load all existing deals
-  var deals = new DealsCollection();
+  var deals = new DealsCollection({'vendorId': '1'});
   deals.fetch({ reset: true });
   var dealsCollectionView = new DealsCollectionView({
     collection: deals
