@@ -8,14 +8,11 @@ DashboardApp.addRegions({
 });
 
 /*
- * @author: Ayush
+ * @author: Ayush, Chris
  * @desc: Defines the model that represents the deal that is going to be
- * displayed. Note: the defined URL is used for a POST request when a new deal
- * is created.
+ * displayed. 
  */
-DealModel = Backbone.Model.extend({
-  url: '/api/v1/vendor/1/deals/'
-});
+DealModel = Backbone.Model.extend({ });
 
 /*
  * @author: Ayush
@@ -24,9 +21,18 @@ DealModel = Backbone.Model.extend({
  * displayed.
  */
 DealsCollection = Backbone.Collection.extend({
+
   model: DealModel,
-  // TODO: dynamiv vendor ID
-  url: '/api/v1/vendor/1/deals/'
+  
+  initialize: function(models, options) {
+    this.vendorId = options.vendorId || -1;
+    DashboardApp.events.on('createDeal', this.create, this);
+  },
+
+  url: function() {
+    return '/api/v1/vendor/' + this.vendorId + '/deals/';
+  }
+
 });
 
 /*
@@ -52,6 +58,10 @@ DealsCollectionView = Backbone.Marionette.CompositeView.extend({
   template: '#deals-collection-template',
   itemView: DealView,
 
+  collectionEvents: {
+    "sync": "render"
+  },
+
   appendHtml: function(collectionView, itemView) {
     collectionView.$('tbody').append(itemView.el);
   }
@@ -71,34 +81,64 @@ DealCreateFormView = Backbone.Marionette.ItemView.extend({
 
   render: function() {
     this.$el.html(_.template($(this.template).html()));
+
+    // Set up the JQuery UI Spinners
+    this.$el.find('#hours').spinner({
+      spin: function(event, ui) {
+        if(ui.value >= 5) {
+          $(this).spinner('value', 5);
+          return false;
+        } else if (ui.value < 0) {
+          $(this).spinner('value', 0);
+          return false;
+        }
+      }
+    });
+    this.$el.find('#minutes').spinner({
+      spin: function(event, ui) {
+        if (ui.value >= 60) {
+          $(this).spinner('value', 60);
+          return false;
+        } else if (ui.value < 0) {
+          $(this).spinner('value', 0);
+          return false;
+        }
+      }
+    });
     return this;
   },
 
   createDeal: function(e) {
     e.preventDefault();
 
-    var newModel = new DealModel();
+    var newModel = {};
 
     var $formInputs = $('#deal-form :input');
     var formValues = {};
     $formInputs.each(function() {
       formValues[this.name] = $(this).val();
     });
-    newModel.set('title', formValues['title']);
-    newModel.set('desc', formValues['desc']);
+    newModel['title'] = formValues['title'];
+    newModel['desc'] = formValues['desc'];
     var timeStart = (new Date()).toUTCString();
-    newModel.set('time_start', timeStart);
-    var minutes = formValues['minutes'] + 60 * formValues['hours'];
+    newModel['time_start'] = timeStart;
+    var minutes = Number(formValues['minutes']) + 60 * formValues['hours'];
     var timeEnd = (new Date(Date.now() + minutes * 60000).toUTCString())
-    newModel.set('time_end', timeEnd);
-    newModel.save(); 
+    newModel['time_end'] = timeEnd;
+    newModel['max_deals'] = 0;
+    newModel['instructions'] = 'Show to waiter';
+
+    DashboardApp.events.trigger('createDeal', newModel);
+    this.$el.find('#submit-btn').blur();
   }
 });
 
 // Load the initializer
 DashboardApp.addInitializer(function(options) {
+  DashboardApp.events = _.extend({}, Backbone.Events);
+
   // Load all existing deals
-  var deals = new DealsCollection();
+  var deals = new DealsCollection([], { 'vendorId': '1' });
   deals.fetch({ reset: true });
   var dealsCollectionView = new DealsCollectionView({
     collection: deals
@@ -106,7 +146,7 @@ DashboardApp.addInitializer(function(options) {
   DashboardApp.dealsRegion.show(dealsCollectionView);
 
   // Load the form
-  var dealCreateForm = new DealCreateFormView();
+  var dealCreateForm = new DealCreateFormView({ });
   DashboardApp.newDealFormRegion.show(dealCreateForm);
 }); 
 

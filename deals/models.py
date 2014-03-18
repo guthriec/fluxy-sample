@@ -60,8 +60,8 @@ class Deal(models.Model):
   desc = models.CharField(max_length=500)
   time_start = models.DateTimeField()
   time_end = models.DateTimeField()
-  max_deals = models.PositiveIntegerField(null=True, blank=True)
-  instructions = models.CharField(max_length=1000, null=True, blank=True)
+  max_deals = models.PositiveIntegerField(default=100)
+  instructions = models.CharField(max_length=1000, default="Show to waiter.")
 
   def __unicode__(self):
     """
@@ -72,14 +72,12 @@ class Deal(models.Model):
   def natural_key(self):
     """ For nested serialization. """
     return {
-        'id': self.id,
-        'vendor': self.vendor,
-        'title': self.title,
-        'desc': self.desc,
-        'time_start': self.time_start,
-        'time_end': self.time_end,
-        'max_deals': self.max_deals,
-        'instructions': self.instructions,
+      'id': self.id,
+      'title': self.title,
+      'desc': self.desc,
+      'time_start': self.time_start,
+      'time_end': self.time_end,
+      'instructions': self.instructions,
     }
 
 class ClaimedDeal(models.Model):

@@ -71,11 +71,11 @@ def vendor(request, vendor_id=None):
       return _make_get_response(vendor_list, known_error)
 
     vendor_list = _list_from_qset(vendor_set, include_nested=False, flatten=True)
-    return _make_get_response(vendor_list, known_error)  
+    return _make_get_response(vendor_list, known_error)
   else:
     # POST request.
     known_error = None
-    vendor = None 
+    vendor = None
     vendor_id = -1
     try:
       vendor = Vendor(**json.loads(request.body))
@@ -112,7 +112,7 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
   if vendor_qset.count() == 0:
     known_error = { 'code': 404, 'message': 'Vendor not found' }
     return _make_get_response(deal_list, known_error)
-  
+ 
   if request.method == 'GET':
     deal_set = _get_deals(vendor_id=vendor_id, active_only=active_only)
     deal_list = _list_from_qset(deal_set, include_nested=False)
@@ -156,14 +156,14 @@ def _get_claimed_deals(claimed_deal_id=None, vendor_id=None, active_only=True):
   @desc: GET request handler for ClaimedDeals. Applies filters specified by parameters
   to ClaimedDeal objects, returning what's left (so invalid deal ID's result in an
   empty QuerySet).
-  
+ 
   @param claimed_deal_id: claimed deal primary key
   @param vendor_id: vendor primary key to filter by
   @param active_only: boolean to filter out expired or unstarted deals
 
   @returns: QuerySet of retrieved objects
   """
-  claimed_deal_set = ClaimedDeal.objects.all() 
+  claimed_deal_set = ClaimedDeal.objects.all()
   if vendor_id:
     claimed_deal_set = claimed_deal_set.filter(deal__vendor_id=vendor_id)
   if claimed_deal_id:
