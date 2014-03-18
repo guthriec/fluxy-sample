@@ -60,14 +60,25 @@ class Deal(models.Model):
   desc = models.CharField(max_length=500)
   time_start = models.DateTimeField()
   time_end = models.DateTimeField()
-  max_deals = models.PositiveIntegerField(null=True, blank=True)
-  instructions = models.CharField(max_length=1000, null=True, blank=True)
+  max_deals = models.PositiveIntegerField(default=100)
+  instructions = models.CharField(max_length=1000, default="Show to waiter.")
 
   def __unicode__(self):
     """
     Human readable way to print a Deal instance. e.g. 50% drinks by vendor: Thaiphoon
     """
     return "{0} by vendor: {1}".format(self.title, self.vendor)
+
+  def natural_key(self):
+    return {
+      'id': self.id,
+      'title': self.title,
+      'desc': self.desc,
+      'time_start': self.time_start,
+      'time_end': self.time_end,
+      'instructions': self.instructions,
+    }
+ 
 
 class ClaimedDeal(models.Model):
   """
