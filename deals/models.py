@@ -70,6 +70,7 @@ class Deal(models.Model):
     return "{0} by vendor: {1}".format(self.title, self.vendor)
 
   def natural_key(self):
+    """ For nested serialization. """
     return {
       'id': self.id,
       'title': self.title,
@@ -78,7 +79,6 @@ class Deal(models.Model):
       'time_end': self.time_end,
       'instructions': self.instructions,
     }
- 
 
 class ClaimedDeal(models.Model):
   """
@@ -93,7 +93,7 @@ class ClaimedDeal(models.Model):
   """
   user = models.ForeignKey('fluxy.FluxyUser')
   deal = models.ForeignKey(Deal)
-  time_claimed = models.DateTimeField(default=datetime.datetime.\
+  time_claimed = models.DateTimeField(default=datetime.datetime.
                                       utcnow().replace(tzinfo=utc))
   claimed_latitude = models.FloatField(null=True, blank=True)
   claimed_longitude = models.FloatField(null=True, blank=True)

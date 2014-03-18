@@ -35,14 +35,17 @@ API
   * Returns all deals ever created.
   * If all of the following GET parameters are set: "lat", "long", and "radius," the returned set is limited to deals within 'radius' of the given coordinates. Radius <= 0 is taken as an unlimited radius.
 
+* ``` /user/ ```
+  * Accepts GET.
+  * If user is authenticated, returns the user object associated with the user. Otherwise, returns a 403.
 
 * ``` /user/auth ```
   * Accepts POST.
   * Takes POST parameters 'username' and 'password', attempts to authenticate the user, returns 200 on success, 401 on inability ot authenticate. Authentication lasts until cookie is cleared (for now).
 
-* ``` /user/vendor ```
+* ``` /user/vendors ```
   * Accepts GET.
-  * If user is authenticated, returns the vendor object associated with the user. If the user is not associated with a vendor, returns an empty object. If the user is not authenticated, returns 403.
+  * If user is authenticated, returns the vendor objects associated with the user. If the user is not associated with a vendor, returns an empty object. If the user is not authenticated, returns 403.
 
 * ``` /user/claimed_deals ```
   * Accepts GET, POST.
@@ -88,6 +91,7 @@ API
   * Accepts GET.
   * Returns all claimed_deals objects associated with {id}. Returns 200 on success, 404 if no vendor of {id} exists.
 
+=======
 APPENDIX A - Notes About Libraries
 ----------------------------------
 * ```JQuery UI``` - Requires: Spinner with Smoothness Theme
