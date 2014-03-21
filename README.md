@@ -1,6 +1,42 @@
 Fluxy Web Stack
 ===============
 
+Getting started
+---------------
+We assume that you have ```pip``` installed. If you do not, use ```brew``` to
+install it.
+
+Make sure you have ```virtualenv``` installed by running:
+```sh
+[sudo] pip install virtualenv
+```
+
+Next we create the virtual environment and load the necessary dependencies:
+```sh
+virtualenv venv
+. venv/bin/activate
+pip install -r requirements.txt
+```
+
+Next we need to make sure you create a local database. Run the following and
+follow the instructions:
+```sh
+python manage.py syncdb
+```
+
+Good, you are now setup. Close this terminal window and follow the instructions
+in the "Starting your local enviornment" part of the README.
+
+Starting your local enviornment
+-------------------------------
+Assuming you are in the correct directory, you need to activate the virtual
+environment and run the server. Run:
+```sh
+. venv/bin/activate
+python manage runserver
+```
+
+You can now access the web stack at: ```127.0.0.1:8000```
 
 Deploying
 -----------
