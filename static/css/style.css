@@ -86,9 +86,19 @@ input[type="text"], input[type="email"] {
 }
 
 .navbar .container #page-title {
+  position: relative;
   margin: 5px auto;
   text-align: center;
   width: 100%;
+}
+
+.navbar .container #login {
+  position: relative;
+  margin: 5px auto;
+  margin-top: -45px;
+  text-align: right;
+  width: 100%;
+  z-index: 1;
 }
 
 #content {
