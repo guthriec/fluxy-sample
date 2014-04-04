@@ -65,7 +65,7 @@ def login_page(request):
   @author: Chris
   @desc: renders login page
   """
-  return render(request, 'fluxy/index.html', {'title': 'Fluxy'})
+  return render(request, 'fluxy/login.html', {'title': 'Fluxy Login'})
 
 
 @require_http_methods(["POST"])
