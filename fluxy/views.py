@@ -8,6 +8,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.utils.timezone import utc
 from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import csrf_exempt
 from fluxy.models import FluxyUser
 from deals.models import Deal, ClaimedDeal
 import datetime
@@ -60,6 +61,7 @@ def subscribe(request):
     return render(request, 'fluxy/index.html')
   return redirect(reverse('fluxy.views.success'))
 
+@csrf_exempt
 @require_http_methods(["POST"])
 def user_auth(request):
   """
