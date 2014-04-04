@@ -11,7 +11,7 @@
     <p><strong>{{ error_message }}</strong></p>
     {% endif %}
     <!-- Form to submit email to our list -->
-    <form action="auth_page" method="post">
+    <form method="post">
       {% csrf_token %}
       <input name="username" type="text" class="required username"
       placeholder="Username" id="username" />

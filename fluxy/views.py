@@ -63,13 +63,22 @@ def subscribe(request):
 def login_page(request):
   """
   @author: Chris
-  @desc: renders login page
+  @desc: renders login page, handles auth posts from the login page
   """
+  error_message = None
+  if request.method == 'POST':
+    api_resp = user_auth(request)
+    if api_resp.status_code != 200:
+      api_content = json.loads(api_resp.content)[0]
+      error_message = api_content['message']
+    else:
+      return redirect(reverse('dashboard.views.dashboard'))
+  
   return render(request, 'fluxy/login.html', {
                  'title': 'Fluxy Login',
+                 'error_message': error_message,
                  'page_title': 'Login'
                })
-
 
 @require_http_methods(["POST"])
 def user_auth(request):
