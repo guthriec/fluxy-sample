@@ -60,6 +60,14 @@ def subscribe(request):
     return render(request, 'fluxy/index.html')
   return redirect(reverse('fluxy.views.success'))
 
+def login_page(request):
+  """
+  @author: Chris
+  @desc: renders login page
+  """
+  return render(request, 'fluxy/index.html', {'title': 'Fluxy'})
+
+
 @require_http_methods(["POST"])
 def user_auth(request):
   """

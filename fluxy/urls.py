@@ -17,7 +17,7 @@ urlpatterns = patterns('',
   url(r'^api/v1/user/claimed_deals/all/$', views.user_deals, {'active_only':
                                                               False}),
   # Route login
-  url(r'^login/$', views.login),
+  url(r'^login/$', views.login_page),
   
   # Route landing page resources: /, /success, /subscribe
   url(r'^$', views.index),
