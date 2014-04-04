@@ -6,9 +6,9 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
   # Registration/authentication
-  url(r'^user/auth/$', views.user_auth),
-  url(r'^user/register/$', views.user_register),
-  url(r'^user/logout/$', views.user_logout),
+  url(r'^api/v1/user/auth/$', views.user_auth),
+  url(r'^api/v1/user/register/$', views.user_register),
+  url(r'^api/v1/user/logout/$', views.user_logout),
 
   # User model
   url(r'^api/v1/user/$', views.user),
