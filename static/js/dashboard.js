@@ -4,7 +4,8 @@ DashboardApp = new Backbone.Marionette.Application();
 // Add regions of the DOM to the Marionette app for ease of manipulation
 DashboardApp.addRegions({
   dealsRegion: '#deals',
-  newDealFormRegion: '#new-deal-form'
+  newDealFormRegion: '#new-deal-form',
+  modalControllerViewRegion: '#modals'
 });
 
 /*
@@ -69,6 +70,51 @@ DealsCollectionView = Backbone.Marionette.CompositeView.extend({
 
 /*
  * @author: Ayush
+ * @desc: Responsible for rendering and displaying any necessary modals 
+ */
+ModalControllerView = Backbone.Marionette.ItemView.extend({
+  template: '#modal-controller-template',
+
+  events: {
+    'click #confirm-create-deal-modal #create-btn': 'createDeal',
+    'click #confirm-create-deal-modal #cancel-btn': 'cancelCreateDeal'
+  },
+
+  initialize: function() {
+    DashboardApp.events.on('createDealConfirmTrigger', this.confirmDealCreation, this);
+  },
+
+  confirmDealCreation: function(deal) {
+    this.newDeal = deal;
+
+    var $modal = this.$el.find('#confirm-create-deal-modal');
+
+    $modal.find('#title td:nth-child(2)').html(deal.title);
+    $modal.find('#description td:nth-child(2)').html(deal.desc);
+
+    var d = Math.abs((new Date(deal.time_start)) - (new Date(deal.time_end)));
+    var hours = parseInt(d / 3600000);
+    var minutes = d % 3600000 / 60000;
+    $modal.find('#duration td:nth-child(2)').html(hours + 'H ' + minutes + 'M');
+
+    $modal.modal('show');
+  },
+  
+  cancelCreateDeal: function() {
+    // TODO: send trigger to clear form
+    this.$el.find('#confirm-create-deal-modal').modal('hide');
+  },
+
+  createDeal: function() {
+    // TODO: send trigger to clear from
+    DashboardApp.events.trigger('createDealTrigger', this.newDeal);
+    this.$el.find('#confirm-create-deal-modal').modal('hide');
+  }
+
+});
+
+/*
+ * @author: Ayush
  * @desc: Defines the view that is associated with the form that allows vendors
  * to create a new deal. It is responsible for handling all events associated
  * with the form.
@@ -128,7 +174,7 @@ DealCreateFormView = Backbone.Marionette.ItemView.extend({
     newModel['max_deals'] = 0;
     newModel['instructions'] = 'Show to waiter';
 
-    DashboardApp.events.trigger('createDealTrigger', newModel);
+    DashboardApp.events.trigger('createDealConfirmTrigger', newModel);
     this.$el.find('#submit-btn').blur();
   }
 });
@@ -149,6 +195,11 @@ DashboardApp.addInitializer(function(options) {
   var dealCreateForm = new DealCreateFormView();
   DashboardApp.newDealFormRegion.show(dealCreateForm);
 }); 
+
+DashboardApp.addInitializer(function(options) {
+  var modalControllerView = new ModalControllerView();
+  DashboardApp.modalControllerViewRegion.show(modalControllerView);
+});
 
 $(document).ready(function() {
   DashboardApp.start();

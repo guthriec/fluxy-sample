@@ -22,6 +22,7 @@
   <h2>Your existing deals</h2>
   <div id="deals">
   </div>
+  <div id="modals"></div>
 </div>
 
 {% endblock %}
@@ -73,6 +74,38 @@
         </tr>
       </table>
     </form>
+  </script>
+
+  <script type="text/template" id="modal-controller-template">
+    <div class="modal fade" id="confirm-create-deal-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Confirm your deal!</h4>
+          </div>
+          <div class="modal-body">
+            <table>
+              <tr id="title">
+                <td>Title:</td>
+                <td></td>
+              </tr>
+              <tr id="description">
+                <td>Description:</td>
+                <td></td>
+              </tr>
+              <tr id="duration">
+                <td>Duration:</td>
+                <td></td>
+              </tr>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" id="cancel-btn">Cancel</button>
+            <button type="button" class="btn btn-primary" id="create-btn">Create Deal</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </script>
 
   <script type="text/javascript" src="{% static 'js/dashboard.js' %}"></script>
