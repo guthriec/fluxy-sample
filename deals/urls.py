@@ -2,6 +2,8 @@ from django.conf.urls import patterns, include, url
 from deals import views
 
 urlpatterns = patterns('',
+  url(r'^vendor/(?P<vendor_id>\d+)/edit/$', 'deals.views.vendor_edit'),
+
   # Route API
   url(r'^api/v1/deals/$', 'deals.views.deal'),
   url(r'^api/v1/deals/all/$', 'deals.views.deal', { 'active_only': False }),
@@ -16,7 +18,7 @@ urlpatterns = patterns('',
     'deals.views.vendor_deals', { 'active_only': False }),
   url(r'^api/v1/vendor/(?P<vendor_id>\d+)/deal/(?P<deal_id>\d+)/$',
     'deals.views.vendor_deals'),
-  
+
   url(r'^api/v1/vendor/(?P<vendor_id>\d+)/claimed_deals/$',
     'deals.views.vendor_claimed_deals'),
   url(r'^api/v1/vendor/(?P<vendor_id>\d+)/claimed_deals/all/$',

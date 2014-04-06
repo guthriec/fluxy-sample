@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+
+<div>
+  <h1>Edit Vendor</h1>
+  <form>
+    {% csrf_token %}
+    <input name="name" type="text" value="{{ vendor.name }}"></input><br/>
+    <input name="address" type="text" value="{{ vendor.address }}"></input><br/>
+    <input name="web_url" type="text" value="{{ vendor.web_url }}"></input><br/>
+    <input name="yelp_url" type="text" value="{{ vendor.yelp_url }}"></input><br/>
+    <input name="phone" type="text" value="{{ vendor.phone }}"></input><br/>
+    <img src="{{ vendor.image }}"></img><br/>
+    <input name="image" type="file" value="{{ vendor.image }}"></input><br/>
+  </form>
+</div>
+
+{% endblock %}

@@ -3,10 +3,21 @@ from dateutil import parser
 from deals.models import ClaimedDeal, Deal, Vendor
 from distance import in_radius
 from django.core import serializers
-from django.http import HttpResponse, HttpResponseRedirect
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.utils.timezone import utc
 from django.views.decorators.http import require_http_methods
+from django.shortcuts import redirect, render, get_object_or_404
 import json
+
+@require_http_methods(['GET'])
+def vendor_edit(request, vendor_id = None):
+  if not request.user.is_authenticated():
+    return redirect('/user/auth')
+  vendor =get_object_or_404(Vendor, pk=vendor_id)
+  if vendor in request.user.vendors.all():
+    return render(request, 'deals/vendor_edit.html', { 'vendor': vendor })
+  return HttpResponse('Invalid permissions', status = 403)
 
 @require_http_methods(["GET"])
 def deal(request, deal_id=None, active_only=True):
