@@ -18,6 +18,7 @@ urlpatterns = patterns('',
                                                               False}),
   # Route login
   url(r'^login/$', views.login_page),
+  url(r'^logout/$', views.logout_page),
   
   # Route landing page resources: /, /success, /subscribe
   url(r'^$', views.index),

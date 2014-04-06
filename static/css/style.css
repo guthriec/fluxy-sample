@@ -65,6 +65,11 @@ input[type="text"], input[type="email"] {
   margin: 10px 0 20px 0;
 }
 
+#landing-page #login {
+  text-align: center;
+  font-size: 30px;
+}
+
 /** Base Template CSS **/
 .navbar-default {
   background-color: #1abc9c;
@@ -92,7 +97,7 @@ input[type="text"], input[type="email"] {
   width: 100%;
 }
 
-.navbar .container #login {
+.navbar .container #account-links {
   position: relative;
   margin: 5px auto;
   margin-top: -45px;

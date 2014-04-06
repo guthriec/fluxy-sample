@@ -82,6 +82,13 @@ def login_page(request):
                  'page_title': 'Login'
                })
 
+def logout_page(request):
+  if not request.user.is_authenticated():
+    return redirect(reverse('fluxy.views.login_page'))
+  else:
+    user_logout(request)
+    return redirect(reverse('fluxy.views.index')) 
+
 @require_http_methods(["POST"])
 def user_auth(request):
   """
