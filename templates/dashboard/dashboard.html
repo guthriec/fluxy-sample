@@ -28,7 +28,9 @@
 
 {% block js %}
   <script type="text/javascript" src="{% static 'js/lib/jqueryui.min.js' %}"></script>
-
+  <script type="text/javascript">
+    var vendorId = {{ vendor_id }};
+  </script>
   <script type="text/template" id="deal-template">
     <td><%= title  %></td>
     <td><%= desc  %></td>

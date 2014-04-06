@@ -68,10 +68,12 @@ def login_page(request):
   error_message = None
   if request.method == 'POST':
     api_resp = user_auth(request)
+    api_content = json.loads(api_resp.content)[0]
     if api_resp.status_code != 200:
-      api_content = json.loads(api_resp.content)[0]
       error_message = api_content['message']
     else:
+      vendor_id = api_content['vendors'][0]
+      request.session['vendor_id'] = vendor_id
       return redirect(reverse('dashboard.views.dashboard'))
   
   return render(request, 'fluxy/login.html', {
