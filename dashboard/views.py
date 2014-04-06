@@ -1,8 +1,12 @@
-from django.shortcuts import render
+from django.core.urlresolvers import reverse
+from django.shortcuts import render, redirect
 
 def dashboard(request):
-  return render(request, 'dashboard/dashboard.html', {
-                 'title': 'Fluxy Dashboard',
-                 'page_title': 'Dashboard',
-                 'vendor_id': request.session['vendor_id']
-               })
+  try: 
+    return render(request, 'dashboard/dashboard.html', {
+                   'title': 'Fluxy Dashboard',
+                   'page_title': 'Dashboard',
+                   'vendor_id': request.session['vendor_id']
+                 })
+  except KeyError:
+    return redirect(reverse('fluxy.views.login_page'))
