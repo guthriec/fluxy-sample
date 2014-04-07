@@ -2,7 +2,7 @@ html, body {
   font-family: 'Josefin Sans', sans-serif;
 }
 
-input[type="text"], input[type="email"] {
+input[type="text"], input[type="email"], input[type="password"] {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
@@ -162,4 +162,20 @@ input[type="text"], input[type="email"] {
   font-size: 40px;
   position: relative;
   top: 5px;
+}
+
+/** Login page CSS **/
+
+#login-page #form-container{
+  display: block;
+  margin: 50px auto;
+}
+
+#login-page #auth-form-table {
+  border-collapse: separate;
+  border-spacing: 5px;
+  text-align: center;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: rgba(26, 188, 156, 0.7);
 }
