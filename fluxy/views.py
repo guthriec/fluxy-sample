@@ -67,7 +67,7 @@ def login_page(request):
   @desc: renders login page, handles auth posts from the login page.
   If user is authenticated, redirects to dashboard.
   """
-  if request.user.is_authenticated:
+  if request.user.is_authenticated():
     return redirect(reverse('dashboard.views.dashboard'))
   error_message = None
   if request.method == 'POST':
