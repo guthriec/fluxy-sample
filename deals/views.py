@@ -112,7 +112,7 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
   if vendor_qset.count() == 0:
     known_error = { 'code': 404, 'message': 'Vendor not found' }
     return _make_get_response(deal_list, known_error)
- 
+
   if request.method == 'GET':
     deal_set = _get_deals(vendor_id=vendor_id, active_only=active_only)
     deal_list = _list_from_qset(deal_set, include_nested=False)
@@ -156,7 +156,7 @@ def _get_claimed_deals(claimed_deal_id=None, vendor_id=None, active_only=True):
   @desc: GET request handler for ClaimedDeals. Applies filters specified by parameters
   to ClaimedDeal objects, returning what's left (so invalid deal ID's result in an
   empty QuerySet).
- 
+
   @param claimed_deal_id: claimed deal primary key
   @param vendor_id: vendor primary key to filter by
   @param active_only: boolean to filter out expired or unstarted deals
