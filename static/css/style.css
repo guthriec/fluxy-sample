@@ -13,26 +13,26 @@ input[type="text"], input[type="email"] {
 /** LANDING PAGE CSS **/
 #landing-page {
   width: 900px;
-  margin: 50px auto 0 auto;
+  margin: 0 auto 0 auto;
 }
 
 #landing-page #left-col {
   float: left;
   position: relative;
   left: 30px;
-  top: 30px;
+  top: 0px;
 }
 
 #landing-page #right-col {
   position: relative;
-  top: 80px;
+  top: 40px;
   left: 80px;
   padding-right: 150px;
 }
 
 #landing-page #form-container {
   position: relative;
-  top: 125px;
+  top: 105px;
 }
 
 #landing-page #form-container #email {
@@ -46,6 +46,11 @@ input[type="text"], input[type="email"] {
 #landing-page #form-container #submit-btn {
   position: relative;
   left: -95px;
+}
+
+#landing-page #restaurants {
+  position: relative;
+  top: 140px;
 }
 
 #landing-page h1 {
@@ -65,9 +70,20 @@ input[type="text"], input[type="email"] {
   margin: 10px 0 20px 0;
 }
 
-#landing-page #login {
+#landing-page #restaurants h2 {
+  position: relative;
+  text-indent: -305px;
   text-align: center;
-  font-size: 30px;
+}
+
+
+#landing-page #restaurants #login {
+  text-align: center;
+  display: inline-block;
+  width: 100%;
+  position: relative;
+  font-size: 24px;
+  margin-bottom: 20px;
 }
 
 /** Base Template CSS **/
@@ -107,7 +123,7 @@ input[type="text"], input[type="email"] {
 }
 
 #content {
-  margin-top: 50px;
+  margin-top: 15px;
 }
 
 /** Dashboard CSS **/

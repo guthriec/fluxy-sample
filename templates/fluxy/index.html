@@ -4,9 +4,6 @@
 {% block content %}
 
 <div id="landing-page">
-  <div id="login">
-    <a href="{% url 'fluxy.views.login_page' %}">Restaurant Login</a>
-  </div>
   <img src="{% static 'img/in_iPhone.png' %}" alt="iPhone Image" id="left-col" />
   <div id="right-col">
     <h1>Introducing</h1>
@@ -31,6 +28,10 @@
       placeholder="Your email" id="email" />
       <button type="submit" class="btn btn-default btn-lg" id="submit-btn">Subscribe</button>
     </form>
+  </div>
+  <div id="restaurants">
+    <h2>Restaurants: contact us (<a href="mailto:team@fluxyapp.com" >team@fluxyapp.com</a>) to list your deals</h2>
+    <a href="{% url 'fluxy.views.login_page' %}" id="login">Restaurant login</a>
   </div>
 </div>
 
