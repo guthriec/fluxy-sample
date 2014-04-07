@@ -84,6 +84,11 @@ def login_page(request):
                })
 
 def logout_page(request):
+  """
+  @author: Chris
+  @desc: handles logout requests from the /logout/ URL, redirecting
+  to an appropriate webpage
+  """
   if not request.user.is_authenticated():
     return redirect(reverse('fluxy.views.login_page'))
   else:
