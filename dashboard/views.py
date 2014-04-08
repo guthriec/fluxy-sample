@@ -1,6 +1,7 @@
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, redirect
 
+@login_required
 def dashboard(request):
   try: 
     return render(request, 'dashboard/dashboard.html', {
