@@ -25,9 +25,9 @@
           <div id="page-title">{{ page_title }}</div>
           <div id="account-links">
             {% if user.is_authenticated %}
-            <a href="{% url 'fluxy.views.logout_page' %}">Logout</a>
+            <a class="btn btn-default" href="{% url 'fluxy.views.logout_page' %}">Logout</a>
             {% elif page_title != 'Login'  %}
-            <a href="{% url 'fluxy.views.login_page' %}">Login</a>
+            <a class="btn btn-default" href="{% url 'fluxy.views.login_page' %}">Login</a>
             {% endif %}
           </div>
         </div>
