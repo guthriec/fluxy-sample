@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+
+<div id="login-page">
+  <div id="form-container">
+    <!-- Error message -->
+    {% if error_message %}
+    <p><strong>{{ error_message }}</strong></p>
+    {% endif %}
+    <!-- Form to submit user credentials -->
+    <form method="post" id="auth-form">
+      {% csrf_token %}
+      <table id="auth-form-table">
+        <tr><td><input name="username" type="text" class="required username"
+        placeholder="Username" id="username"/></td></tr>
+        <tr><td><input name="password" type="password" class="required password"
+        placeholder="Password" id="password"/></td></tr>
+        <tr><td><button type="submit" class="btn btn-default btn-lg" id="login-btn">Login</button></td></tr>
+      </table>
+    </form>
+  </div>
+  <div id="contact-us">
+    <h3>Restaurants: contact us (<a href="mailto:team@fluxyapp.com" >team@fluxyapp.com</a>) to join the Fluxy network!</h3>
+  </div>
+</div>
+
+{% endblock %}

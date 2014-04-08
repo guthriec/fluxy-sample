@@ -1,6 +1,7 @@
 # Filename: /fluxy/views.py
 # Notes: Includes view functions for the overall Fluxy project
 
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.core import serializers
 from django.core.urlresolvers import reverse
@@ -60,6 +61,51 @@ def subscribe(request):
   except:
     return render(request, 'fluxy/index.html')
   return redirect(reverse('fluxy.views.success'))
+
+def login_page(request):
+  """
+  @author: Chris
+  @desc: renders login page, handles auth posts from the login page.
+  If user is authenticated, redirects to dashboard.
+  Right now, ignores the 'next' parameter. If the user has associated
+  vendors, it redirects to the dashboard for the first vendor in the list.
+  """
+  error_message = None
+  for message in messages.get_messages(request):
+    if message.level == messages.ERROR:
+      error_message = message.message
+
+  if request.method == 'POST':
+    api_resp = user_auth(request)
+    api_content = None
+    if api_resp.status_code != 200:
+      api_content = json.loads(api_resp.content)
+      error_message = api_content['message']
+    else:
+      try:
+        api_content = json.loads(api_resp.content)[0]
+        vendor_id = api_content['vendors'][0]
+        request.session['vendor_id'] = vendor_id
+      # If no associated vendor, just don't set the vendor_id session attribute
+      except IndexError:
+        pass
+      return redirect(reverse('dashboard.views.dashboard'))
+  
+  return render(request, 'fluxy/login.html', {
+                 'title': 'Fluxy Login',
+                 'error_message': error_message,
+                 'page_title': 'Login'
+               })
+
+def logout_page(request):
+  """
+  @author: Chris
+  @desc: handles logout requests from the /logout/ URL, redirecting
+  to an appropriate webpage
+  """
+  if request.user.is_authenticated():
+    user_logout(request)
+  return redirect(reverse('fluxy.views.login_page'))
 
 @csrf_exempt
 @require_http_methods(["POST"])
