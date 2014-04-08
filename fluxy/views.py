@@ -62,6 +62,33 @@ def subscribe(request):
     return render(request, 'fluxy/index.html')
   return redirect(reverse('fluxy.views.success'))
 
+def register_page(request):
+  """
+  @author: Chris
+  @desc: renders registration page, handles posts from this page.
+  If user is authenticated, redirects to dashboard.
+  """
+  error_message = None
+  for message in messages.get_messages(request):
+    if message.level == messages.ERROR:
+      error_message = message.message
+
+  if request.method == 'POST':
+    api_resp = user_register(request)
+    api_content = None
+    if api_resp.status_code != 201:
+      api_content = json.loads(api_resp.content)
+      error_message = api_content['message']
+      messages.add_message(request, messages.ERROR, error_message)
+    else:
+      return redirect(reverse('fluxy.views.login_page'))
+  
+  return render(request, 'fluxy/register.html', {
+                 'title': 'Fluxy Registration',
+                 'error_message': error_message,
+                 'page_title': 'Register'
+               })
+
 def login_page(request):
   """
   @author: Chris
@@ -161,20 +188,25 @@ def user_register(request):
   try:
     if request.META['CONTENT_TYPE'] == 'application/json':
       post_data = json.loads(request.body)
+    email = post_data['email']
     username = post_data['username']
     password = post_data['password']
+    password_confirm = post_data['password_confirm']
   except Exception:
     return HttpResponse("Bad request.", status = 400)
   response = {"code": 400, "message": "Could not register"}
-  try:
-    FluxyUser.objects.get(username__exact=username)
-    response['message'] = "Username already registered"
-  except FluxyUser.DoesNotExist:
-    new_user = FluxyUser.objects.create_user(username=username, password=password)
-    new_user.save()
-    return HttpResponseRedirect('/user/auth/',
-        json.dumps([new_user.get_safe_user()]), content_type="application/json",
-        status = 201)
+  if password != password_confirm:
+    response['message'] = "Passwords do not match"
+  else:
+    try:
+      FluxyUser.objects.get(username__exact=username)
+      response['message'] = "Username already registered"
+    except FluxyUser.DoesNotExist:
+      new_user = FluxyUser.objects.create_user(email=email, username=username, password=password)
+      new_user.save()
+      return HttpResponseRedirect('/user/auth/',
+          json.dumps([new_user.get_safe_user()]), content_type="application/json",
+          status = 201)
   return HttpResponse(json.dumps(response), content_type='application/json',
       status = response['code'])
 
