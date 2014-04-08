@@ -66,9 +66,9 @@ def login_page(request):
   @author: Chris
   @desc: renders login page, handles auth posts from the login page.
   If user is authenticated, redirects to dashboard.
+  Right now, ignores the 'next' parameter. If the user has associated
+  vendors, it redirects to the dashboard for the first vendor in the list.
   """
-  if request.user.is_authenticated():
-    return redirect(reverse('dashboard.views.dashboard'))
   error_message = None
   if request.method == 'POST':
     api_resp = user_auth(request)

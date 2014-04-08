@@ -99,6 +99,10 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
+# Login URL
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+
 # Replacing django user model
 
 AUTH_USER_MODEL = 'fluxy.FluxyUser'
