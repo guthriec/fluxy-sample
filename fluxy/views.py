@@ -96,6 +96,7 @@ def user_auth(request):
     response = {"code": 401, "message": "Invalid username/password", "success": False}
     return HttpResponse(json.dumps(response), content_type="application/json", status = response["code"])
 
+@csrf_exempt
 @require_http_methods(["POST"])
 def user_register(request):
   """
