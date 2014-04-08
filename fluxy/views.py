@@ -71,10 +71,10 @@ def login_page(request):
   vendors, it redirects to the dashboard for the first vendor in the list.
   """
   error_message = None
-  all_messages = messages.get_messages(request) 
-  for message in all_messages:
+  for message in messages.get_messages(request):
     if message.level == messages.ERROR:
       error_message = message.message
+
   if request.method == 'POST':
     api_resp = user_auth(request)
     api_content = None
