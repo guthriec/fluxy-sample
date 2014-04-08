@@ -106,7 +106,7 @@ def vendor(request, vendor_id=None):
       else:
         post_data = request.POST
       vendor, created = Vendor.objects.get_or_create(pk = vendor_id, defaults = post_data)
-      form = VendorForm(post_data, instance=vendor)
+      form = VendorForm(post_data, request.FILES, instance=vendor)
       vendor = form.save()
       vendor_id = str(vendor.id)
     except TypeError:
