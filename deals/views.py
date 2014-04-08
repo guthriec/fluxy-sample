@@ -29,7 +29,10 @@ def vendor_edit(request, vendor_id = None):
   if vendor in request.user.vendors.all():
     return render(request, 'deals/vendor_edit.html', { 'form': form,
       'vendor_id': vendor_id })
-  return HttpResponse('Invalid permissions', status = 403)
+  return HttpResponse(json.dumps({ 'code': 403,
+                                   'message': 'Invalid permissions.'
+                                 }), content_type = 'application/json',
+                                 status = 403)
 
 @require_http_methods(["GET"])
 def deal(request, deal_id=None, active_only=True):
