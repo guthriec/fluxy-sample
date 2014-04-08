@@ -1,7 +1,9 @@
 from datetime import datetime
 from dateutil import parser
 from deals.models import ClaimedDeal, Deal, Vendor
+from deals.forms import VendorForm
 from distance import in_radius
+from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseRedirect, Http404
@@ -10,13 +12,23 @@ from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect, render, get_object_or_404
 import json
 
+@login_required
 @require_http_methods(['GET'])
 def vendor_edit(request, vendor_id = None):
-  if not request.user.is_authenticated():
-    return redirect('/user/auth')
-  vendor =get_object_or_404(Vendor, pk=vendor_id)
+  """
+  @author: Rahul
+  @desc: This renders a form that allows people to edit a specific vendor.
+
+  @param request: the request object
+  @param vendor_id: the id of the vendor to edit
+
+  @return: An HttpResponse that renders a vendor form.
+  """
+  vendor = get_object_or_404(Vendor, pk=vendor_id)
+  form = VendorForm(instance=vendor)
   if vendor in request.user.vendors.all():
-    return render(request, 'deals/vendor_edit.html', { 'vendor': vendor })
+    return render(request, 'deals/vendor_edit.html', { 'form': form,
+      'vendor_id': vendor_id })
   return HttpResponse('Invalid permissions', status = 403)
 
 @require_http_methods(["GET"])
@@ -51,11 +63,9 @@ def deal(request, deal_id=None, active_only=True):
   deal_list = _limit_result_distance(deal_list, radius, (lat, lon))
 
   return _make_get_response(deal_list, known_error)
-
 @require_http_methods(["GET", "POST"])
 def vendor(request, vendor_id=None):
   """
-  @TODO: Implement PUT
   @author: Chris, Ayush
   @desc: Routes request to appropriate handler based on request method. Returns
   JSON HttpResponse for GET, 201 redirect with JSON for POST (regardless of
@@ -86,14 +96,18 @@ def vendor(request, vendor_id=None):
   else:
     # POST request.
     known_error = None
-    vendor = None
-    vendor_id = -1
     try:
-      vendor = Vendor(**json.loads(request.body))
-      vendor.save()
+      vendor = None
+      if request.META['CONTENT_TYPE'] == 'application/json':
+        post_data = json.loads(request.body)
+      else:
+        post_data = request.POST
+      vendor, created = Vendor.objects.get_or_create(pk = vendor_id, defaults = post_data)
+      form = VendorForm(post_data, instance=vendor)
+      vendor = form.save()
       vendor_id = str(vendor.id)
     except TypeError:
-      known_error = { 'code': 400, 'message': 'Bad post request' }
+      known_error = { 'code': 400, 'message': 'Bad post request: ' }
     return _make_post_response(vendor, 'vendors/' + str(vendor_id), known_error)
 
 @require_http_methods(["GET", "POST"])
