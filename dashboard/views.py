@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, redirect
@@ -11,4 +12,5 @@ def dashboard(request):
                    'vendor_id': request.session['vendor_id']
                  })
   except KeyError:
+    messages.add_message(request, messages.ERROR, "You don't own any restaurants!")
     return redirect(reverse('fluxy.views.login_page'))
