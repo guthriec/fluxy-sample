@@ -184,7 +184,7 @@ DashboardApp.addInitializer(function(options) {
   DashboardApp.events = _.extend({}, Backbone.Events);
 
   // Load all existing deals
-  var deals = new DealsCollection([], { 'vendorId': '1' });
+  var deals = new DealsCollection([], { 'vendorId': vendorId });
   deals.fetch({ reset: true });
   var dealsCollectionView = new DealsCollectionView({
     collection: deals
