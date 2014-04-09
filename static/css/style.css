@@ -140,6 +140,10 @@ input[type="text"], input[type="email"], input[type="password"] {
   margin: 5px;
 }
 
+#content #dashboard #deals-list-container {
+  text-align: center;
+}
+
 #content #dashboard #launch-stats-container {
   min-height: 400px;
 }
