@@ -184,3 +184,18 @@ input[type="text"], input[type="email"], input[type="password"] {
 #login-page #contact-us {
   text-align: center;
 }
+
+#register-page #form-container{
+  display: block;
+  margin: 50px auto;
+  text-align: center;
+}
+
+#register-page #reg-form-table {
+  border-collapse: separate;
+  border-spacing: 5px;
+  text-align: center;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: rgba(26, 188, 156, 0.7);
+}
