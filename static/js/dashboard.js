@@ -4,7 +4,7 @@ DashboardApp = new Backbone.Marionette.Application();
 // Add regions of the DOM to the Marionette app for ease of manipulation
 DashboardApp.addRegions({
   activeDealsRegion: '#active-deals',
-  pendingDealsRegion: '#pending-deals',
+  scheduledDealsRegion: '#scheduled-deals',
   expiredDealsRegion: '#expired-deals',
   newDealFormRegion: '#new-deal-form',
   modalControllerViewRegion: '#modals'
@@ -57,20 +57,20 @@ FullDealsCollection = Backbone.Collection.extend({
     return '/api/v1/vendor/' + this.vendorId + '/deals/all/';
   },
 
-  pending: function() {
+  scheduled: function() {
     return this.filter(function(deal) {
       return 0 < (new Date(deal.get('time_start') - Date.now() - 60000));
     });
   },
 
-  pendingColl: function() {
-    var filtered = this.pending();
-    var pendingCollection = new FullDealsCollection(filtered, { 'vendorId': this.vendorId });
+  scheduledColl: function() {
+    var filtered = this.scheduled();
+    var scheduledCollection = new FullDealsCollection(filtered, { 'vendorId': this.vendorId });
     var self = this;
-    pendingCollection.listenTo(self, 'add remove reset sync', function() {
-      this.reset(self.pending(), { 'vendorId' : self.vendorId });
+    scheduledCollection.listenTo(self, 'add remove reset sync', function() {
+      this.reset(self.scheduled(), { 'vendorId' : self.vendorId });
     });
-    return pendingCollection;
+    return scheduledCollection;
   },
 
   expired: function() {
@@ -244,7 +244,7 @@ DashboardApp.addInitializer(function(options) {
   deals.fetch({ reset: true });
   var dealsFull = new FullDealsCollection([], { 'vendorId': vendorId});
   dealsFull.fetch({ reset: true });
-  var pendingDeals = dealsFull.pendingColl();
+  var scheduledDeals = dealsFull.scheduledColl();
   var expiredDeals = dealsFull.expiredColl();
   console.log(dealsFull);
   var dealsCollectionView = new DealsCollectionView({
@@ -252,11 +252,11 @@ DashboardApp.addInitializer(function(options) {
   });
   DashboardApp.activeDealsRegion.show(dealsCollectionView);
 
-  var pendingDealsCollectionView = new DealsCollectionView({
-    collection: pendingDeals 
+  var scheduledDealsCollectionView = new DealsCollectionView({
+    collection: scheduledDeals 
   });
   
-  DashboardApp.pendingDealsRegion.show(pendingDealsCollectionView);
+  DashboardApp.scheduledDealsRegion.show(scheduledDealsCollectionView);
 
   var expiredDealsCollectionView = new DealsCollectionView({
     collection: expiredDeals

@@ -2,11 +2,19 @@
 {% load staticfiles %}
 
 {% block content %}
-
+<div id="left-bar" class="navbar navbar-left" role="navigation">
+  <ul class="nav nav-pills nav-stacked list-group">
+    <li class="list-group-item"><div id="left-bar-top"></div></li>
+    <li class="list-group-item"> <a href="#" id="nav-new"><h3>Create</h3><p>Create a new deal</p></a></li>
+    <li class="list-group-item"><a href="#"id="nav-reactivate"><h3>Revive</h3><p>Reactivate an expired deal</p></a></li>
+    <li class="list-group-item"><a href="#" id="nav-scheduled"><h3>Review</h3><p>Edit scheduled deals</p></a></li>
+    <li class="list-group-item"><a href="#" id="nav-active"><h3>Fluxy Live</h3><p>View active deals</p></a></li>
+  </ul>
+</div>
 <div id="dashboard">
   <div id="deals-list-container">
-    <h2>Your pending deals</h2>
-    <div id="pending-deals">
+    <h2>Your scheduled deals</h2>
+    <div id="scheduled-deals">
 
     </div>
     <h2>Your active deals</h2>
@@ -18,21 +26,6 @@
 
     </div>
   </div>
-  <div id="launch-stats-container">
-    <div id="launch-deal-container">
-      <h2>Launch a deal</h2>
-      <div id="new-deal-form">
-      </div>
-    </div>
-
-    <div id="daily-stats-container">
-      <h2>Daily Stats</h2>
-        <p>Deals Created: <span>7</span></p>
-        <p>Number Claimed: <span>898</span></p>
-        <p>Number Realized: <span>343</span></p>
-    </div>
-  </div>
-
   <h2>Your existing deals</h2>
   <div id="deals">
   </div>

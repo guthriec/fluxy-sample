@@ -96,6 +96,7 @@ input[type="text"], input[type="email"], input[type="password"] {
 /** Base Template CSS **/
 .navbar-default {
   background-color: #1abc9c;
+  border: none;
 }
 
 .navbar .container {
@@ -140,32 +141,62 @@ input[type="text"], input[type="email"], input[type="password"] {
   margin: 5px;
 }
 
+#content #left-bar {
+  background-color: #1abc9c;
+  font-size: 16px;
+  position: fixed;
+  top: 50px;
+  bottom: 0px;
+  left: 0;
+  width: 200px;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+}
+
+#content #left-bar-top {
+  height: 50px;
+}
+
+#content #left-bar .list-group-item{
+  background-color: inherit;
+  border-left: none;
+  border-right: none;
+  border-color: white;
+  border-width: 2px;
+  border-radius: 0;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  padding: 0;
+  margin-bottom: -4px;
+}
+
+#content #left-bar .list-group-item:first-child {
+  border-top: none;
+}
+
+#content #left-bar a {
+  color: white;
+  border: none;
+  border-radius: 0;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+}
+
+#content #left-bar a:hover {
+  background-color: #696969;
+}
+
+#content #dashboard {
+  position: absolute;
+  left: 200px;
+  padding: 10px;
+}
+
 #content #dashboard #deals-list-container {
   text-align: center;
-}
-
-#content #dashboard #launch-stats-container {
-  min-height: 400px;
-}
-
-#content #dashboard #launch-stats-container
-#launch-deal-container {
-  float: left;
-  width: 500px;
-}
-
-#content #dashboard #launch-stats-container
-#daily-stats-container {
-  float: right;
-  font-size: 20px;
-  width: 500px;
-}
-
-#content #dashboard #launch-stats-container
-#daily-stats-container span {
-  font-size: 40px;
-  position: relative;
-  top: 5px;
 }
 
 /** Login page CSS **/
