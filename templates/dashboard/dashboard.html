@@ -5,13 +5,16 @@
 
 <div id="dashboard">
   <div id="deals-list-container">
+    <h2>Your pending deals</h2>
+    <div id="pending-deals">
+
+    </div>
     <h2>Your active deals</h2>
-    <div id="active-deals-list">
+    <div id="active-deals">
       
     </div>
     <h2>Your expired deals</h2>
-    <p>From the last 30 days</p>
-    <div id="expired-deals-list">
+    <div id="expired-deals">
 
     </div>
   </div>
@@ -72,7 +75,6 @@
         </tr>
         <tr>
           <td>Description: </td>
-          <!-- inline css here for now -->
           <td><textarea name="desc" class="form-control" rows="5"></textarea></td>
         </tr>
         <tr>
@@ -90,7 +92,7 @@
   </script>
 
   <script type="text/template" id="modal-controller-template">
-    <div class="modal fade" id="confirm-create-deal-modal">
+    <div class="modal fade" id="create-deal-modal">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">

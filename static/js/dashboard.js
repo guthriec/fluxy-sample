@@ -3,7 +3,9 @@ DashboardApp = new Backbone.Marionette.Application();
 
 // Add regions of the DOM to the Marionette app for ease of manipulation
 DashboardApp.addRegions({
-  dealsRegion: '#deals',
+  activeDealsRegion: '#active-deals',
+  pendingDealsRegion: '#pending-deals',
+  expiredDealsRegion: '#expired-deals',
   newDealFormRegion: '#new-deal-form',
   modalControllerViewRegion: '#modals'
 });
@@ -15,6 +17,11 @@ DashboardApp.addRegions({
  */
 DealModel = Backbone.Model.extend({ });
 
+DealCollInit = function(models, options) {
+  this.vendorId = options.vendorId || -1;
+  DashboardApp.events.on('createDealTrigger', this.create, this);
+};
+
 /*
  * @author: Ayush
  * @desc: Defines the collection that represents a grouping of DealModel items.
@@ -25,15 +32,64 @@ DealsCollection = Backbone.Collection.extend({
 
   model: DealModel,
   
-  initialize: function(models, options) {
-    this.vendorId = options.vendorId || -1;
-    DashboardApp.events.on('createDealTrigger', this.create, this);
-  },
+  initialize: DealCollInit,
 
   url: function() {
     return '/api/v1/vendor/' + this.vendorId + '/deals/';
   }
 
+});
+
+
+/*
+ * @author: Chris
+ * @desc: Same as DealsCollection, but hooks into the /vendor/deals/all endpoint
+ * TODO: factor
+ */
+
+FullDealsCollection = Backbone.Collection.extend({
+
+  model: DealModel,
+  
+  initialize: DealCollInit,
+
+  url: function() {
+    return '/api/v1/vendor/' + this.vendorId + '/deals/all/';
+  },
+
+  pending: function() {
+    return this.filter(function(deal) {
+      return 0 < (new Date(deal.get('time_start') - Date.now() - 60000));
+    });
+  },
+
+  pendingColl: function() {
+    var filtered = this.pending();
+    var pendingCollection = new FullDealsCollection(filtered, { 'vendorId': this.vendorId });
+    var self = this;
+    pendingCollection.listenTo(self, 'add remove reset sync', function() {
+      this.reset(self.pending(), { 'vendorId' : self.vendorId });
+    });
+    return pendingCollection;
+  },
+
+  expired: function() {
+    return this.select(function(deal) {
+      return 0 > (new Date(deal.get('time_end')) - Date.now() + 60000);
+    });
+  },
+  
+  expiredColl: function() {
+    var filtered = this.expired();
+    var expiredCollection = new FullDealsCollection(filtered, { 'vendorId': this.vendorId });
+    var self = this;
+    expiredCollection.listenTo(self, 'add remove reset sync', function() {
+      console.log('poooop');
+      console.log(self.expired());
+      this.reset(self.expired(), { 'vendorId' : self.vendorId });
+    });
+    return expiredCollection;
+  }
 });
 
 /*
@@ -87,7 +143,7 @@ ModalControllerView = Backbone.Marionette.ItemView.extend({
   confirmDealCreation: function(deal) {
     this.newDeal = deal;
 
-    var $modal = this.$el.find('#confirm-create-deal-modal');
+    var $modal = this.$el.find('#create-deal-modal');
 
     $modal.find('#title td:nth-child(2)').html(deal.title);
     $modal.find('#description td:nth-child(2)').html(deal.desc);
@@ -102,13 +158,13 @@ ModalControllerView = Backbone.Marionette.ItemView.extend({
   
   cancelCreateDeal: function() {
     // TODO: send trigger to clear form
-    this.$el.find('#confirm-create-deal-modal').modal('hide');
+    this.$el.find('#create-deal-modal').modal('hide');
   },
 
   createDeal: function() {
     // TODO: send trigger to clear from
     DashboardApp.events.trigger('createDealTrigger', this.newDeal);
-    this.$el.find('#confirm-create-deal-modal').modal('hide');
+    this.$el.find('#create-deal-modal').modal('hide');
   }
 
 });
@@ -186,10 +242,27 @@ DashboardApp.addInitializer(function(options) {
   // Load all existing deals
   var deals = new DealsCollection([], { 'vendorId': vendorId });
   deals.fetch({ reset: true });
+  var dealsFull = new FullDealsCollection([], { 'vendorId': vendorId});
+  dealsFull.fetch({ reset: true });
+  var pendingDeals = dealsFull.pendingColl();
+  var expiredDeals = dealsFull.expiredColl();
+  console.log(dealsFull);
   var dealsCollectionView = new DealsCollectionView({
     collection: deals
   });
-  DashboardApp.dealsRegion.show(dealsCollectionView);
+  DashboardApp.activeDealsRegion.show(dealsCollectionView);
+
+  var pendingDealsCollectionView = new DealsCollectionView({
+    collection: pendingDeals 
+  });
+  
+  DashboardApp.pendingDealsRegion.show(pendingDealsCollectionView);
+
+  var expiredDealsCollectionView = new DealsCollectionView({
+    collection: expiredDeals
+  });
+
+  DashboardApp.expiredDealsRegion.show(expiredDealsCollectionView);
 
   // Load the form
   var dealCreateForm = new DealCreateFormView();
