@@ -143,14 +143,15 @@ input[type="text"], input[type="email"], input[type="password"] {
 }
 
 #content #left-bar {
-  background-color: #1abc9c;
-  /* background-color: #15869d; */
+  /* background-color: #1abc9c; */
+  background-color: #0a4d3f;
   font-size: 16px;
   position: fixed;
   top: 50px;
   bottom: 0px;
   left: 0;
   width: 200px;
+  min-height: 1000px;
   margin: 0;
   border: none;
   border-radius: 0;
@@ -175,10 +176,6 @@ input[type="text"], input[type="email"], input[type="password"] {
   margin-bottom: -4px;
 }
 
-#content #left-bar .list-group-item:first-child {
-  border-top: none;
-}
-
 #content #left-bar a {
   color: white;
   border: none;
@@ -187,8 +184,12 @@ input[type="text"], input[type="email"], input[type="password"] {
   -moz-border-radius: 0;
 }
 
-#content #left-bar a:hover {
+#content #left-bar a:hover, a:active {
   background-color: #696969;
+}
+
+#content #left-bar .current {
+  background-color: #99152f;
 }
 
 #content #dashboard {

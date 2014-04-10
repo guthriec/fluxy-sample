@@ -1,14 +1,9 @@
 // Start the dashboard Marionette/Backbone app
 DashboardApp = new Backbone.Marionette.Application();
 
-// Add regions of the DOM to the Marionette app for ease of manipulation
 DashboardApp.addRegions({
-  activeDealsRegion: '#active-deals',
-  scheduledDealsRegion: '#scheduled-deals',
-  expiredDealsRegion: '#expired-deals',
-  newDealFormRegion: '#new-deal-form',
-  modalControllerViewRegion: '#modals'
-});
+  dashboardRegion: '#dashboard-container'
+}),
 
 /*
  * @author: Ayush, Chris
@@ -84,8 +79,6 @@ FullDealsCollection = Backbone.Collection.extend({
     var expiredCollection = new FullDealsCollection(filtered, { 'vendorId': this.vendorId });
     var self = this;
     expiredCollection.listenTo(self, 'add remove reset sync', function() {
-      console.log('poooop');
-      console.log(self.expired());
       this.reset(self.expired(), { 'vendorId' : self.vendorId });
     });
     return expiredCollection;
@@ -235,43 +228,92 @@ DealCreateFormView = Backbone.Marionette.ItemView.extend({
   }
 });
 
+DashboardApp.Layout = Backbone.Marionette.Layout.extend({
+  template: "#layout-template",
+
+  initialize: function(options) {
+    this.deals = options.deals;
+    this.dealsFull = options.dealsFull;
+    this.scheduledDeals = this.dealsFull.scheduledColl();
+    this.expiredDeals = this.dealsFull.expiredColl();
+    this.activeDealsCollectionView = new DealsCollectionView({
+      collection: this.deals
+    });
+    this.scheduledDealsCollectionView = new DealsCollectionView({
+      collection: this.scheduledDeals 
+    });
+    this.expiredDealsCollectionView = new DealsCollectionView({
+      collection: this.expiredDeals
+    });
+    this.dealCreateForm = new DealCreateFormView();
+  },
+
+  regions: {
+    leftBar: "#left-bar",
+    dashboard: "#dashboard",
+    modals: "#modals" 
+  },
+
+  events: {
+    'click #nav-create': 'showCreate',
+    'click #nav-revive': 'showRevive',
+    'click #nav-review': 'showReview',
+    'click #nav-active': 'showActive'
+  },
+
+  showCreate: function(e) {
+    e.preventDefault();
+    $("#left-bar").find("a").removeClass("current");
+    $("#nav-create").addClass("current");
+    this.dashboard.show(this.dealCreateForm);
+  },
+
+  showRevive: function(e) {
+    e.preventDefault();
+    var links = $("#left-bar").find("a").removeClass("current");
+    $("#nav-revive").addClass("current");
+    this.dashboard.show(this.expiredDealsCollectionView);
+  },
+
+  showReview: function(e) {
+    e.preventDefault();
+    var links = $("#left-bar").find("a").removeClass("current");
+    $("#nav-review").addClass("current");
+    this.dashboard.show(this.scheduledDealsCollectionView);
+  },
+
+  showActive: function(e) {
+    e.preventDefault();
+    var links = $("#left-bar").find("a").removeClass("current");
+    $("#nav-active").addClass("current");
+    this.dashboard.show(this.activeDealsCollectionView);
+  },
+
+  onShow: function() {
+    $("#left-bar").find("a").removeClass("current");
+    $("#nav-create").addClass("current");
+    this.dashboard.show(this.dealCreateForm);
+  }
+});
+
 // Load the initializer
 DashboardApp.addInitializer(function(options) {
   DashboardApp.events = _.extend({}, Backbone.Events);
 
   // Load all existing deals
-  var deals = new DealsCollection([], { 'vendorId': vendorId });
-  deals.fetch({ reset: true });
-  var dealsFull = new FullDealsCollection([], { 'vendorId': vendorId});
-  dealsFull.fetch({ reset: true });
-  var scheduledDeals = dealsFull.scheduledColl();
-  var expiredDeals = dealsFull.expiredColl();
-  console.log(dealsFull);
-  var dealsCollectionView = new DealsCollectionView({
-    collection: deals
-  });
-  DashboardApp.activeDealsRegion.show(dealsCollectionView);
+  var layoutOptions = {};
+  layoutOptions.deals = new DealsCollection([], { 'vendorId': vendorId });
+  layoutOptions.deals.fetch({ reset: true });
+  layoutOptions.dealsFull = new FullDealsCollection([], { 'vendorId': vendorId});
+  layoutOptions.dealsFull.fetch({ reset: true });
 
-  var scheduledDealsCollectionView = new DealsCollectionView({
-    collection: scheduledDeals 
-  });
-  
-  DashboardApp.scheduledDealsRegion.show(scheduledDealsCollectionView);
-
-  var expiredDealsCollectionView = new DealsCollectionView({
-    collection: expiredDeals
-  });
-
-  DashboardApp.expiredDealsRegion.show(expiredDealsCollectionView);
-
-  // Load the form
-  var dealCreateForm = new DealCreateFormView();
-  DashboardApp.newDealFormRegion.show(dealCreateForm);
+  var layout = new DashboardApp.Layout(layoutOptions);
+  DashboardApp.dashboardRegion.show(layout);
 }); 
 
 DashboardApp.addInitializer(function(options) {
   var modalControllerView = new ModalControllerView();
-  DashboardApp.modalControllerViewRegion.show(modalControllerView);
+  //DashboardApp.modalControllerViewRegion.show(modalControllerView);
 });
 
 $(document).ready(function() {
