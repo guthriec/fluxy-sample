@@ -57,6 +57,9 @@ For example, if you add a deal that should be inactive, in test_deals.py be sure
 
 API
 -----------
+For all POST requests, data can be encoded as form data or using JSON. Remember
+to set the request's CONTENT-TYPE header to the appropriate type.
+
 * ``` /deal/{id} ```
   * Accepts GET.
   * Returns a full deal object, serializing vendor information as an embedded object.
