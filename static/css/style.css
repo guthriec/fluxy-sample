@@ -123,7 +123,8 @@ input[type="text"], input[type="email"], input[type="password"] {
 }
 
 .navbar .container #account-links {
-  position: relative;
+  position: fixed;
+  right: 30px;
   margin: 5px auto;
   margin-top: -48px;
   text-align: right;
@@ -151,6 +152,7 @@ input[type="text"], input[type="email"], input[type="password"] {
   bottom: 0px;
   left: 0;
   width: 200px;
+  text-align: center;
   min-height: 1000px;
   margin: 0;
   border: none;
