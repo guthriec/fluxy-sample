@@ -66,7 +66,7 @@ def deal(request, deal_id=None, active_only=True):
   deal_list = _limit_result_distance(deal_list, radius, (lat, lon))
 
   return _make_get_response(deal_list, known_error)
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["GET", "POST", "PUT"])
 def vendor(request, vendor_id=None):
   """
   @author: Chris, Ayush
@@ -86,7 +86,7 @@ def vendor(request, vendor_id=None):
 
   @return: 201 with JSON for POST or 200 for GET
   """
-  if request. method == 'GET':
+  if request.method == 'GET':
     known_error = None
     vendor_list = None
     vendor_set = _get_vendor(vendor_id)
@@ -97,19 +97,23 @@ def vendor(request, vendor_id=None):
     vendor_list = _list_from_qset(vendor_set, include_nested=False, flatten=True)
     return _make_get_response(vendor_list, known_error)
   else:
-    # POST request.
-    known_error = None
+    vendor = None
     try:
-      vendor = None
+      post_data = request.POST
       if request.META['CONTENT_TYPE'] == 'application/json':
         post_data = json.loads(request.body)
-      else:
-        post_data = request.POST
-      vendor, created = Vendor.objects.get_or_create(pk = vendor_id, defaults = post_data)
-      form = VendorForm(post_data, request.FILES, instance=vendor)
-      vendor = form.save()
+      known_error = None
+      vendor_form = None
+      if request.method == 'POST':
+        if vendor_id:
+          vendor = Vendor.objects.get(pk = vendor_id)
+        vendor_form = VendorForm(post_data, request.FILES, instance=vendor)
+      else: # PUT
+        vendor = Vendor.objects.get(pk = vendor_id)
+        vendor_form = VendorForm(post_data, request.FILES, instance=vendor)
+      vendor = vendor_form.save()
       vendor_id = str(vendor.id)
-    except TypeError:
+    except (TypeError, ValueError):
       known_error = { 'code': 400, 'message': 'Bad post request: ' }
     return _make_post_response(vendor, 'vendors/' + str(vendor_id), known_error)
 
