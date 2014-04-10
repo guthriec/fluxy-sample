@@ -1,6 +1,7 @@
 // Start the dashboard Marionette/Backbone app
 DashboardApp = new Backbone.Marionette.Application();
 
+// Register the main dashboard region
 DashboardApp.addRegions({
   dashboardRegion: '#dashboard-container'
 }),
@@ -12,6 +13,7 @@ DashboardApp.addRegions({
  */
 DealModel = Backbone.Model.extend({ });
 
+// Utility function for initializing the deals collections
 DealCollInit = function(models, options) {
   this.vendorId = options.vendorId || -1;
   DashboardApp.events.on('createDealTrigger', this.create, this);
@@ -38,10 +40,12 @@ DealsCollection = Backbone.Collection.extend({
 
 /*
  * @author: Chris
- * @desc: Same as DealsCollection, but hooks into the /vendor/deals/all endpoint
- * TODO: factor
+ * @desc: Like a DealsCollection, but hooks into the /vendor/deals/all endpoint.
+ *        This collection also has functions scheduledColl and expiredColl that
+ *        return FullDealsCollections filtered into scheduled and expired deals.
+ *        These new collections listen to the original collection for changes
+ *        and update themselves accordingly. 
  */
-
 FullDealsCollection = Backbone.Collection.extend({
 
   model: DealModel,
@@ -52,12 +56,16 @@ FullDealsCollection = Backbone.Collection.extend({
     return '/api/v1/vendor/' + this.vendorId + '/deals/all/';
   },
 
+  // Filter collection to include only deals that have not started.
+  // Potential for client-server synchronization issues.
   scheduled: function() {
     return this.filter(function(deal) {
-      return 0 < (new Date(deal.get('time_start') - Date.now() - 60000));
+      return 0 < (new Date(deal.get('time_start') - Date.now()));
     });
   },
 
+  // Returns collection that has only scheduled deals and updates whenever
+  // the original FullDealsCollection gets updated.
   scheduledColl: function() {
     var filtered = this.scheduled();
     var scheduledCollection = new FullDealsCollection(filtered, { 'vendorId': this.vendorId });
@@ -68,12 +76,16 @@ FullDealsCollection = Backbone.Collection.extend({
     return scheduledCollection;
   },
 
+  // Filter collection to include only deals that have expired.
+  // Pretends we're 1 minute in the future to mitigate synchronization issues.
   expired: function() {
     return this.select(function(deal) {
-      return 0 > (new Date(deal.get('time_end')) - Date.now() + 60000);
+      return 0 > (new Date(deal.get('time_end')) - Date.now() - 60000);
     });
   },
   
+  // Returns collection that has only expired deals and updates whenever
+  // the original FullDealsCollection gets updated.
   expiredColl: function() {
     var filtered = this.expired();
     var expiredCollection = new FullDealsCollection(filtered, { 'vendorId': this.vendorId });
@@ -228,6 +240,12 @@ DealCreateFormView = Backbone.Marionette.ItemView.extend({
   }
 });
 
+/*
+ * @author: Chris
+ * @desc: a Marionette layout that wraps the left navbar, the dashboard
+ *        proper and the modals. Expects to be intialized with a complete
+ *        set of collections for every dashboard view. Handles navigation.
+ */
 DashboardApp.Layout = Backbone.Marionette.Layout.extend({
   template: "#layout-template",
 
@@ -246,6 +264,7 @@ DashboardApp.Layout = Backbone.Marionette.Layout.extend({
       collection: this.expiredDeals
     });
     this.dealCreateForm = new DealCreateFormView();
+    this.modalControllerView = new ModalControllerView();
   },
 
   regions: {
@@ -293,6 +312,7 @@ DashboardApp.Layout = Backbone.Marionette.Layout.extend({
     $("#left-bar").find("a").removeClass("current");
     $("#nav-create").addClass("current");
     this.dashboard.show(this.dealCreateForm);
+    this.modals.show(this.modalControllerView);
   }
 });
 
@@ -300,7 +320,7 @@ DashboardApp.Layout = Backbone.Marionette.Layout.extend({
 DashboardApp.addInitializer(function(options) {
   DashboardApp.events = _.extend({}, Backbone.Events);
 
-  // Load all existing deals
+  // Load all deals, pass them into a new layout
   var layoutOptions = {};
   layoutOptions.deals = new DealsCollection([], { 'vendorId': vendorId });
   layoutOptions.deals.fetch({ reset: true });
@@ -310,11 +330,6 @@ DashboardApp.addInitializer(function(options) {
   var layout = new DashboardApp.Layout(layoutOptions);
   DashboardApp.dashboardRegion.show(layout);
 }); 
-
-DashboardApp.addInitializer(function(options) {
-  var modalControllerView = new ModalControllerView();
-  //DashboardApp.modalControllerViewRegion.show(modalControllerView);
-});
 
 $(document).ready(function() {
   DashboardApp.start();
