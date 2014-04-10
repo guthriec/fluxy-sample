@@ -4,27 +4,6 @@
 {% block content %}
 <div id="dashboard-container"></div>
 {% endblock %}
-<!--
-<div id="dashboard">
-  <div id="deals-list-container">
-    <h2>Your scheduled deals</h2>
-    <div id="scheduled-deals">
-
-    </div>
-    <h2>Your active deals</h2>
-    <div id="active-deals">
-      
-    </div>
-    <h2>Your expired deals</h2>
-    <div id="expired-deals">
-
-    </div>
-  </div>
-  <h2>Your existing deals</h2>
-  <div id="deals">
-  </div>
-</div>
---!>
 {% block js %}
   <script type="text/javascript" src="{% static 'js/lib/jqueryui.min.js' %}"></script>
   <script type="text/javascript">
@@ -33,10 +12,10 @@
   <script type="text/template" id="layout-template">
     <div id="left-bar" class="navbar navbar-left" role="navigation">
       <ul class="nav nav-pills nav-stacked list-group">
-        <li class="list-group-item"><a href="#" id="nav-create"><h3>Create</h3><p>Schedule a new deal</p></a></li>
-        <li class="list-group-item"><a href="#" id="nav-revive"><h3>Revive</h3><p>Reschedule an expired deal</p></a></li>
-        <li class="list-group-item"><a href="#" id="nav-review"><h3>Review</h3><p>Edit scheduled deals</p></a></li>
-        <li class="list-group-item"><a href="#" id="nav-active"><h3>Fluxy Live</h3><p>Monitor active deals</p></a></li>
+        <li class="list-group-item"><a href="" id="nav-create"><h3>Create</h3><p>Schedule a new deal</p></a></li>
+        <li class="list-group-item"><a href="" id="nav-revive"><h3>Revive</h3><p>Reschedule an expired deal</p></a></li>
+        <li class="list-group-item"><a href="" id="nav-review"><h3>Review</h3><p>Edit scheduled deals</p></a></li>
+        <li class="list-group-item"><a href="" id="nav-active"><h3>Fluxy Live</h3><p>Monitor active deals</p></a></li>
       </ul>
     </div>
     <div id="dashboard"></div>
