@@ -1,6 +1,6 @@
-from fluxy.models import FluxyUser
-from deals.models import ClaimedDeal, Deal
+from deals.models import ClaimedDeal, Deal, Vendor
 from django.test import Client, TestCase
+from fluxy.models import FluxyUser
 import json, random
 
 class ApiPermissionsTestCase(TestCase):
@@ -17,6 +17,13 @@ class ApiPermissionsTestCase(TestCase):
                        "time_end": "2015-02-01 00:00:00+00:00",
                        "max_deals": 40,
                        "insructions": "Introduce yourself carefully" }
+    self.new_vendor = { 'name': 'Oren\'s Hummus',
+                        'address': '261 University Ave, Palo Alto CA 94301',
+                        'latitude': 37.445316,
+                        'longitude': -122.162197,
+                        'web_url': 'http://www.yelp.com/biz/orens-hummus-shop-palo-alto',
+                        'yelp_url': 'http://www.yelp.com/biz/orens-hummus-shop-palo-alto',
+                        'phone': '650-752-6492' }
     self.new_claimed_deal = { "deal_id": 7 }
 
   def test_other_vendor_create_deal(self):
@@ -141,12 +148,30 @@ class ApiPermissionsTestCase(TestCase):
   def test_logged_out_create_vendor(self):
     """
     @author: Chris
-    @desc: test that a logged out user can't view claimed deals
+    @desc: test that a logged out user can't create vendors
+    """
+    response = self.client.post('/api/v1/vendors/',
+                                json.dumps(self.new_vendor),
+                                content_type="application/javascript")
+    self.assertEqual(response.status_code, 403)
+    with self.assertRaises(Vendor.DoesNotExist):
+      Vendor.objects.get(name=self.new_vendor["name"])
+
+  def test_logged_out_edit_vendor(self):
+    """
+    @author: Chris
+    @desc: test that a logged out user can't edit vendors
+    TODO: implement PUT /vendors/id/
     """
     pass
-  def test_logged_out_edit_vendor(self):
-    pass
+
   def test_logged_out_delete_vendor(self):
+    """
+    @author: Chris
+    @desc: test that a logged out user can't delete vendors
+    TODO: implement DELETE /vendors/id/
+    """
     pass
+
   def tear_down(self):
     pass

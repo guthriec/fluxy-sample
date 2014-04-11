@@ -78,6 +78,10 @@ def vendor(request, vendor_id=None):
     known_error = None
     vendor = None
     vendor_id = -1
+    # Check user logged in
+    if not request.user.is_authenticated():
+      known_error = { 'code': 403, 'message': 'No user logged in' }
+      return _make_post_response(None, None, known_error)
     try:
       vendor = Vendor(**json.loads(request.body))
       vendor.save()

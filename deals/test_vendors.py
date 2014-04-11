@@ -1,16 +1,16 @@
-from deals.models import Vendor 
-from django.test import Client 
+from deals.models import Vendor
+from django.test import Client
 from django.test import TestCase
 import json
 
 class VendorTestCase(TestCase):
   fixtures = ['deals.json']
-  
+
   def setUp(self):
     self.client = Client()
     # List of all vendors
     self.vendor_list = [1, 2, 3]
-         
+
   def test_get_vendors(self):
     """
     @author: Chris
@@ -22,12 +22,13 @@ class VendorTestCase(TestCase):
     for vendor in vendor_list:
       ids.add(vendor['id'])
     self.assertSetEqual(ids, set(self.vendor_list))
-  
+
   def test_post_vendors(self):
     """
     @author: Chris
     Tests that POST on /vendors/ creates a new vendor and returns 201.
     """
+    self.client.login(username="kingofpaloalto", password="password")
     new_vendor = { 'name': 'Oren\'s Hummus',
                   'address': '261 University Ave, Palo Alto CA 94301',
                   'latitude': 37.445316,
@@ -40,12 +41,13 @@ class VendorTestCase(TestCase):
     self.assertEqual(response.status_code, 201)
     orens = Vendor.objects.filter(name="Oren's Hummus")
     self.assertEqual(orens.count(), 1)
- 
+
   def test_extra_fields(self):
     """
     @author: Chris
-    Tests that POST on /vendors/ with extra fields returns a 400 
+    Tests that POST on /vendors/ with extra fields returns a 400
     """
+    self.client.login(username="kingofpaloalto", password="password")
     new_vendor = { 'name': 'Oren\'s Hummus',
                   'address': '261 University Ave, Palo Alto CA 94301',
                   'stripper_name': "Whoren's"
@@ -72,11 +74,12 @@ class VendorTestCase(TestCase):
     """
     response = self.client.get('/api/v1/vendor/100/')
     self.assertEqual(response.status_code, 404)
-    
+
     # TODO: comment below out until put is implemented
+    # self.client.login(username="kingofpaloalto", password="password")
     #response = self.client.put('/api/v1/vendor/100/', {})
     #self.assertEqual(response.status_code, 404)
-  
+
   def test_vendor_put(self):
     """
     Tests that PUT on an existing vendor modifies the vendor
