@@ -9,6 +9,7 @@ class VendorDealTestCase(TestCase):
   def setUp(self):
     # Create our test client object.
     self.client = Client()
+    self.client.login(username="kingofpaloalto", password="password")
     self.donut_list = list(range(1, 4))
     self.inactive_donuts = [3]
          

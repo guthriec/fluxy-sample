@@ -2,6 +2,7 @@ from datetime import datetime
 from dateutil import parser
 from deals.models import ClaimedDeal, Deal, Vendor
 from distance import in_radius
+from django.contrib.auth.decorators import login_required, permission_required
 from django.core import serializers
 from django.http import HttpResponse, HttpResponseRedirect
 from django.utils.timezone import utc
@@ -9,6 +10,7 @@ from django.views.decorators.http import require_http_methods
 import json
 
 @require_http_methods(["GET"])
+@login_required
 def deal(request, deal_id=None, active_only=True):
   """
   @author: Chris, Ayush
@@ -112,12 +114,15 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
   if vendor_qset.count() == 0:
     known_error = { 'code': 404, 'message': 'Vendor not found' }
     return _make_get_response(deal_list, known_error)
-
   if request.method == 'GET':
     deal_set = _get_deals(vendor_id=vendor_id, active_only=active_only)
     deal_list = _list_from_qset(deal_set, include_nested=False)
     return _make_get_response(deal_list, known_error)
   else:
+    # CHeck user has permissions for the vendor 
+    if int(vendor_id) not in [vendor.id for vendor in request.user.vendors.all()]:
+      known_error = { 'code': 403, 'message': 'User does not own vendor' }
+      return _make_get_response(deal_list, known_error)
     deal = None
     deal_id = -1
     try:
