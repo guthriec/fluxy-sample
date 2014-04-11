@@ -104,7 +104,7 @@ STATICFILES_DIRS = (
 AUTH_USER_MODEL = 'fluxy.FluxyUser'
 
 # Auth redirect
-LOGIN_URL = '/user/auth/'
+LOGIN_URL = '/login/'
 
 # Media files (Images, etc.)
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
