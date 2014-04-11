@@ -3,8 +3,8 @@
 
 {% block content %}
 
-<div>
-  <h1>Edit Vendor</h1>
+<h1>Update Vendor Information</h1>
+<div id="vendor-form">
   <form enctype="multipart/form-data" action="/api/v1/vendor/{{ vendor_id }}/"
     method="post">
     {% csrf_token %}
@@ -13,5 +13,26 @@
       id="submit-btn">Update Vendor Info</button>
   </form>
 </div>
+
+{% endblock %}
+
+{% block js %}
+
+<script type="text/template" id="vendor-edit-form-template">
+  <form action="" method="POST" id="vendor-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" id="submit-btn"
+      class="btn btn-default">Update</button>
+  </form>
+</script>
+
+<script type="text/javascript" src="{% static 'js/vendor.js' %}"></script>
+
+{% endblock %}
+
+{% block css %}
+
+<link rel="stylesheet" href="{% static 'css/lib/jqueryui.min.css' %}">
 
 {% endblock %}
