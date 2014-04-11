@@ -78,9 +78,9 @@ def vendor(request, vendor_id=None):
     vendor = None
     vendor_id = -1
     # Check user logged in
-    if not request.user.is_authenticated():
-      known_error = { 'code': 403, 'message': 'No user logged in' }
-      return _make_post_response(None, None, known_error)
+    logged_out_user_response = _inauthenticated_user_response(request)
+    if logged_out_user_response:
+      return logged_out_user_response
     try:
       vendor = Vendor(**json.loads(request.body))
       vendor.save()
@@ -122,13 +122,13 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
     return _make_get_response(deal_list, known_error)
   else:
     # Check user is logged in
-    if not request.user.is_authenticated():
-      known_error = { 'code': 403, 'message': 'No logged in user' }
-      return _make_get_response(deal_list, known_error)
+    logged_out_user_response = _inauthenticated_user_response(request)
+    if logged_out_user_response:
+      return logged_out_user_response
     # Check user has permissions for the vendor
-    if int(vendor_id) not in [vendor.id for vendor in request.user.vendors.all()]:
-      known_error = { 'code': 403, 'message': 'User does not own vendor' }
-      return _make_get_response(deal_list, known_error)
+    vendor_permissions_response = _vendor_permissions_response(request, vendor_id)
+    if vendor_permissions_response:
+      return vendor_permissions_response
     deal = None
     deal_id = -1
     try:
@@ -154,13 +154,13 @@ def vendor_claimed_deals(request, vendor_id, active_only=True):
   known_error = None
   claimed_deal_list = None
   # Check user is logged in
-  if not request.user.is_authenticated():
-    known_error = { 'code': 403, 'message': 'No logged in user' }
-    return _make_get_response(claimed_deal_list, known_error)
+  logged_out_user_response = _inauthenticated_user_response(request)
+  if logged_out_user_response:
+    return logged_out_user_response
   # Check user has permissions for the vendor
-  if int(vendor_id) not in [vendor.id for vendor in request.user.vendors.all()]:
-    known_error = { 'code': 403, 'message': 'User does not own vendor' }
-    return _make_get_response(claimed_deal_list, known_error)
+  vendor_permissions_response = _vendor_permissions_response(request, vendor_id)
+  if vendor_permissions_response:
+    return vendor_permissions_response
   vendor_set = Vendor.objects.filter(pk=vendor_id)
   if vendor_set.count() == 0:
     known_error = { 'code': 404, 'message': 'Vendor not found' }
@@ -168,6 +168,23 @@ def vendor_claimed_deals(request, vendor_id, active_only=True):
   claimed_deal_set = _get_claimed_deals(vendor_id=vendor_id, active_only=active_only)
   claimed_deal_list = _list_from_qset(claimed_deal_set, include_nested=False, flatten=True)
   return _make_get_response(claimed_deal_list, known_error)
+
+def _inauthenticated_user_response(request):
+  """
+  @author: Chris
+  @desc: Checks if a any user is logged in. If a user is logged in, returns
+         None. Otherwise, returns an appropriate response.
+  """
+  if not request.user.is_authenticated():
+    known_error = { 'code': 403, 'message': 'No logged in user' }
+    return _make_get_response(None, known_error)
+  return None
+
+def _vendor_permissions_response(request, vendor_id):
+  if int(vendor_id) not in [vendor.id for vendor in request.user.vendors.all()]:
+    known_error = { 'code': 403, 'message': 'User does not own vendor' }
+    return _make_get_response(None, known_error)
+  return None
 
 def _get_claimed_deals(claimed_deal_id=None, vendor_id=None, active_only=True):
   """
