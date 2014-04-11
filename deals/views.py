@@ -77,10 +77,12 @@ def vendor(request, vendor_id=None):
     known_error = None
     vendor = None
     vendor_id = -1
+
     # Check user logged in
     logged_out_user_response = _inauthenticated_user_response(request)
     if logged_out_user_response:
       return logged_out_user_response
+
     try:
       vendor = Vendor(**json.loads(request.body))
       vendor.save()
@@ -116,19 +118,17 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
   if vendor_qset.count() == 0:
     known_error = { 'code': 404, 'message': 'Vendor not found' }
     return _make_get_response(deal_list, known_error)
+
   if request.method == 'GET':
     deal_set = _get_deals(vendor_id=vendor_id, active_only=active_only)
     deal_list = _list_from_qset(deal_set, include_nested=False)
     return _make_get_response(deal_list, known_error)
   else:
-    # Check user is logged in
-    logged_out_user_response = _inauthenticated_user_response(request)
-    if logged_out_user_response:
-      return logged_out_user_response
     # Check user has permissions for the vendor
     vendor_permissions_response = _vendor_permissions_response(request, vendor_id)
     if vendor_permissions_response:
       return vendor_permissions_response
+
     deal = None
     deal_id = -1
     try:
@@ -153,14 +153,12 @@ def vendor_claimed_deals(request, vendor_id, active_only=True):
   """
   known_error = None
   claimed_deal_list = None
-  # Check user is logged in
-  logged_out_user_response = _inauthenticated_user_response(request)
-  if logged_out_user_response:
-    return logged_out_user_response
-  # Check user has permissions for the vendor
+
+  # Check user logged in and has permissions for the vendor
   vendor_permissions_response = _vendor_permissions_response(request, vendor_id)
   if vendor_permissions_response:
     return vendor_permissions_response
+
   vendor_set = Vendor.objects.filter(pk=vendor_id)
   if vendor_set.count() == 0:
     known_error = { 'code': 404, 'message': 'Vendor not found' }
@@ -183,7 +181,8 @@ def _inauthenticated_user_response(request):
 def _vendor_permissions_response(request, vendor_id):
   """
   @author: Chris
-  @desc: Checks if the logged-in user has permissions for vendor_id.
+  @desc: Checks if the user is logged in and if the logged-in user has
+         permissions for vendor_id.
          If the user has permissions, returns None.
          Otherwise, returns an appropriate JSON error response.
   """
