@@ -172,8 +172,8 @@ def vendor_claimed_deals(request, vendor_id, active_only=True):
 def _inauthenticated_user_response(request):
   """
   @author: Chris
-  @desc: Checks if a any user is logged in. If a user is logged in, returns
-         None. Otherwise, returns an appropriate response.
+  @desc: Checks if any user is logged in. If a user is logged in, returns
+         None. Otherwise, returns an appropriate JSON error response.
   """
   if not request.user.is_authenticated():
     known_error = { 'code': 403, 'message': 'No logged in user' }
@@ -181,6 +181,15 @@ def _inauthenticated_user_response(request):
   return None
 
 def _vendor_permissions_response(request, vendor_id):
+  """
+  @author: Chris
+  @desc: Checks if the logged-in user has permissions for vendor_id.
+         If the user has permissions, returns None.
+         Otherwise, returns an appropriate JSON error response.
+  """
+  if not request.user.is_authenticated():
+    known_error = { 'code': 403, 'message': 'No logged in user' }
+    return _make_get_response(None, known_error)
   if int(vendor_id) not in [vendor.id for vendor in request.user.vendors.all()]:
     known_error = { 'code': 403, 'message': 'User does not own vendor' }
     return _make_get_response(None, known_error)
