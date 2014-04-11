@@ -2,7 +2,6 @@ from datetime import datetime
 from dateutil import parser
 from deals.models import ClaimedDeal, Deal, Vendor
 from distance import in_radius
-from django.contrib.auth.decorators import login_required, permission_required
 from django.core import serializers
 from django.http import HttpResponse, HttpResponseRedirect
 from django.utils.timezone import utc
