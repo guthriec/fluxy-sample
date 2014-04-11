@@ -124,7 +124,7 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
     deal_list = _list_from_qset(deal_set, include_nested=False)
     return _make_get_response(deal_list, known_error)
   else:
-    # Check user has permissions for the vendor
+    # Check user logged in and has permissions for the vendor
     vendor_permissions_response = _vendor_permissions_response(request, vendor_id)
     if vendor_permissions_response:
       return vendor_permissions_response
