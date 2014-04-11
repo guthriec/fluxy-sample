@@ -10,7 +10,6 @@ from django.views.decorators.http import require_http_methods
 import json
 
 @require_http_methods(["GET"])
-@login_required
 def deal(request, deal_id=None, active_only=True):
   """
   @author: Chris, Ayush
@@ -119,7 +118,11 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
     deal_list = _list_from_qset(deal_set, include_nested=False)
     return _make_get_response(deal_list, known_error)
   else:
-    # CHeck user has permissions for the vendor 
+    # Check user is logged in
+    if not request.user.is_authenticated():
+      known_error = { 'code': 403, 'message': 'No logged in user' }
+      return _make_get_response(deal_list, known_error)
+    # Check user has permissions for the vendor
     if int(vendor_id) not in [vendor.id for vendor in request.user.vendors.all()]:
       known_error = { 'code': 403, 'message': 'User does not own vendor' }
       return _make_get_response(deal_list, known_error)
@@ -147,6 +150,14 @@ def vendor_claimed_deals(request, vendor_id, active_only=True):
   """
   known_error = None
   claimed_deal_list = None
+  # Check user is logged in
+  if not request.user.is_authenticated():
+    known_error = { 'code': 403, 'message': 'No logged in user' }
+    return _make_get_response(claimed_deal_list, known_error)
+  # Check user has permissions for the vendor
+  if int(vendor_id) not in [vendor.id for vendor in request.user.vendors.all()]:
+    known_error = { 'code': 403, 'message': 'User does not own vendor' }
+    return _make_get_response(claimed_deal_list, known_error)
   vendor_set = Vendor.objects.filter(pk=vendor_id)
   if vendor_set.count() == 0:
     known_error = { 'code': 404, 'message': 'Vendor not found' }

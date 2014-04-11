@@ -8,7 +8,6 @@ class ApiPermissionsTestCase(TestCase):
 
   def setUp(self):
     self.client = Client()
-    self.kopa = FluxyUser.objects.get(username="kingofpaloalto")
     self.kopa_vendor_ids = [1, 2]
     self.active_claimed_deals = [1, 2]
     self.all_claimed_deals = [1, 2, 3]
@@ -17,8 +16,8 @@ class ApiPermissionsTestCase(TestCase):
                        "time_start": "2014-02-01 00:00:00+00:00",
                        "time_end": "2015-02-01 00:00:00+00:00",
                        "max_deals": 40,
-                       "instructions": "Introduce yourself carefully" }
-
+                       "insructions": "Introduce yourself carefully" }
+    self.new_claimed_deal = { "deal_id": 7 }
 
   def test_other_vendor_create_deal(self):
     """
@@ -53,7 +52,14 @@ class ApiPermissionsTestCase(TestCase):
     pass
 
   def test_other_vendor_edit(self):
+    """
+    @author: Chris
+    @desc: test that a user can't edit information for a vendor that
+           does not belong to the user
+    TODO: implement PUT /vendor/id
+    """
     pass
+
   def test_other_vendor_delete(self):
     """
     @author: Chris
@@ -62,19 +68,81 @@ class ApiPermissionsTestCase(TestCase):
     TODO: implement DELETE /vendor/id
     """
     pass
+
   def test_other_vendor_get_claimed_deal(self):
-    pass
+    """
+    @author: Chris
+    @desc: test that a user can't get claimed deals for a vendor that does not
+           belong to the user
+    """
+    self.client.login(username="kingofpaloalto", password="password")
+    response = self.client.get('/api/v1/vendor/3/claimed_deals/',
+                                content_type="application/javascript")
+    self.assertEqual(response.status_code, 403)
+    response = self.client.get('/api/v1/vendor/3/claimed_deals/all/',
+                                content_type="application/javascript")
+    self.assertEqual(response.status_code, 403)
+
   def test_logged_out_create_deal(self):
-    pass
+    """
+    @author: Chris
+    @desc: test that a logged out user can't create a deal
+    """
+    response = self.client.post('/api/v1/vendor/1/deals/',
+                                json.dumps(self.new_deal),
+                                content_type="application/javascript")
+    self.assertEqual(response.status_code, 403)
+    with self.assertRaises(Deal.DoesNotExist):
+      Deal.objects.get(title=self.new_deal["title"])
+
   def test_logged_out_edit_deal(self):
+    """
+    @author: Chris
+    @desc: test that a logged out user can't edit a deal
+    TODO: implement PUT /vendor/id/deal/id
+    """
     pass
+
   def test_logged_out_delete_deal(self):
+    """
+    @author: Chris
+    @desc: test that a logged out user can't delete a deal
+    TODO: implement DELETE /vendor/id/deal/id
+    """
     pass
+
   def test_logged_out_claim_deal(self):
-    pass
+    """
+    @author: Chris
+    @desc: test that a logged out user can't claim a deal
+    """
+    response = self.client.post('/api/v1/user/claimed_deals/',
+                                json.dumps(self.new_claimed_deal),
+                                content_type="application/javascript")
+    self.assertEqual(response.status_code, 403)
+    with self.assertRaises(ClaimedDeal.DoesNotExist):
+      ClaimedDeal.objects.get(deal=self.new_claimed_deal["deal_id"])
+
   def test_logged_out_get_claimed_deal(self):
-    pass
+    """
+    @author: Chris
+    @desc: test that a logged out user can't view claimed deals
+    """
+    response = self.client.get('/api/v1/user/claimed_deals/',
+                                content_type="application/javascript")
+    self.assertEqual(response.status_code, 403)
+    response = self.client.get('/api/v1/vendor/1/claimed_deals/',
+                                content_type="application/javascript")
+    self.assertEqual(response.status_code, 403)
+    response = self.client.get('/api/v1/user/claimed_deals/all/',
+                                content_type="application/javascript")
+    self.assertEqual(response.status_code, 403)
+
   def test_logged_out_create_vendor(self):
+    """
+    @author: Chris
+    @desc: test that a logged out user can't view claimed deals
+    """
     pass
   def test_logged_out_edit_vendor(self):
     pass

@@ -121,11 +121,11 @@ API
 
 * ``` /vendor/{id}/claimed_deals ```
   * Accepts GET.
-  * Returns all active claimed_deals objects associated with {id}. Returns 200 on success, 404 if no vendor of {id} exists.
+  * Returns all active claimed_deals objects associated with {id}. Returns 200 on success, 403 if logged in user doesn't have permissions for vendor of {id}, 404 if no vendor of {id} exists.
 
 * ``` /vendor/{id}/claimed_deals/all ```
   * Accepts GET.
-  * Returns all claimed_deals objects associated with {id}. Returns 200 on success, 404 if no vendor of {id} exists.
+  * Returns all claimed_deals objects associated with {id}. Returns 200 on success, 403 if logged in user doesn't have permissions for vendor of {id}, 404 if no vendor of {id} exists.
 
 =======
 APPENDIX A - Notes About Libraries

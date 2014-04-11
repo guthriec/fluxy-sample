@@ -82,7 +82,7 @@ def register_page(request):
       messages.add_message(request, messages.ERROR, error_message)
     else:
       return redirect(reverse('fluxy.views.login_page'))
-  
+
   return render(request, 'fluxy/register.html', {
                  'title': 'Fluxy Registration',
                  'error_message': error_message,
@@ -117,7 +117,7 @@ def login_page(request):
       except IndexError:
         pass
       return redirect(reverse('dashboard.views.dashboard'))
-  
+
   return render(request, 'fluxy/login.html', {
                  'title': 'Fluxy Login',
                  'error_message': error_message,
