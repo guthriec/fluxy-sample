@@ -8,8 +8,7 @@ class DealTestCase(TestCase):
   def setUp(self):
     # Create our test client object.
     self.client = Client()
-    self.client.login(username="kingofpaloalto", password="password")
-    
+
     # Set constants based on test fixture
     self.deal_list = list(range(1, 9))
     self.active_list = [1, 2, 4, 5, 6]
