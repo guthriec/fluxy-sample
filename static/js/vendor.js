@@ -4,11 +4,9 @@ VendorApp.addRegions({
   vendorFormRegion: '#vendor-form'
 });
 
-VendorModel = Backbone.Model.extend({ });
-
 VendorFormView = Backbone.Marionette.ItemView.extend({
   events: {
-    'click #submit-btn': 'editDeal'
+    'click #submit-btn': 'editVendor',
   },
   template: "#vendor-edit-form-template",
 
@@ -17,24 +15,51 @@ VendorFormView = Backbone.Marionette.ItemView.extend({
     return this;
   },
 
-  editDeal: function(e) {
+  editVendor: function(e) {
     e.preventDefault();
 
     var $formInputs = $('#vendor-form :input');
-    var formValues = {};
-    $formInputs.each(function() {
-      formValues[this.name] = $(this).val();
+    var formData = new FormData();
+
+    var reader = new FileReader();
+    var imageIndex = -1;
+
+    console.log($formInputs);
+    $formInputs.each(function(index) {
+      if (this.name != 'image')
+        formData.append(this.name, $(this).val());
+      else
+        imageIndex = index;
     });
 
-    console.log(formValues);
-    $.ajax({
-      url: '/api/v1/vendor/1/',
-      type: 'PUT',
-      contentType: 'application/json',
-      data: JSON.stringify(formValues)
-    });
+    function submitRequest(formData) {
+      $.ajax({
+        url: '/api/v1/vendor/1/',
+        type: 'PUT',
+        contentType: false,
+        data: formData,
+        processData: false
+      });
+      /*
+      var request = new XMLHttpRequest();
+      request.open('PUT', '/api/v1/vendor/1/');
+      request.send(formData);
+      */
+    };
+
+    if ($formInputs[imageIndex].files.length > 0) {
+      reader.readAsArrayBuffer($formInputs[imageIndex].files[0]);
+      reader.onload = function(evt) {
+        console.log('foo');
+        formData.append('image', evt.target.result);
+        submitRequest(formData);
+      };
+    } else {
+      submitRequest(formData);
+    }
+
     this.$el.find('#submit-btn').blur();
-  }
+  },
 });
 
 VendorApp.addInitializer(function(options) {

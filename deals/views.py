@@ -99,21 +99,27 @@ def vendor(request, vendor_id=None):
   else:
     vendor = None
     try:
-      post_data = request.POST
+      print request
+      data = None
       if request.META['CONTENT_TYPE'] == 'application/json':
-        post_data = json.loads(request.body)
+        data = json.loads(request.body)
       known_error = None
       vendor_form = None
       if request.method == 'POST':
+        if not data:
+          data = request.POST
         if vendor_id:
           vendor = Vendor.objects.get(pk = vendor_id)
-        vendor_form = VendorForm(post_data, request.FILES, instance=vendor)
+        vendor_form = VendorForm(data, request.FILES, instance=vendor)
       else: # PUT
+        if not data:
+          data = request.PUT
         vendor = Vendor.objects.get(pk = vendor_id)
-        vendor_form = VendorForm(post_data, request.FILES, instance=vendor)
+        vendor_form = VendorForm(data, request.FILES, instance=vendor)
       vendor = vendor_form.save()
       vendor_id = str(vendor.id)
-    except (TypeError, ValueError):
+    except (TypeError, ValueError), e:
+      print e
       known_error = { 'code': 400, 'message': 'Bad post request: ' }
     return _make_post_response(vendor, 'vendors/' + str(vendor_id), known_error)
 
