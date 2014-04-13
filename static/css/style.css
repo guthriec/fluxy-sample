@@ -137,32 +137,26 @@ input[type="text"], input[type="email"], input[type="password"] {
 }
 
 /** Dashboard CSS **/
-#content #dashboard input[type="text"], 
+#content #dashboard input[type="text"],
 #content #dashboard textarea,
 #content #dashboard select {
   margin: 5px;
 }
 
 #content #left-bar {
-  /* background-color: #1abc9c; */
   background-color: #0a4d3f;
+  position: absolute;
   font-size: 16px;
-  position: fixed;
-  top: 50px;
-  bottom: 0px;
-  left: 0;
   width: 200px;
   text-align: center;
-  min-height: 1000px;
+  top: 50px;
+  bottom: 0;
+  min-height: 440px;
   margin: 0;
   border: none;
   border-radius: 0;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
-}
-
-#content #left-bar-top {
-  height: 32px;
 }
 
 #content #left-bar .list-group-item{
