@@ -9,7 +9,7 @@ DashboardApp.addRegions({
 /*
  * @author: Ayush, Chris
  * @desc: Defines the model that represents the deal that is going to be
- * displayed. 
+ * displayed.
  */
 DealModel = Backbone.Model.extend({ });
 
@@ -28,7 +28,7 @@ DealCollInit = function(models, options) {
 DealsCollection = Backbone.Collection.extend({
 
   model: DealModel,
-  
+
   initialize: DealCollInit,
 
   url: function() {
@@ -44,12 +44,12 @@ DealsCollection = Backbone.Collection.extend({
  *        This collection also has functions scheduledColl and expiredColl that
  *        return FullDealsCollections filtered into scheduled and expired deals.
  *        These new collections listen to the original collection for changes
- *        and update themselves accordingly. 
+ *        and update themselves accordingly.
  */
 FullDealsCollection = Backbone.Collection.extend({
 
   model: DealModel,
-  
+
   initialize: DealCollInit,
 
   url: function() {
@@ -83,7 +83,7 @@ FullDealsCollection = Backbone.Collection.extend({
       return 0 > (new Date(deal.get('time_end')) - Date.now() - 60000);
     });
   },
-  
+
   // Returns collection that has only expired deals and updates whenever
   // the original FullDealsCollection gets updated.
   expiredColl: function() {
@@ -131,7 +131,7 @@ DealsCollectionView = Backbone.Marionette.CompositeView.extend({
 
 /*
  * @author: Ayush
- * @desc: Responsible for rendering and displaying any necessary modals 
+ * @desc: Responsible for rendering and displaying any necessary modals.
  */
 ModalControllerView = Backbone.Marionette.ItemView.extend({
   template: '#modal-controller-template',
@@ -160,7 +160,7 @@ ModalControllerView = Backbone.Marionette.ItemView.extend({
 
     $modal.modal('show');
   },
-  
+
   cancelCreateDeal: function() {
     // TODO: send trigger to clear form
     this.$el.find('#create-deal-modal').modal('hide');
@@ -247,6 +247,8 @@ DealCreateFormView = Backbone.Marionette.ItemView.extend({
  *        set of collections for every dashboard view. Handles navigation.
  */
 DashboardApp.Layout = Backbone.Marionette.Layout.extend({
+  className: 'overflow-hidden',
+
   template: "#layout-template",
 
   initialize: function(options) {
@@ -258,7 +260,7 @@ DashboardApp.Layout = Backbone.Marionette.Layout.extend({
       collection: this.deals
     });
     this.scheduledDealsCollectionView = new DealsCollectionView({
-      collection: this.scheduledDeals 
+      collection: this.scheduledDeals
     });
     this.expiredDealsCollectionView = new DealsCollectionView({
       collection: this.expiredDeals
@@ -270,7 +272,7 @@ DashboardApp.Layout = Backbone.Marionette.Layout.extend({
   regions: {
     leftBar: "#left-bar",
     dashboard: "#dashboard",
-    modals: "#modals" 
+    modals: "#modals"
   },
 
   events: {
