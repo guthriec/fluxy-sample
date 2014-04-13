@@ -26,9 +26,10 @@ def vendor_edit(request, vendor_id = None):
   """
   vendor = get_object_or_404(Vendor, pk=vendor_id)
   form = VendorForm(instance=vendor)
+  print vendor.image.url
   if vendor in request.user.vendors.all():
     return render(request, 'deals/vendor_edit.html', { 'form': form,
-      'vendor_id': vendor_id })
+      'vendor_id': vendor_id, 'vendor': vendor })
   return HttpResponse(json.dumps({ 'code': 403,
                                    'message': 'Invalid permissions.'
                                  }), content_type = 'application/json',
@@ -66,6 +67,7 @@ def deal(request, deal_id=None, active_only=True):
   deal_list = _limit_result_distance(deal_list, radius, (lat, lon))
 
   return _make_get_response(deal_list, known_error)
+
 @require_http_methods(["GET", "POST", "PUT"])
 def vendor(request, vendor_id=None):
   """
@@ -97,31 +99,64 @@ def vendor(request, vendor_id=None):
     vendor_list = _list_from_qset(vendor_set, include_nested=False, flatten=True)
     return _make_get_response(vendor_list, known_error)
   else:
-    vendor = None
-    try:
-      print request
-      data = None
-      if request.META['CONTENT_TYPE'] == 'application/json':
-        data = json.loads(request.body)
-      known_error = None
-      vendor_form = None
-      if request.method == 'POST':
-        if not data:
-          data = request.POST
-        if vendor_id:
-          vendor = Vendor.objects.get(pk = vendor_id)
-        vendor_form = VendorForm(data, request.FILES, instance=vendor)
-      else: # PUT
-        if not data:
-          data = request.PUT
-        vendor = Vendor.objects.get(pk = vendor_id)
-        vendor_form = VendorForm(data, request.FILES, instance=vendor)
-      vendor = vendor_form.save()
-      vendor_id = str(vendor.id)
-    except (TypeError, ValueError), e:
-      print e
-      known_error = { 'code': 400, 'message': 'Bad post request: ' }
-    return _make_post_response(vendor, 'vendors/' + str(vendor_id), known_error)
+    if request.user.is_authenticated():
+      vendor = None
+      try:
+        print request
+        data = None
+        if request.META['CONTENT_TYPE'] == 'application/json':
+          data = json.loads(request.body)
+        known_error = None
+        vendor_form = None
+        if request.method == 'POST':
+          if not data:
+            data = request.POST
+          if vendor_id:
+            vendor = Vendor.objects.get(pk = vendor_id)
+          vendor_form = VendorForm(data, request.FILES, instance=vendor)
+        else: # PUT
+          if vendor in request.user.vendors.all():
+            if not data:
+              data = request.PUT
+            vendor = Vendor.objects.get(pk = vendor_id)
+            vendor_form = VendorForm(data, request.FILES, instance=vendor)
+          else:
+            return HttpResponse(json.dumps({ 'code': 403,
+                                             'message': 'Invalid permissions.'
+                                           }), content_type = 'application/json',
+                                           status = 403)
+        vendor = vendor_form.save()
+        vendor_id = str(vendor.id)
+      except (TypeError, ValueError), e:
+        print e
+        known_error = { 'code': 400, 'message': 'Bad post request: ' }
+      return _make_post_response(vendor, 'vendors/' + str(vendor_id), known_error)
+    return HttpResponse(json.dumps({ 'code': 403,
+                                     'message': 'Authentication Required.'
+                                   }), content_type = 'application/json',
+                                   status = 403)
+
+@require_http_methods(["POST"])
+def vendor_photo(request, vendor_id):
+  """
+  @author: Rahul
+  @desc: Creates a new image for the vendor. Requires user to be authenticated
+  and have proper permissions for vendor.
+
+  @param request: the request object
+  @param vendor_id: the id of the vendor whose picture will be updated
+
+  @return: the JSON encoded vendor object
+  """
+  vendor = get_object_or_404(Vendor, pk = vendor_id)
+  if request.user.is_authenticated() and vendor in request.user.vendors.all():
+    vendor.image = request.FILES['image']
+    vendor.save()
+    return HttpResponse(serializers.serialize('json', [vendor]), status = 201)
+  return HttpResponse(json.dumps({ 'code': 403,
+                                   'message': 'Invalid permissions.'
+                                 }), content_type = 'application/json',
+                                 status = 403)
 
 @require_http_methods(["GET", "POST"])
 def vendor_deals(request, vendor_id, deal_id=None, active_only=True):

@@ -11,6 +11,7 @@ urlpatterns = patterns('',
 
   url(r'^api/v1/vendors/$', 'deals.views.vendor'),
   url(r'^api/v1/vendor/(?P<vendor_id>\d+)/$', 'deals.views.vendor'),
+  url(r'^api/v1/vendor/(?P<vendor_id>\d+)/photo/$', 'deals.views.vendor_photo'),
 
   url(r'^api/v1/vendor/(?P<vendor_id>\d+)/deals/$',
     'deals.views.vendor_deals'),

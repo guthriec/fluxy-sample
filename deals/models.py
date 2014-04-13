@@ -19,7 +19,7 @@ class Vendor(models.Model):
   longitude = models.FloatField()
   web_url = models.URLField()
   yelp_url = models.URLField()
-  image = models.ImageField(upload_to='vendors', blank=True)
+  image = models.ImageField(upload_to='vendors', default="vendors/peyton-manning2.jpg")
   phone = models.CharField(max_length=20)
 
   def __unicode__(self):
