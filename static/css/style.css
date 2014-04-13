@@ -107,7 +107,7 @@ input[type="text"], input[type="email"], input[type="password"] {
 .navbar .container  #logo {
   background-image: url('../img/fluxy_logo_white_header.png');
   background-repeat: no-repeat;
-  margin-top: 5px;
+  top: 5px;
   min-height: 40px;
   min-width: 60px;
   position: fixed;
