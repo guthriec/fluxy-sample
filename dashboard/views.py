@@ -12,5 +12,5 @@ def dashboard(request):
                    'vendor_id': request.session['vendor_id']
                  })
   except KeyError:
-    messages.add_message(request, messages.ERROR, "You don't own any restaurants!")
+    messages.add_message(request, messages.ERROR, "The credentials you provided aren't associated with any restaurants. Login with different credentials to access the restaurant dashboard, or download our mobile app to view and claim deals!")
     return redirect(reverse('fluxy.views.login_page'))
