@@ -82,7 +82,7 @@ def register_page(request):
       messages.add_message(request, messages.ERROR, error_message)
     else:
       return redirect(reverse('fluxy.views.login_page'))
-  
+
   return render(request, 'fluxy/register.html', {
                  'title': 'Fluxy Registration',
                  'error_message': error_message,
@@ -104,20 +104,18 @@ def login_page(request):
 
   if request.method == 'POST':
     api_resp = user_auth(request)
-    api_content = None
-    if api_resp.success:
-      api_content = json.loads(api_resp.content)
+    api_content = json.loads(api_resp.content)
+    if api_resp.status_code != 200 or not api_content['success']:
       error_message = api_content['message']
     else:
       try:
-        api_content = json.loads(api_resp.content)[0]
-        vendor_id = api_content['vendors'][0]
+        vendor_id = api_content['response']['vendors'][0]
         request.session['vendor_id'] = vendor_id
       # If no associated vendor, just don't set the vendor_id session attribute
       except IndexError:
         pass
       return redirect(reverse('dashboard.views.dashboard'))
-  
+
   return render(request, 'fluxy/login.html', {
                  'title': 'Fluxy Login',
                  'error_message': error_message,
