@@ -140,7 +140,7 @@ def user_auth(request):
   @desc: This method is used to log a user in. Returns a 200 upon a valid
   request and a 400 on a badly formated request. Accepts either standard form
   or JSON formatted POSTs with the following keys:
-      *username
+      *email
       *password
 
   @param request: the request object
@@ -152,7 +152,7 @@ def user_auth(request):
   try:
     if request.META['CONTENT_TYPE'] == 'application/json':
       post_data = json.loads(request.body)
-    username = post_data['username']
+    username = post_data['email']
     password = post_data['password']
   except Exception:
     response = { 'code': 400, 'message': 'Bad request' }
@@ -185,8 +185,9 @@ def user_register(request):
   @desc: This method registers a new user. Returns 200 upon success, 400
   otherwise. It does not log the user in upon successful registration.
   Accepts either standard form or JSON formatted POSTs with the following keys:
-      *username
+      *email
       *password
+      *password_confirm
 
   @param request: the request object
 
@@ -197,7 +198,7 @@ def user_register(request):
     if request.META['CONTENT_TYPE'] == 'application/json':
       post_data = json.loads(request.body)
     email = post_data['email']
-    username = post_data['username']
+    username = post_data['email']
     password = post_data['password']
     password_confirm = post_data['password_confirm']
   except Exception:
