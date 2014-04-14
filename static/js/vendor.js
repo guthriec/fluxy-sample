@@ -1,7 +1,39 @@
 VendorApp = new Backbone.Marionette.Application();
 
 VendorApp.addRegions({
+  vendorPhotoFormRegion: '#vendor-photo-form',
   vendorFormRegion: '#vendor-form'
+});
+
+VendorPhotoFormView = Backbone.Marionette.ItemView.extend({
+  events: {
+    'click #save-picture-btn': 'postPhoto',
+    'change #photo-src': 'changePhoto',
+  },
+
+  template: '#vendor-photo-form-template',
+
+  render: function() {
+    this.$el.html(_.template($(this.template).html()));
+    return this;
+  },
+
+  postPhoto: function(e) {
+    e.preventDefault();
+    $('#photo-form').ajaxSubmit({
+      'success': function(res, status) {
+        $('#vendor-image').attr('src', '/media/' +
+          JSON.parse(res)[0].fields.image);
+        $('#change-vendor-photo').modal('hide');
+      },
+      'error': function() {
+      },
+    });
+  },
+
+  changePhoto: function(e) {
+    $('#save-picture-btn').removeClass('disabled');
+  }
 });
 
 VendorFormView = Backbone.Marionette.ItemView.extend({
@@ -18,45 +50,12 @@ VendorFormView = Backbone.Marionette.ItemView.extend({
   editVendor: function(e) {
     e.preventDefault();
 
-    var $formInputs = $('#vendor-form :input');
-    var formData = new FormData();
-
-    var reader = new FileReader();
-    var imageIndex = -1;
-
-    console.log($formInputs);
-    $formInputs.each(function(index) {
-      if (this.name != 'image')
-        formData.append(this.name, $(this).val());
-      else
-        imageIndex = index;
+    $('#vendor-attrs-form').ajaxSubmit({
+      'success': function(res, status) {
+      },
+      'error': function() {
+      },
     });
-
-    function submitRequest(formData) {
-      $.ajax({
-        url: '/api/v1/vendor/1/',
-        type: 'PUT',
-        contentType: false,
-        data: formData,
-        processData: false
-      });
-      /*
-      var request = new XMLHttpRequest();
-      request.open('PUT', '/api/v1/vendor/1/');
-      request.send(formData);
-      */
-    };
-
-    if ($formInputs[imageIndex].files.length > 0) {
-      reader.readAsArrayBuffer($formInputs[imageIndex].files[0]);
-      reader.onload = function(evt) {
-        console.log('foo');
-        formData.append('image', evt.target.result);
-        submitRequest(formData);
-      };
-    } else {
-      submitRequest(formData);
-    }
 
     this.$el.find('#submit-btn').blur();
   },
@@ -65,6 +64,8 @@ VendorFormView = Backbone.Marionette.ItemView.extend({
 VendorApp.addInitializer(function(options) {
   VendorApp.events = _.extend({}, Backbone.Events);
 
+  var vendorPhotoForm = new VendorPhotoFormView();
+  VendorApp.vendorPhotoFormRegion.show(vendorPhotoForm);
   var vendorForm = new VendorFormView();
   VendorApp.vendorFormRegion.show(vendorForm);
 });

@@ -9,3 +9,5 @@ class VendorForm(ModelForm):
   """
   class Meta:
     model = Vendor
+    fields = ['name', 'address', 'latitude', 'longitude', 'web_url',
+        'yelp_url', 'phone']

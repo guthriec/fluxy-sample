@@ -115,16 +115,15 @@ def vendor(request, vendor_id=None):
             vendor = Vendor.objects.get(pk = vendor_id)
           vendor_form = VendorForm(data, request.FILES, instance=vendor)
         else: # PUT
-          if vendor in request.user.vendors.all():
-            if not data:
-              data = request.PUT
-            vendor = Vendor.objects.get(pk = vendor_id)
-            vendor_form = VendorForm(data, request.FILES, instance=vendor)
-          else:
+          if not data:
+            data = request.PUT # TODO This doesn't work
+          vendor = Vendor.objects.get(pk = vendor_id)
+          if not vendor in request.user.vendors.all():
             return HttpResponse(json.dumps({ 'code': 403,
                                              'message': 'Invalid permissions.'
                                            }), content_type = 'application/json',
                                            status = 403)
+          vendor_form = VendorForm(data, request.FILES, instance=vendor)
         vendor = vendor_form.save()
         vendor_id = str(vendor.id)
       except (TypeError, ValueError), e:
