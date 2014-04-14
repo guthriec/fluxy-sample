@@ -2,25 +2,48 @@
 {% load staticfiles %}
 
 {% block content %}
+<div id="left-navbar-container"></div>
+<div id="modal-container"></div>
 <div id="dashboard-container"></div>
 {% endblock %}
 {% block js %}
   <script type="text/javascript" src="{% static 'js/lib/jqueryui.min.js' %}"></script>
+
   <script type="text/javascript">
     var vendorId = {{ vendor_id }};
   </script>
-  <script type="text/template" id="layout-template">
-    <div id="left-bar" class="navbar-left overflow-hidden" role="navigation">
-      <ul class="nav nav-stacked list-group">
-        <li class="list-group-item"><a href="" id="nav-create"><h3>Create</h3><p>Schedule a new deal</p></a></li>
-        <li class="list-group-item"><a href="" id="nav-revive"><h3>Revive</h3><p>Reschedule an expired deal</p></a></li>
-        <li class="list-group-item"><a href="" id="nav-review"><h3>Review</h3><p>Edit scheduled deals</p></a></li>
-        <li class="list-group-item"><a href="" id="nav-active"><h3>Fluxy Live</h3><p>Monitor active deals</p></a></li>
-      </ul>
-    </div>
-    <div id="dashboard"></div>
-    <div id="modals"></div>
+
+  <script type="text/template" id="left-navbar-template">
+      <li class="list-group-item" id="nav-create">
+        <a href="#">
+          <h3 class="list-group-item-heading">Create</h3>
+          <p class="list-group-item-text">Create a new deal</p>
+        </a>
+      </li>
+      <li class="list-group-item" id="nav-revive">
+        <a href="#">
+          <h3 class="list-group-item-heading">Revive</h3>
+          <p class="list-group-item-text">Reschedule an expired deal</p>
+        </a>
+      </li>
+      <li class="list-group-item" id="nav-review">
+        <a href="#">
+          <h3 class="list-group-item-heading">Review</h3>
+          <p class="list-group-item-text">Edit scheduled deals</p>
+        </a>
+      </li>
+      <li class="list-group-item" id="nav-active">
+        <a href="#">
+          <h3 class="list-group-item-heading">Fluxy Live</h3>
+          <p class="list-group-item-text">Monitor active deals</p>
+        </a>
+      </li>
   </script>
+
+  <script type="text/template" id="layout-template">
+    <div id="dashboard"></div>
+  </script>
+
   <script type="text/template" id="deal-template">
     <td><%= title  %></td>
     <td><%= desc  %></td>

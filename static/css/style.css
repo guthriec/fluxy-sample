@@ -1,5 +1,6 @@
 html, body {
   font-family: 'Josefin Sans', sans-serif;
+  height: 100%;
 }
 
 input[type="text"], input[type="email"], input[type="password"] {
@@ -130,6 +131,8 @@ input[type="text"], input[type="email"], input[type="password"] {
 
 #content {
   margin-top: 50px;
+  height: 100%;
+  position: relative;
 }
 
 /** Dashboard CSS **/
@@ -139,52 +142,12 @@ input[type="text"], input[type="email"], input[type="password"] {
   margin: 5px;
 }
 
-.overflow-hidden{
-  overflow: hidden;
-}
-
-#content #left-bar {
-  background-color: #0a4d3f;
+#content #left-navbar-container {
   position: absolute;
-  font-size: 16px;
-  width: 200px;
-  text-align: center;
-  top: 50px;
-  padding-bottom: 30000px;
-  margin-bottom: -30000px;
-  border: none;
-  border-radius: 0;
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
+  height: 100%;
 }
 
-#content #left-bar .list-group-item{
-  background-color: inherit;
-  border-left: none;
-  border-right: none;
-  border-color: white;
-  border-width: 2px;
-  border-radius: 0;
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
-  padding: 0;
-  margin-bottom: -4px;
-}
-
-#content #left-bar a {
-  color: white;
-  border: none;
-  border-radius: 0;
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
-}
-
-#content #left-bar a:hover, a:active {
-  background-color: #696969;
-}
-
-#content #left-bar .current {
-  background-color: #99152f;
+#content #left-navbar-container ul li {
 }
 
 #content #dashboard {

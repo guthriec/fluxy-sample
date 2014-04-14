@@ -1,9 +1,15 @@
 // Start the dashboard Marionette/Backbone app
 DashboardApp = new Backbone.Marionette.Application();
 
+DashboardApp.addInitializer(function(options) {
+  DashboardApp.events = _.extend({}, Backbone.Events);
+});
+
 // Register the main dashboard region
 DashboardApp.addRegions({
-  dashboardRegion: '#dashboard-container'
+  dashboardRegion: '#dashboard-container',
+  leftNavbarRegion: '#left-navbar-container',
+  modalRegion: '#modal-container'
 }),
 
 /*
@@ -133,7 +139,7 @@ DealsCollectionView = Backbone.Marionette.CompositeView.extend({
  * @author: Ayush
  * @desc: Responsible for rendering and displaying any necessary modals.
  */
-ModalControllerView = Backbone.Marionette.ItemView.extend({
+DashboardApp.ModalControllerView = Backbone.Marionette.ItemView.extend({
   template: '#modal-controller-template',
 
   events: {
@@ -172,6 +178,10 @@ ModalControllerView = Backbone.Marionette.ItemView.extend({
     this.$el.find('#create-deal-modal').modal('hide');
   }
 
+});
+DashboardApp.addInitializer(function(options) {
+  var modalControllerView = new DashboardApp.ModalControllerView();
+  DashboardApp.modalRegion.show(modalControllerView);
 });
 
 /*
@@ -240,6 +250,53 @@ DealCreateFormView = Backbone.Marionette.ItemView.extend({
   }
 });
 
+DashboardApp.LeftNavView = Backbone.Marionette.ItemView.extend({
+  tagName: 'ul',
+  className: 'nav nav-stacked list-group',
+  id: 'left-navbar',
+  template: '#left-navbar-template',
+  
+  events: {
+    'click #nav-create': 'showCreate',
+    'click #nav-revive': 'showRevive',
+    'click #nav-review': 'showReview',
+    'click #nav-active': 'showActive'
+  },
+
+  showCreate: function(e) {
+    e.preventDefault();
+    $("#left-bar").find("a").removeClass("selected");
+    $("#nav-create").addClass("selected");
+    DashboardApp.events.trigger('showCreateView');
+  },
+
+  showRevive: function(e) {
+    e.preventDefault();
+    var links = $("#left-bar").find("a").removeClass("selected");
+    $("#nav-revive").addClass("selected");
+    DashboardApp.events.trigger('showReviveView');
+  },
+
+  showReview: function(e) {
+    e.preventDefault();
+    var links = $("#left-bar").find("a").removeClass("selected");
+    $("#nav-review").addClass("selected");
+    DashboardApp.events.trigger('showReviewView');
+  },
+
+  showActive: function(e) {
+    e.preventDefault();
+    var links = $("#left-bar").find("a").removeClass("selected");
+    $("#nav-active").addClass("selected");
+    DashboardApp.events.trigger('showActiveView');
+  },
+
+});
+DashboardApp.addInitializer(function(options) {
+  var leftNavView = new DashboardApp.LeftNavView();
+  DashboardApp.leftNavbarRegion.show(leftNavView);
+});
+
 /*
  * @author: Chris
  * @desc: a Marionette layout that wraps the left navbar, the dashboard
@@ -247,11 +304,17 @@ DealCreateFormView = Backbone.Marionette.ItemView.extend({
  *        set of collections for every dashboard view. Handles navigation.
  */
 DashboardApp.Layout = Backbone.Marionette.Layout.extend({
-  className: 'overflow-hidden',
-
   template: "#layout-template",
+  regions: {
+    dashboard: '#dashboard'
+  },
 
   initialize: function(options) {
+    DashboardApp.events.on('showCreateView', this.showCreate, this);
+    DashboardApp.events.on('showReviveView', this.showRevive, this);
+    DashboardApp.events.on('showReviewView', this.showReview, this);
+    DashboardApp.events.on('showActiveView', this.showActive, this);
+
     this.deals = options.deals;
     this.dealsFull = options.dealsFull;
     this.scheduledDeals = this.dealsFull.scheduledColl();
@@ -266,55 +329,27 @@ DashboardApp.Layout = Backbone.Marionette.Layout.extend({
       collection: this.expiredDeals
     });
     this.dealCreateForm = new DealCreateFormView();
-    this.modalControllerView = new ModalControllerView();
   },
 
-  regions: {
-    leftBar: "#left-bar",
-    dashboard: "#dashboard",
-    modals: "#modals"
-  },
-
-  events: {
-    'click #nav-create': 'showCreate',
-    'click #nav-revive': 'showRevive',
-    'click #nav-review': 'showReview',
-    'click #nav-active': 'showActive'
-  },
 
   showCreate: function(e) {
-    e.preventDefault();
-    $("#left-bar").find("a").removeClass("current");
-    $("#nav-create").addClass("current");
     this.dashboard.show(this.dealCreateForm);
   },
 
   showRevive: function(e) {
-    e.preventDefault();
-    var links = $("#left-bar").find("a").removeClass("current");
-    $("#nav-revive").addClass("current");
     this.dashboard.show(this.expiredDealsCollectionView);
   },
 
   showReview: function(e) {
-    e.preventDefault();
-    var links = $("#left-bar").find("a").removeClass("current");
-    $("#nav-review").addClass("current");
     this.dashboard.show(this.scheduledDealsCollectionView);
   },
 
   showActive: function(e) {
-    e.preventDefault();
-    var links = $("#left-bar").find("a").removeClass("current");
-    $("#nav-active").addClass("current");
     this.dashboard.show(this.activeDealsCollectionView);
   },
 
   onShow: function() {
-    $("#left-bar").find("a").removeClass("current");
-    $("#nav-create").addClass("current");
     this.dashboard.show(this.dealCreateForm);
-    this.modals.show(this.modalControllerView);
   }
 });
 
