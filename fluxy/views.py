@@ -187,6 +187,7 @@ def user_register(request):
   Accepts either standard form or JSON formatted POSTs with the following keys:
       *email
       *password
+      *password_confirm
 
   @param request: the request object
 
