@@ -275,28 +275,28 @@ DashboardApp.LeftNavView = Backbone.Marionette.ItemView.extend({
 
   showCreate: function(e) {
     e.preventDefault();
-    $("#left-bar").find("a").removeClass("selected");
+    $("#left-bar").find("li").removeClass("selected");
     $("#nav-create").addClass("selected");
     DashboardApp.events.trigger('showCreateView');
   },
 
   showRevive: function(e) {
     e.preventDefault();
-    var links = $("#left-bar").find("a").removeClass("selected");
+    var links = $("#left-bar").find("li").removeClass("selected");
     $("#nav-revive").addClass("selected");
     DashboardApp.events.trigger('showReviveView');
   },
 
   showReview: function(e) {
     e.preventDefault();
-    var links = $("#left-bar").find("a").removeClass("selected");
+    var links = $("#left-bar").find("li").removeClass("selected");
     $("#nav-review").addClass("selected");
     DashboardApp.events.trigger('showReviewView');
   },
 
   showActive: function(e) {
     e.preventDefault();
-    var links = $("#left-bar").find("a").removeClass("selected");
+    var links = $("#left-bar").find("li").removeClass("selected");
     $("#nav-active").addClass("selected");
     DashboardApp.events.trigger('showActiveView');
   },
