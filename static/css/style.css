@@ -100,10 +100,6 @@ textarea:focus:-moz-placehoder { color:transparent; }
 }
 
 /** Base Template CSS **/
-.clearfix {
-  clear: both;
-}
-
 .navbar-default {
   background-color: #1abc9c;
   border: none;
@@ -157,9 +153,7 @@ textarea:focus:-moz-placehoder { color:transparent; }
   position: fixed;
   top: 50px;
   width: 200px;
-}
 
-#content #left-navbar-container {
   /* Box shadow */
   -webkit-box-shadow: inset -1px 0px 5px 1px rgba(0,0,0,0.11);
   -moz-box-shadow: inset -1px 0px 5px 1px rgba(0,0,0,0.11);
