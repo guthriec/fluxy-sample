@@ -2,9 +2,7 @@
 {% load staticfiles %}
 
 {% block content %}
-<div id="left-navbar-container"></div>
-<div id="modal-container"></div>
-<div id="dashboard-container"></div>
+    <div id="dashboard-container"></div>
 {% endblock %}
 {% block js %}
   <script type="text/javascript" src="{% static 'js/lib/jqueryui.min.js' %}"></script>
@@ -65,27 +63,89 @@
   </script>
 
   <script type="text/template" id="deal-create-form-template">
-    <form action="" method="POST" id="deal-form">
-      <table class="deal-form-table">
-        <tr>
-          <td>Title: </td>
-          <td><input name="title" type="text" maxlength="40" size="40"></td>
-        </tr>
-        <tr>
-          <td>Description: </td>
-          <td><textarea name="desc" class="form-control" rows="5"></textarea></td>
-        </tr>
-        <tr>
-          <td>Duration: </td>
-          <td>
-            <input id="hours" name="hours" value="0" size="3" /> H
-            <input id="minutes" name="minutes" value="0"  size="2" /> M
-          </td>
-        </tr>
-        <tr><td></td>
-          <td><button type="submit" id="submit-btn" class="btn btn-default">Launch now!</button></td>
-        </tr>
-      </table>
+    <form action="" method="POST" id="deal-form" class="form-horizontal" role="form">
+      <div class="form-area">
+        <div class="form-group">
+          <label for="title" class="col-sm-2 control-label">Title</label>
+          <div class="col-sm-6">
+            <input name="deal-title" id="deal-title" type="text" class="form-control" placeholder="40% off all non-alcoholic drinks">
+          </div>
+          <p class="help-block col-sm-offset-2 col-sm-6">A short, to-the-point description of the deal. This will be displayed as-is to users, so pay attention to capitalization, punctuation, etc.</p>
+        </div>
+      </div>
+      <div class="form-area">
+        <div class="form-group">
+          <label for="start-month" class="col-sm-2 control-label">Start date</label>
+          <div class="col-sm-3 controls form-inline">
+            <select id="start-day" class="form-control" name="start_day">
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="start-hours" class="col-sm-2 control-label">Start time</label>
+          <div class="controls form-inline col-sm-4">
+            <input id="start-hours" type="text" class="form-control" name="start-hours" placeholder="4" size="2" maxlength="2" /> :
+            <input id="start-minutes" type="text" class="form-control" name="start-minutes" placeholder="30"  size="2" maxlength="2"  />
+            <select class="form-control">
+              <option>PM</option>
+              <option>AM</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="duration-hours" class="col-sm-2 control-label">Duration</label>
+          <div class="col-sm-4 controls form-inline">
+            <select id="duration-hours" class="form-control" name="duration-hours">
+              <option>0</option>
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+            </select> H
+            <select id="duration-minutes" class="form-control" name="duration-minutes">
+              <option>0</option>
+              <option>30</option>
+            </select> M
+          </div>
+          <p class="help-block col-sm-offset-2 col-sm-6">While this deal is active, users can claim it, and they'll be instructed to show the deal to your waitstaff. However, according to our policies, <strong>customers may apply a previously claimed deal up to an hour and a half after the deal ends</strong>, so plan accordingly! During this period, no new deals can be claimed. (This policy allows your customers to enjoy their meals and apply the deal after eating, stress-free).</p>
+        </div>
+      </div>
+      <div class="form-area">
+        <div class="form-group">
+          <label for="max-deals1" class="col-sm-2 control-label">Do you want to limit the total number of deals that can be claimed?</label>
+          <div id="max-deals" class="col-sm-4">
+            <label class="radio-inline">
+              <input type="radio" name="limit" value="limited"> Yes
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="limit" value="unlimited"> No
+            </label>
+          </div>
+        </div>
+        <div class="form-group" id="max-deals-group">
+          <label for="max-deals-number" class="col-sm-2 control-label">Maximum number of deals</label>
+          <div class="col-sm-2">
+            <input id="max-deals-number" class="form-control" name="max_deals" type="text" size="3" placeholder="Unlimited" disabled>
+          </div>
+        </div>
+      </div>
+      <div class="form-area">
+        <div class="form-group">
+          <label for="desc" class="col-sm-2 control-label">Extra information</label>
+          <div class="col-sm-6">
+            <textarea name="desc" class="form-control" rows="3" placeholder="While you're here, try our specialty salad!"></textarea>
+          </div>
+          <p class="help-block col-sm-offset-2 col-sm-6">
+            Optional. Feel free to include anything you want your customers to know before they claim the deal. Take note: we already show users your address, website, phone number, and Yelp page.
+          </p>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-6">
+          <button type="submit" id="submit-btn" class="btn btn-default">Schedule!</button>
+          </div>
+        </div>
+      </div>
     </form>
   </script>
 
