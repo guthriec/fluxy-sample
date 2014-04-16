@@ -1,17 +1,17 @@
 from deals.models import Deal
-from django.test import Client 
+from django.test import Client
 from django.test import TestCase
 import json
 
 class VendorDealTestCase(TestCase):
   fixtures = ['deals.json']
-  
+
   def setUp(self):
     # Create our test client object.
     self.client = Client()
     self.donut_list = list(range(1, 4))
     self.inactive_donuts = [3]
-         
+
   def test_deals_post(self):
     """
     @author: Chris
@@ -79,14 +79,13 @@ class VendorDealTestCase(TestCase):
     """
     @author: Chris
     Tests that a valid put on /vendor/1/deal/1 returns 200 and updates
-    the deal 
+    the deal
     """
     deal_edit = { "desc": "A new description",
                   "max_deals": "300" }
     response = self.client.put('/api/v1/vendor/1/deal/1/',
                                data=json.dumps(deal_edit),
                                content_type="application/json")
-    print response
     returned_deal = json.loads(response.content)[0]
     self.assertEqual(returned_deal['desc'], "A new description")
     self.assertEqual(returned_deal['max_deals'], "300")
@@ -100,14 +99,13 @@ class VendorDealTestCase(TestCase):
     """
     @author: Chris
     Tests that an invalid put on /vendor/1/deal/1 returns 400 and does not
-    update the deal 
+    update the deal
     """
     deal_edit = { "poop": "A new description",
                   "max_deals": "300" }
     response = self.client.put('/api/v1/vendor/1/deal/1/',
                                data=json.dumps(deal_edit),
                                content_type="application/json")
-    print response
     self.assertEqual(response.status_code, 400)
     db_dealset = Deal.objects.filter(pk=1)
     self.assertEqual(db_dealset.count(), 1)
