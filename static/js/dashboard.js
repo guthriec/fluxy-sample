@@ -152,6 +152,7 @@ DashboardApp.ModalControllerView = Backbone.Marionette.ItemView.extend({
   },
 
   confirmDealCreation: function(deal) {
+    console.log('confirmDealCreation');
     this.newDeal = deal;
 
     var $modal = this.$el.find('#create-deal-modal');
@@ -165,6 +166,7 @@ DashboardApp.ModalControllerView = Backbone.Marionette.ItemView.extend({
     $modal.find('#duration td:nth-child(2)').html(hours + 'H ' + minutes + 'M');
 
     $modal.modal('show');
+    console.log('modal has been instructed to show');
   },
 
   cancelCreateDeal: function() {
@@ -237,7 +239,7 @@ DealCreateFormView = Backbone.Marionette.ItemView.extend({
 
   createDeal: function(e) {
     e.preventDefault();
-
+    console.log('poooo');
     var newModel = {};
 
     var $formInputs = $('#deal-form :input');
@@ -275,33 +277,37 @@ DashboardApp.LeftNavView = Backbone.Marionette.ItemView.extend({
 
   showCreate: function(e) {
     e.preventDefault();
-    $("#left-bar").find("a").removeClass("selected");
+    $("#left-navbar").find(".list-group-item").removeClass("selected");
     $("#nav-create").addClass("selected");
     DashboardApp.events.trigger('showCreateView');
   },
 
   showRevive: function(e) {
     e.preventDefault();
-    var links = $("#left-bar").find("a").removeClass("selected");
+    var links = $("#left-navbar").find(".list-group-item").removeClass("selected");
     $("#nav-revive").addClass("selected");
     DashboardApp.events.trigger('showReviveView');
   },
 
   showReview: function(e) {
     e.preventDefault();
-    var links = $("#left-bar").find("a").removeClass("selected");
+    var links = $("#left-navbar").find(".list-group-item").removeClass("selected");
     $("#nav-review").addClass("selected");
     DashboardApp.events.trigger('showReviewView');
   },
 
   showActive: function(e) {
     e.preventDefault();
-    var links = $("#left-bar").find("a").removeClass("selected");
+    var links = $("#left-navbar").find(".list-group-item").removeClass("selected");
     $("#nav-active").addClass("selected");
     DashboardApp.events.trigger('showActiveView');
   },
 
+  onShow: function() {
+    $("#nav-create").addClass("selected");
+  }
 });
+
 DashboardApp.addInitializer(function(options) {
   var leftNavView = new DashboardApp.LeftNavView();
   DashboardApp.leftNavbarRegion.show(leftNavView);
@@ -361,7 +367,7 @@ DashboardApp.Layout = Backbone.Marionette.Layout.extend({
 
   onShow: function() {
     this.dashboard.show(this.dealCreateForm);
-  }
+  },
 });
 
 // Load the initializer
