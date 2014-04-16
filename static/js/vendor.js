@@ -22,8 +22,10 @@ VendorPhotoFormView = Backbone.Marionette.ItemView.extend({
     e.preventDefault();
     $('#photo-form').ajaxSubmit({
       'success': function(res, status) {
+        /*
         $('#vendor-image').attr('src', '/media/' +
           JSON.parse(res)[0].fields.image);
+          */
         $('#change-vendor-photo').modal('hide');
       },
       'error': function() {

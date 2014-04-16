@@ -1,6 +1,6 @@
 from datetime import datetime
 from dateutil import parser
-from deals.models import ClaimedDeal, Deal, Vendor
+from deals.models import ClaimedDeal, Deal, Vendor, VendorPhoto
 from deals.forms import VendorForm
 from distance import in_radius
 from django.contrib.auth.decorators import login_required
@@ -14,7 +14,7 @@ import json
 
 @login_required
 @require_http_methods(['GET'])
-def vendor_edit(request, vendor_id = None):
+def vendor_edit_page(request, vendor_id = None):
   """
   @author: Rahul
   @desc: This renders a form that allows people to edit a specific vendor.
@@ -26,7 +26,6 @@ def vendor_edit(request, vendor_id = None):
   """
   vendor = get_object_or_404(Vendor, pk=vendor_id)
   form = VendorForm(instance=vendor)
-  print vendor.image.url
   if vendor in request.user.vendors.all():
     return render(request, 'deals/vendor_edit.html', { 'form': form,
       'vendor_id': vendor_id, 'vendor': vendor })
@@ -139,23 +138,25 @@ def vendor(request, vendor_id=None):
 def vendor_photo(request, vendor_id):
   """
   @author: Rahul
-  @desc: Creates a new image for the vendor. Requires user to be authenticated
-  and have proper permissions for vendor.
+  @desc: Creates a new VendorPhoto object and associates it with the specified
+  vendor. Does NOT make the photo the vendor's primary photo. Requires the user
+  to be authenticated and have vendor permissions.
 
   @param request: the request object
-  @param vendor_id: the id of the vendor whose picture will be updated
+  @param vendor_id: the id of the vendor to associate the photo with.
 
-  @return: the JSON encoded vendor object
+  @return: a 201 response with the JSON encoded VendorPhoto object
   """
-  vendor = get_object_or_404(Vendor, pk = vendor_id)
-  if request.user.is_authenticated() and vendor in request.user.vendors.all():
-    vendor.image = request.FILES['image']
-    vendor.save()
-    return HttpResponse(serializers.serialize('json', [vendor]), status = 201)
-  return HttpResponse(json.dumps({ 'code': 403,
-                                   'message': 'Invalid permissions.'
-                                 }), content_type = 'application/json',
-                                 status = 403)
+  vendor = get_object_or_404(Vendor, pk=vendor_id)
+  try:
+    vendor_photo = VendorPhoto(photo=request.FILES['photo'],
+        vendor=vendor)
+    vendor_photo.save()
+  except:
+    return HttpResponse(json.dumps({ 'status': 400, 'error': 'Bad request.' }),
+      content_type='application/json', status=400)
+  return HttpResponse(serializers.serialize('json', [vendor_photo]),
+      content_type='application/json', status=201)
 
 @require_http_methods(["GET", "POST"])
 def vendor_deals(request, vendor_id, deal_id=None, active_only=True):

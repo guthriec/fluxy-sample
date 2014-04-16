@@ -4,7 +4,7 @@
 {% block content %}
 
 <h1>Update Vendor Information</h1>
-<img src="{{ vendor.image.url }}" style="width:200px" id="vendor-image"/>
+<img src="" style="width:200px" id="vendor-image"/>
 
 <div id="vendor-photo-form"></div>
 <div id="vendor-form">
@@ -36,7 +36,7 @@
           method="post" id="photo-form">
           <div class="modal-body">
             {% csrf_token %}
-            <input type="file" name="image" id="photo-src" />
+            <input type="file" name="photo" id="photo-src" />
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default"
