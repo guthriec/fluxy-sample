@@ -191,7 +191,7 @@
      "password": "pbkdf2_sha256$12000$NrhLLCqHVQa7$TTZiDuWBGNH5kj6UYLBlFFL7788eoCne8MJ/hyULZqs=",
      "email": "don@hotmail.com",
      "vendors":[]
-   }  
+   }
  },
  {
    "model": "deals.claimeddeal",
