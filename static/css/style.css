@@ -11,6 +11,11 @@ input[type="text"], input[type="email"], input[type="password"] {
   padding: 5px 10px;
 }
 
+input:focus::-webkit-input-placeholder { color:transparent; }
+input:focus:-moz-placehoder { color:transparent; }
+textarea:focus::-webkit-input-placeholder { color:transparent; }
+textarea:focus:-moz-placehoder { color:transparent; }
+
 /** LANDING PAGE CSS **/
 #landing-page {
   width: 900px;
