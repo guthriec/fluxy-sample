@@ -183,13 +183,12 @@ textarea:focus:-moz-placehoder { color:transparent; }
 #content #left-navbar-container .list-group-item a:focus {
   background-color: #34495e;
   color: white;
->>>>>>> 63340c8fc86ac0eb12bdbce7cc56d01dada09a1d
 }
 
 #content #dashboard-container {
   padding: 30px;
   position: relative;
-  left: 200px;
+  margin-left: 200px;
   top: 50px;
 }
 
