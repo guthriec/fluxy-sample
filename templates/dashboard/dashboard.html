@@ -17,7 +17,7 @@
       <li class="list-group-item" id="nav-create">
         <a href="#">
           <h3 class="list-group-item-heading">Create</h3>
-          <p class="list-group-item-text">Create a new deal</p>
+          <p class="list-group-item-text">Schedule a new deal</p>
         </a>
       </li>
       <li class="list-group-item" id="nav-revive">
@@ -79,7 +79,7 @@
         <div class="form-group">
           <label for="start-month" class="col-sm-2 control-label">Start date</label>
           <div class="col-sm-3 controls form-inline">
-            <select id="start-day" class="form-control" name="start_day">
+            <select id="start-day" class="form-control" name="start-day">
             </select>
           </div>
         </div>
@@ -87,28 +87,28 @@
           <label for="start-hours" class="col-sm-2 control-label">Start time</label>
           <div class="controls form-inline col-sm-4">
             <select id="start-hours" class="form-control" name="start-hours">
-              <option>1</option>
-              <option>2</option>
-              <option>3</option>
-              <option>4</option>
-              <option>5</option>
-              <option>6</option>
-              <option>7</option>
-              <option>8</option>
-              <option>9</option>
-              <option>10</option>
-              <option>11</option>
-              <option>12</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
             </select>:
             <select id="start-minutes" class="form-control" name="start-minutes">
-              <option>00</option>
-              <option>15</option>
-              <option>30</option>
-              <option>45</option>
+              <option value="0">00</option>
+              <option value="15">15</option>
+              <option value="30">30</option>
+              <option value="45">45</option>
             </select>
-            <select class="form-control">
-              <option>PM</option>
-              <option>AM</option>
+            <select id="start-am-pm" class="form-control" name="start-am-pm">
+              <option value="pm">PM</option>
+              <option value="am">AM</option>
             </select>
           </div>
         </div>
@@ -147,7 +147,7 @@
         </div>
         <div class="form-group">
           <p class="help-block col-sm-offset-2 col-sm-6" id="grace-period-help">
-            For sit-down meals, according to our policies, <strong>customers may apply a previously claimed deal up to 2 hours after the deal ends</strong>, so plan accordingly! During this period, no new deals can be claimed. (This policy allows your customers to enjoy their meals and apply the deal after eating).
+            For sit-down meals, according to our policies, <strong>customers may apply a previously claimed deal up to 2 hours after the deal ends</strong>, so plan accordingly. (During this period, no new deals can be claimed.) This policy allows your customers to enjoy their meals and apply the deal after eating.
           </p>
         </div>
       </div>
@@ -166,7 +166,7 @@
         <div class="form-group" id="max-deals-group">
           <label for="max-deals-number" class="col-sm-2 control-label">Maximum number of deals</label>
           <div class="col-sm-2">
-            <input id="max-deals-number" class="form-control" name="max_deals" type="text" size="3" placeholder="Unlimited" disabled>
+            <input id="max-deals-number" class="form-control" name="max-deals" type="text" size="3" placeholder="Unlimited" disabled>
           </div>
         </div>
       </div>

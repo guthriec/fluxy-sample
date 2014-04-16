@@ -151,12 +151,6 @@ textarea:focus:-moz-placehoder { color:transparent; }
   margin: 5px;
 }
 
-.full-container {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-}
-
 #content .list-group-item {
   background-color: inherit;
   border-left: none;

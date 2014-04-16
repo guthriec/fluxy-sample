@@ -214,10 +214,14 @@ DealCreateFormView = Backbone.Marionette.ItemView.extend({
                      "Friday", "Saturday" ]
     var daySelect = this.$el.find('#start-day');
     daySelect.empty();
-    for (var i=0; i < 7; i++) {
-      possibleDay = new Date();
+    var possibleDay = new Date();
+    possibleDay.setHours(0);
+    possibleDay.setMinutes(0);
+    possibleDay.setSeconds(0);
+    possibleDay.setMilliseconds(0);
+    for (var i=0; i < 8; i++) {
       possibleDay.setDate(currDay + i);
-      daySelect.append("<option>" + dayNames[possibleDay.getDay()] + ", " + monthNames[possibleDay.getMonth()] + " " + possibleDay.getDate().toString() + "</option>");
+      daySelect.append('<option value="' + possibleDay.getTime()  + '">' + dayNames[possibleDay.getDay()] + ', ' + monthNames[possibleDay.getMonth()] + ' ' + possibleDay.getDate().toString() + '</option>');
     }
 
     this.$el.find('input:radio[name="limit"]').change(
@@ -239,23 +243,37 @@ DealCreateFormView = Backbone.Marionette.ItemView.extend({
 
   createDeal: function(e) {
     e.preventDefault();
-    console.log('poooo');
+
     var newModel = {};
 
     var $formInputs = $('#deal-form :input');
     var formValues = {};
     $formInputs.each(function() {
-      formValues[this.name] = $(this).val();
+      formValues[this.name] = this.value;
     });
     newModel['title'] = formValues['title'];
     newModel['desc'] = formValues['desc'];
-    var timeStart = (new Date()).toUTCString();
+    var timeStart = new Date();
+    var startHours = Number(formValues['start-hours']);
+    if (formValues['start-am-pm'] == 'pm') {
+      startHours += 12;
+    } else if (startHours == 12) {
+      startHours = 0;
+    }
+    var startMinutes = Number(formValues['start-minutes']) + 60 * startHours;
+    timeStart.setTime(Number(formValues['start-day']) + 60000 * startMinutes);
     newModel['time_start'] = timeStart;
-    var minutes = Number(formValues['minutes']) + 60 * formValues['hours'];
-    var timeEnd = (new Date(Date.now() + minutes * 60000).toUTCString())
+    var minutes = Number(formValues['duration-minutes']) + 60 * Number(formValues['duration-hours']);
+    var timeEnd = new Date();
+    timeEnd.setTime(timeStart.getTime() + minutes * 60000);
     newModel['time_end'] = timeEnd;
-    newModel['max_deals'] = 0;
+    newModel['max_deals'] = -1;
+    var limitRadio = this.$el.find('input:radio[value="limited"]');
+    if (limitRadio.is(':checked')) {
+      newModel['max_deals'] = Number(formValues['max-deals']);
+    }
     newModel['instructions'] = 'Show to waiter';
+    console.log(newModel);
 
     DashboardApp.events.trigger('createDealConfirmTrigger', newModel);
     this.$el.find('#submit-btn').blur();
