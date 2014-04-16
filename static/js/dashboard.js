@@ -200,28 +200,38 @@ DealCreateFormView = Backbone.Marionette.ItemView.extend({
     this.$el.html(_.template($(this.template).html()));
 
     // Set up the JQuery UI Spinners
-    this.$el.find('#hours').spinner({
-      spin: function(event, ui) {
-        if(ui.value >= 5) {
-          $(this).spinner('value', 5);
-          return false;
-        } else if (ui.value < 0) {
-          $(this).spinner('value', 0);
-          return false;
+
+    var currDate = new Date();
+    var currDay = currDate.getDate();
+    var latestDate = new Date();
+    latestDate.setDate(currDay + 7);
+    var monthNames = [ "January", "February", "March", "April", "May", "June",
+                       "July", "August", "September", "October", "November",
+                       "December" ]
+    var dayNames = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
+                     "Friday", "Saturday" ]
+    var daySelect = this.$el.find('#start-day');
+    daySelect.empty();
+    for (var i=0; i < 7; i++) {
+      possibleDay = new Date();
+      possibleDay.setDate(currDay + i);
+      daySelect.append("<option>" + dayNames[possibleDay.getDay()] + ", " + monthNames[possibleDay.getMonth()] + " " + possibleDay.getDate().toString() + "</option>");
+    }
+
+    this.$el.find('input:radio[name="limit"]').change(
+      function() {
+        if ($(this).is(':checked') && (this).value == 'limited') {
+          $('#max-deals-number').prop('disabled', false);
+          $('#max-deals-number').attr('placeholder', '1  --  500');
+          $('#max-deals-number').attr('maxlength', '3');
+        }
+        if ($(this).is(':checked') && (this).value == 'unlimited') {
+          $('#max-deals-number').prop('disabled', true);
+          $('#max-deals-number').attr('placeholder', 'Unlimited');
+          $('#max-deals-number').val('');
         }
       }
-    });
-    this.$el.find('#minutes').spinner({
-      spin: function(event, ui) {
-        if (ui.value >= 60) {
-          $(this).spinner('value', 60);
-          return false;
-        } else if (ui.value < 0) {
-          $(this).spinner('value', 0);
-          return false;
-        }
-      }
-    });
+    );
     return this;
   },
 
@@ -255,7 +265,7 @@ DashboardApp.LeftNavView = Backbone.Marionette.ItemView.extend({
   className: 'nav nav-stacked list-group',
   id: 'left-navbar',
   template: '#left-navbar-template',
-  
+
   events: {
     'click #nav-create': 'showCreate',
     'click #nav-revive': 'showRevive',
@@ -305,6 +315,7 @@ DashboardApp.addInitializer(function(options) {
  */
 DashboardApp.Layout = Backbone.Marionette.Layout.extend({
   template: "#layout-template",
+
   regions: {
     dashboard: '#dashboard'
   },
@@ -366,7 +377,7 @@ DashboardApp.addInitializer(function(options) {
 
   var layout = new DashboardApp.Layout(layoutOptions);
   DashboardApp.dashboardRegion.show(layout);
-}); 
+});
 
 $(document).ready(function() {
   DashboardApp.start();
