@@ -100,17 +100,18 @@ textarea:focus:-moz-placehoder { color:transparent; }
 }
 
 /** Base Template CSS **/
-.clearfix {
-  clear: both;
-}
-
 .navbar-default {
   background-color: #1abc9c;
   border: none;
+
+  /* Dropshadow */
+  -webkit-box-shadow: 0px 1px 5px 1px rgba(0,0,0,0.11);
+  -moz-box-shadow: 0px 1px 5px 1px rgba(0,0,0,0.11);
+  box-shadow: 0px 1px 5px 1px rgba(0,0,0,0.11);
 }
 
 .navbar .container {
-  color: #FFF;
+  color: white;
   font-size: 28px;
 }
 
@@ -145,66 +146,57 @@ textarea:focus:-moz-placehoder { color:transparent; }
 }
 
 /** Dashboard CSS **/
-#content #dashboard input[type="text"],
-#content #dashboard textarea,
-#content #dashboard select {
-  margin: 5px;
-}
-
-#content .list-group-item {
-  background-color: inherit;
-  border-left: none;
-  border-right: none;
-  border-color: white;
-  border-width: 2px;
-  border-radius: 0;
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
-  padding: 0;
-  margin-bottom: -4px;
-}
-
-#content .list-group-item a {
-  color: white;
-  padding: 15px 0 15px 0;
-}
-
-#content .list-group-item a:hover, a:active {
-  background-color: #7f8c8d;
-}
-
-#content .selected {
-  background-color: #c0392b;
-}
-
 #content #left-navbar-container {
-  background-color: #2c3e50;
+  height: 100%;
+  left: 0;
+  min-height: 100%;
   position: fixed;
-  left: 0px;
   top: 50px;
-  bottom: 0px;
   width: 200px;
+
+  /* Box shadow */
+  -webkit-box-shadow: inset -1px 0px 5px 1px rgba(0,0,0,0.11);
+  -moz-box-shadow: inset -1px 0px 5px 1px rgba(0,0,0,0.11);
+  box-shadow: inset -1px 0px 5px 1px rgba(0,0,0,0.11);
+}
+
+#content #left-navbar-container .list-group-item {
+  background-color: transparent;
+  border: 0;
+  border-bottom: 1px solid #EEE;
+  border-radius: 0;
+  margin: 0;
+}
+
+#content #left-navbar-container .list-group-item a {
+  color: #555;
+  text-align: center;
+}
+
+#content #left-navbar-container .list-group-item.selected,
+#content #left-navbar-container .list-group-item.selected a,
+#content #left-navbar-container .list-group-item:focus,
+#content #left-navbar-container .list-group-item:hover,
+#content #left-navbar-container .list-group-item:focus a,
+#content #left-navbar-container .list-group-item:hover a,
+#content #left-navbar-container .list-group-item a:hover,
+#content #left-navbar-container .list-group-item a:focus {
+  background-color: #34495e;
+  color: white;
+>>>>>>> 63340c8fc86ac0eb12bdbce7cc56d01dada09a1d
 }
 
 #content #dashboard-container {
-  padding-top: 50px;
-  padding-left: 200px;
+  padding: 30px;
+  position: relative;
+  left: 200px;
+  top: 50px;
 }
 
-#left-navbar {
-  text-align: center;
-}
-
-#content #dashboard {
-  padding: 20px;
-}
-
-#content #dashboard #deals-list-container {
-  text-align: center;
-}
-
-.form-area {
-  padding-top: 20px;
+#content #dashboard-container input[type="text"],
+#content #dashboard-container textarea,
+#content #dashboard-container select {
+  margin: 5px;
 }
 
 /** Login page CSS **/

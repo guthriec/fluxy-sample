@@ -1,6 +1,7 @@
 // Start the dashboard Marionette/Backbone app
 DashboardApp = new Backbone.Marionette.Application();
 
+// Add the events initializer first
 DashboardApp.addInitializer(function(options) {
   DashboardApp.events = _.extend({}, Backbone.Events);
 });
@@ -42,7 +43,6 @@ DealsCollection = Backbone.Collection.extend({
   }
 
 });
-
 
 /*
  * @author: Chris
