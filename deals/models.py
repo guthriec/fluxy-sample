@@ -10,7 +10,6 @@ class Vendor(models.Model):
     latitude, longitude - vendor coordinates
     web_url - URL of vendor's website
     yelp_url - URL of vendor's Yelp page
-    image - Link to vendor image
     phone - Phone number
   """
   name = models.CharField(max_length=100)
@@ -19,7 +18,6 @@ class Vendor(models.Model):
   longitude = models.FloatField()
   web_url = models.URLField()
   yelp_url = models.URLField()
-  image = models.ImageField(upload_to='vendors', default="vendors/peyton-manning2.jpg")
   phone = models.CharField(max_length=20)
 
   def __unicode__(self):
@@ -40,9 +38,22 @@ class Vendor(models.Model):
         'longitude': self.longitude,
         'web_url': self.web_url,
         'yelp_url': self.yelp_url,
-        'image': self.image.url,
         'phone': self.phone,
     }
+
+
+class VendorPhoto(models.Model):
+  """
+  VendorPhoto model. Schema as follows:
+    photo      : The URL of the photo file for this object
+    vendor     : The vendor this photo is associated with
+    is_primary : A boolean indicating whether this photo is the primary photo
+                 for its vendor
+  """
+  photo = models.ImageField(upload_to='vendors',
+      default='defaults/vendors.jpg')
+  vendor = models.ForeignKey(Vendor)
+  is_primary = models.BooleanField(default=False)
 
 
 class Deal(models.Model):
