@@ -83,8 +83,7 @@ class ApiPermissionsTestCase(TestCase):
            belong to the user
     """
     self.client.login(username="kingofpaloalto", password="password")
-    response = self.client.get('/api/v1/vendor/3/claimed_deals/',
-                                content_type="application/javascript")
+    response = self.client.get('/api/v1/vendor/3/claimed_deals/')
     self.assertEqual(response.status_code, 403)
     response = self.client.get('/api/v1/vendor/3/claimed_deals/all/',
                                 content_type="application/javascript")
@@ -135,14 +134,11 @@ class ApiPermissionsTestCase(TestCase):
     @author: Chris
     @desc: test that a logged out user can't view claimed deals
     """
-    response = self.client.get('/api/v1/user/claimed_deals/',
-                                content_type="application/javascript")
+    response = self.client.get('/api/v1/user/claimed_deals/')
     self.assertEqual(response.status_code, 403)
-    response = self.client.get('/api/v1/vendor/1/claimed_deals/',
-                                content_type="application/javascript")
+    response = self.client.get('/api/v1/vendor/1/claimed_deals/')
     self.assertEqual(response.status_code, 403)
-    response = self.client.get('/api/v1/user/claimed_deals/all/',
-                                content_type="application/javascript")
+    response = self.client.get('/api/v1/user/claimed_deals/all/')
     self.assertEqual(response.status_code, 403)
 
   def test_logged_out_create_vendor(self):
