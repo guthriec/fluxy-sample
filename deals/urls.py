@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 from deals import views
 
 urlpatterns = patterns('',
-  url(r'^vendor/(?P<vendor_id>\d+)/edit/$', 'deals.views.vendor_edit'),
+  url(r'^vendor/(?P<vendor_id>\d+)/edit/$', 'deals.views.vendor_edit_page'),
 
   # Route API
   url(r'^api/v1/deals/$', 'deals.views.deal'),
@@ -11,6 +11,7 @@ urlpatterns = patterns('',
 
   url(r'^api/v1/vendors/$', 'deals.views.vendor'),
   url(r'^api/v1/vendor/(?P<vendor_id>\d+)/$', 'deals.views.vendor'),
+
   url(r'^api/v1/vendor/(?P<vendor_id>\d+)/photo/$', 'deals.views.vendor_photo'),
 
   url(r'^api/v1/vendor/(?P<vendor_id>\d+)/deals/$',
