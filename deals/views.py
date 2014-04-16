@@ -1,5 +1,7 @@
 from datetime import datetime
 from dateutil import parser
+from deals.api_tools import make_get_response, make_post_response, list_from_qset
+from deals.decorators import api_login_required, api_vendor_required
 from deals.models import ClaimedDeal, Deal, Vendor, VendorPhoto
 from deals.forms import VendorForm
 from distance import in_radius
@@ -62,12 +64,13 @@ def deal(request, deal_id=None, active_only=True):
     lon = None
     radius = -1.0
 
-  deal_list = _list_from_qset(deal_set, include_nested=True)
+  deal_list = list_from_qset(deal_set, include_nested=True)
   deal_list = _limit_result_distance(deal_list, radius, (lat, lon))
 
-  return _make_get_response(deal_list, known_error)
+  return make_get_response(deal_list, known_error)
 
 @require_http_methods(["GET", "POST", "PUT"])
+@api_login_required(["POST", "PUT"])
 def vendor(request, vendor_id=None):
   """
   @author: Chris, Ayush
@@ -93,10 +96,10 @@ def vendor(request, vendor_id=None):
     vendor_set = _get_vendor(vendor_id)
     if vendor_id and vendor_set.count() == 0:
       known_error = { 'code': 404, 'message': 'Vendor not found' }
-      return _make_get_response(vendor_list, known_error)
+      return make_get_response(vendor_list, known_error)
 
-    vendor_list = _list_from_qset(vendor_set, include_nested=False, flatten=True)
-    return _make_get_response(vendor_list, known_error)
+    vendor_list = list_from_qset(vendor_set, include_nested=False, flatten=True)
+    return make_get_response(vendor_list, known_error)
   else:
     if request.user.is_authenticated():
       vendor = None
@@ -135,6 +138,8 @@ def vendor(request, vendor_id=None):
                                    status = 403)
 
 @require_http_methods(["POST"])
+@api_login_required(["POST"])
+@api_vendor_required(["POST"])
 def vendor_photo(request, vendor_id):
   """
   @author: Rahul
@@ -158,7 +163,9 @@ def vendor_photo(request, vendor_id):
   return HttpResponse(serializers.serialize('json', [vendor_photo]),
       content_type='application/json', status=201)
 
+
 @require_http_methods(["GET", "POST"])
+@api_vendor_required(["POST"])
 def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
   """
   @author: Chris, Ayush
@@ -184,12 +191,12 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
   vendor_qset = Vendor.objects.filter(pk=vendor_id)
   if vendor_qset.count() == 0:
     known_error = { 'code': 404, 'message': 'Vendor not found' }
-    return _make_get_response(deal_list, known_error)
+    return make_get_response(deal_list, known_error)
 
   if request.method == 'GET':
     deal_set = _get_deals(vendor_id=vendor_id, active_only=active_only)
-    deal_list = _list_from_qset(deal_set, include_nested=False)
-    return _make_get_response(deal_list, known_error)
+    deal_list = list_from_qset(deal_set, include_nested=False)
+    return make_get_response(deal_list, known_error)
   else:
     deal = None
     deal_id = -1
@@ -202,9 +209,10 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
       deal_id = deal.id
     except TypeError:
       known_error={ 'code': 400, 'message': 'Bad deal POST' }
-    return _make_post_response(deal, 'deals/' + str(deal_id), known_error)
+    return make_post_response(deal, 'deals/' + str(deal_id), known_error)
 
 @require_http_methods(['GET'])
+@api_vendor_required(['GET'])
 def vendor_claimed_deals(request, vendor_id, active_only=True):
   """
   @author: Chris
@@ -215,13 +223,15 @@ def vendor_claimed_deals(request, vendor_id, active_only=True):
   """
   known_error = None
   claimed_deal_list = None
+
   vendor_set = Vendor.objects.filter(pk=vendor_id)
   if vendor_set.count() == 0:
     known_error = { 'code': 404, 'message': 'Vendor not found' }
-    return _make_get_response(claimed_deal_list, known_error)
+    return make_get_response(claimed_deal_list, known_error)
   claimed_deal_set = _get_claimed_deals(vendor_id=vendor_id, active_only=active_only)
-  claimed_deal_list = _list_from_qset(claimed_deal_set, include_nested=False, flatten=True)
-  return _make_get_response(claimed_deal_list, known_error)
+  claimed_deal_list = list_from_qset(claimed_deal_set, include_nested=False, flatten=True)
+  return make_get_response(claimed_deal_list, known_error)
+
 
 def _get_claimed_deals(claimed_deal_id=None, vendor_id=None, active_only=True):
   """
@@ -302,70 +312,3 @@ def _get_vendor(vendor_id=None):
   else:
     vendor_set = Vendor.objects.all()
   return vendor_set
-
-def _list_from_qset(qset, include_nested=False, flatten=True):
-  """
-  @author: Ayush, Chris
-  @desc: Takes a Django QuerySet and from that generates a JSON-serializable list,
-  with a form determined by other parameters.
-
-  @param qset: QuerySet to turn into a list
-  @param include_nested: Boolean value that decides if foreign object
-  information should be included. Only goes through first level.
-  @param flatten: Should the list have structure [pk, model, fields = [xyz]] or
-                                                    [xyz] (flattened)
-  """
-  json_data = serializers.serialize("json", qset, use_natural_keys=include_nested)
-  obj_list = json.loads(json_data)
-  return_list = []
-
-  for obj in obj_list:
-    if flatten:
-      attrs = obj['fields']
-      attrs['id'] = obj['pk']
-      return_list.append(attrs)
-    else:
-      return_list.append(obj)
-  return return_list
-
-def _make_post_response(obj, redirect_addr, known_error=None):
-  """
-  @author: Ayush, Chris
-  @desc: Helper function that generates appropriate response given any "known
-  error" dict. Creates an appropriate response to POST request.
-
-  @param obj: object that was created
-  @param redirect_addr: address to redirect to
-  @param known_error: Any known errors to include/encode in POST response
-
-  @return: JSON HttpResponse with status 200 on sucess otherwise with error
-  """
-  if known_error:
-    code = known_error['code']
-    err_message = known_error['message']
-    return HttpResponse(json.dumps(known_error),\
-                        content_type="application/json", status=code)
-  else:
-    return HttpResponseRedirect(redirect_addr, serializers.serialize("json", [obj]),\
-                                content_type="application/json", status=201)
-
-def _make_get_response(resp_list, known_error=None):
-  """
-  @author: Ayush, Chris
-  @desc: Helper function to take a JSON-serializable list and an optional
-  "known error" dict (with keys 'message' and 'code'), and create an appropriate
-  response to a GET request.
-
-  @param resp_list: JSON-serializable list to include in GET response
-  @param known_error: Any known errors to include/encode in GET response
-
-  @returns: JSON HttpResponse with status 200 on success
-            JSON HttpResponse with appropriate error code if known_error
-  """
-  if known_error:
-    code = known_error['code']
-    return HttpResponse(json.dumps(known_error),\
-                        content_type="application/json", status=code)
-  else:
-    json_out = json.dumps(resp_list)
-    return HttpResponse(json_out, content_type="application/json", status=200)

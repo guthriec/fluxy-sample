@@ -8,9 +8,9 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
   # Registration/authentication
-  url(r'^user/auth/$', views.user_auth),
-  url(r'^user/register/$', views.user_register),
-  url(r'^user/logout/$', views.user_logout),
+  url(r'^api/v1/user/auth/$', views.user_auth),
+  url(r'^api/v1/user/register/$', views.user_register),
+  url(r'^api/v1/user/logout/$', views.user_logout),
 
   # User model
   url(r'^api/v1/user/$', views.user),
@@ -18,6 +18,10 @@ urlpatterns = patterns('',
   url(r'^api/v1/user/claimed_deals/$', views.user_deals),
   url(r'^api/v1/user/claimed_deals/all/$', views.user_deals, {'active_only':
                                                               False}),
+  # Route login
+  url(r'^login/$', views.login_page),
+  url(r'^logout/$', views.logout_page),
+  url(r'^register/$', views.register_page),
 
   # Route landing page resources: /, /success, /subscribe
   url(r'^$', views.index),

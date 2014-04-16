@@ -80,7 +80,7 @@ to set the request's CONTENT-TYPE header to the appropriate type.
 
 * ``` /user/auth ```
   * Accepts POST.
-  * Takes POST parameters 'username' and 'password', attempts to authenticate the user, returns 200 on success, 401 on inability ot authenticate. Authentication lasts until cookie is cleared (for now).
+  * Takes POST parameters 'username' and 'password', attempts to authenticate the user. Returns a 200, or a 400 on a bad request. Has JSON, whose 'success' key indicates if the login credentials were valid or not. Authentication lasts until cookie is cleared (for now).
 
 * ``` /user/vendors ```
   * Accepts GET.
@@ -124,11 +124,11 @@ to set the request's CONTENT-TYPE header to the appropriate type.
 
 * ``` /vendor/{id}/claimed_deals ```
   * Accepts GET.
-  * Returns all active claimed_deals objects associated with {id}. Returns 200 on success, 404 if no vendor of {id} exists.
+  * Returns all active claimed_deals objects associated with {id}. Returns 200 on success, 403 if logged in user doesn't have permissions for vendor of {id}, 404 if no vendor of {id} exists.
 
 * ``` /vendor/{id}/claimed_deals/all ```
   * Accepts GET.
-  * Returns all claimed_deals objects associated with {id}. Returns 200 on success, 404 if no vendor of {id} exists.
+  * Returns all claimed_deals objects associated with {id}. Returns 200 on success, 403 if logged in user doesn't have permissions for vendor of {id}, 404 if no vendor of {id} exists.
 
 =======
 APPENDIX A - Notes About Libraries

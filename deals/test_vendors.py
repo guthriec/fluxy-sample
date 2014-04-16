@@ -28,6 +28,7 @@ class VendorTestCase(TestCase):
     @author: Chris
     Tests that POST on /vendors/ creates a new vendor and returns 201.
     """
+    self.client.login(username="kingofpaloalto", password="password")
     new_vendor = { 'name': 'Oren\'s Hummus',
                   'address': '261 University Ave, Palo Alto CA 94301',
                   'latitude': 37.445316,
@@ -46,6 +47,7 @@ class VendorTestCase(TestCase):
     @author: Chris
     Tests that POST on /vendors/ with extra fields returns a 400
     """
+    self.client.login(username="kingofpaloalto", password="password")
     new_vendor = { 'name': 'Oren\'s Hummus',
                   'address': '261 University Ave, Palo Alto CA 94301',
                   'stripper_name': "Whoren's"
@@ -74,6 +76,7 @@ class VendorTestCase(TestCase):
     self.assertEqual(response.status_code, 404)
 
     # TODO: comment below out until put is implemented
+    # self.client.login(username="kingofpaloalto", password="password")
     #response = self.client.put('/api/v1/vendor/100/', {})
     #self.assertEqual(response.status_code, 404)
 

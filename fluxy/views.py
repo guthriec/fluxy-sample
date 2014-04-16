@@ -1,6 +1,7 @@
 # Filename: /fluxy/views.py
 # Notes: Includes view functions for the overall Fluxy project
 
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.core import serializers
 from django.core.urlresolvers import reverse
@@ -61,41 +62,122 @@ def subscribe(request):
     return render(request, 'fluxy/index.html')
   return redirect(reverse('fluxy.views.success'))
 
+def register_page(request):
+  """
+  @author: Chris
+  @desc: renders registration page, handles posts from this page.
+  If user is authenticated, redirects to dashboard.
+  """
+  error_message = None
+  for message in messages.get_messages(request):
+    if message.level == messages.ERROR:
+      error_message = message.message
+
+  if request.method == 'POST':
+    api_resp = user_register(request)
+    api_content = None
+    if api_resp.status_code != 201:
+      api_content = json.loads(api_resp.content)
+      error_message = api_content['message']
+      messages.add_message(request, messages.ERROR, error_message)
+    else:
+      return redirect(reverse('fluxy.views.login_page'))
+
+  return render(request, 'fluxy/register.html', {
+                 'title': 'Fluxy Registration',
+                 'error_message': error_message,
+                 'page_title': 'Register'
+               })
+
+def login_page(request):
+  """
+  @author: Chris
+  @desc: renders login page, handles auth posts from the login page.
+  If user is authenticated, redirects to dashboard.
+  Right now, ignores the 'next' parameter. If the user has associated
+  vendors, it redirects to the dashboard for the first vendor in the list.
+  """
+  error_message = None
+  for message in messages.get_messages(request):
+    if message.level == messages.ERROR:
+      error_message = message.message
+
+  if request.method == 'POST':
+    api_resp = user_auth(request)
+    api_content = json.loads(api_resp.content)
+    if api_resp.status_code != 200 or not api_content['success']:
+      error_message = api_content['message']
+    else:
+      try:
+        vendor_id = api_content['response']['vendors'][0]
+        request.session['vendor_id'] = vendor_id
+      # If no associated vendor, just don't set the vendor_id session attribute
+      except IndexError:
+        pass
+      return redirect(reverse('dashboard.views.dashboard'))
+
+  return render(request, 'fluxy/login.html', {
+                 'title': 'Fluxy Login',
+                 'error_message': error_message,
+                 'page_title': 'Login'
+               })
+
+def logout_page(request):
+  """
+  @author: Chris
+  @desc: handles logout requests from the /logout/ URL, redirecting
+  to an appropriate webpage
+  """
+  if request.user.is_authenticated():
+    user_logout(request)
+  return redirect(reverse('fluxy.views.login_page'))
+
 @csrf_exempt
 @require_http_methods(["POST"])
 def user_auth(request):
   """
-  @author: Chris, Rahul
-  @desc: This method is used to log a user in. Returns 200 upon success, 401
-  upon invalid credentials, and 400 upon an improperly formatted POST.
-  Accepts either standard form or JSON formatted POSTs with the following keys:
-      *username
+  @author: Chris, Rahul, Ayush
+  @desc: This method is used to log a user in. Returns a 200 upon a valid
+  request and a 400 on a badly formated request. Accepts either standard form
+  or JSON formatted POSTs with the following keys:
+      *email
       *password
 
   @param request: the request object
 
-  @return: 200 on successful auth, 400 or 401 otherwise
+  @return: 200 on valid request, 400 otherwise. Valid post's reponse is JSON
+  with key "success" indicating the success of the login.
   """
   post_data = request.POST
   try:
     if request.META['CONTENT_TYPE'] == 'application/json':
       post_data = json.loads(request.body)
-    username = post_data['username']
+    username = post_data['email']
     password = post_data['password']
   except Exception:
     response = { 'code': 400, 'message': 'Bad request' }
     return HttpResponse(json.dumps(response), status = 400,
         content_type='application/json')
+
   user = authenticate(username=username, password=password)
+  response = {}
   if user is not None:
     login(request, user)
-    response = [user.get_safe_user()]
-    return HttpResponse(json.dumps(response), content_type="application/json",
-                        status = 200)
+    response = {
+      "code": 200,
+      "message": "Valid username and password",
+      "success": True,
+      "response": user.get_safe_user()
+    }
   else:
-    response = {"code": 401, "message": "Invalid username/password", "success": False}
-    return HttpResponse(json.dumps(response), content_type="application/json", status = response["code"])
+    response = {
+      "code": 200,
+      "message": "Invalid username/password",
+      "success": False
+    }
+  return HttpResponse(json.dumps(response), content_type="application/json", status = 200)
 
+@csrf_exempt
 @require_http_methods(["POST"])
 def user_register(request):
   """
@@ -103,8 +185,9 @@ def user_register(request):
   @desc: This method registers a new user. Returns 200 upon success, 400
   otherwise. It does not log the user in upon successful registration.
   Accepts either standard form or JSON formatted POSTs with the following keys:
-      *username
+      *email
       *password
+      *password_confirm
 
   @param request: the request object
 
@@ -114,20 +197,25 @@ def user_register(request):
   try:
     if request.META['CONTENT_TYPE'] == 'application/json':
       post_data = json.loads(request.body)
-    username = post_data['username']
+    email = post_data['email']
+    username = post_data['email']
     password = post_data['password']
+    password_confirm = post_data['password_confirm']
   except Exception:
     return HttpResponse("Bad request.", status = 400)
   response = {"code": 400, "message": "Could not register"}
-  try:
-    FluxyUser.objects.get(username__exact=username)
-    response['message'] = "Username already registered"
-  except FluxyUser.DoesNotExist:
-    new_user = FluxyUser.objects.create_user(username=username, password=password)
-    new_user.save()
-    return HttpResponseRedirect('/user/auth/',
-        json.dumps([new_user.get_safe_user()]), content_type="application/json",
-        status = 201)
+  if password != password_confirm:
+    response['message'] = "Passwords do not match"
+  else:
+    try:
+      FluxyUser.objects.get(username__exact=username)
+      response['message'] = "Username already registered"
+    except FluxyUser.DoesNotExist:
+      new_user = FluxyUser.objects.create_user(email=email, username=username, password=password)
+      new_user.save()
+      return HttpResponseRedirect('/user/auth/',
+          json.dumps([new_user.get_safe_user()]), content_type="application/json",
+          status = 201)
   return HttpResponse(json.dumps(response), content_type='application/json',
       status = response['code'])
 
