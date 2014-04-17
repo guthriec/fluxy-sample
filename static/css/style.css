@@ -1,5 +1,6 @@
 html, body {
   font-family: 'Josefin Sans', sans-serif;
+  height: 100%;
 }
 
 input[type="text"], input[type="email"], input[type="password"] {
@@ -9,6 +10,11 @@ input[type="text"], input[type="email"], input[type="password"] {
   border-width: 1px;
   padding: 5px 10px;
 }
+
+input:focus::-webkit-input-placeholder { color:transparent; }
+input:focus:-moz-placehoder { color:transparent; }
+textarea:focus::-webkit-input-placeholder { color:transparent; }
+textarea:focus:-moz-placehoder { color:transparent; }
 
 /** LANDING PAGE CSS **/
 #landing-page {
@@ -96,20 +102,27 @@ input[type="text"], input[type="email"], input[type="password"] {
 /** Base Template CSS **/
 .navbar-default {
   background-color: #1abc9c;
+  border: none;
+
+  /* Dropshadow */
+  -webkit-box-shadow: 0px 1px 5px 1px rgba(0,0,0,0.11);
+  -moz-box-shadow: 0px 1px 5px 1px rgba(0,0,0,0.11);
+  box-shadow: 0px 1px 5px 1px rgba(0,0,0,0.11);
 }
 
 .navbar .container {
-  color: #FFF;
+  color: white;
   font-size: 28px;
 }
 
 .navbar .container  #logo {
   background-image: url('../img/fluxy_logo_white_header.png');
   background-repeat: no-repeat;
-  margin-top: 5px;
+  top: 5px;
   min-height: 40px;
   min-width: 60px;
   position: fixed;
+  left: 70px;
   text-indent: 9999px;
 }
 
@@ -121,47 +134,68 @@ input[type="text"], input[type="email"], input[type="password"] {
 }
 
 .navbar .container #account-links {
-  position: relative;
-  margin: 5px auto;
-  margin-top: -48px;
-  text-align: right;
-  width: 100%;
-  z-index: 1;
+  position: fixed;
+  right: 30px;
+  top: 3px;
 }
 
 #content {
-  margin-top: 50px;
+  height: 100%;
+  min-height: 100%;
+  background-color: white;
 }
 
 /** Dashboard CSS **/
-#content #dashboard input[type="text"], 
-#content #dashboard textarea,
-#content #dashboard select {
-  margin: 5px;
+#content #left-navbar-container {
+  height: 100%;
+  left: 0;
+  min-height: 100%;
+  position: fixed;
+  top: 50px;
+  width: 200px;
+
+  /* Box shadow */
+  -webkit-box-shadow: inset -1px 0px 5px 1px rgba(0,0,0,0.11);
+  -moz-box-shadow: inset -1px 0px 5px 1px rgba(0,0,0,0.11);
+  box-shadow: inset -1px 0px 5px 1px rgba(0,0,0,0.11);
 }
 
-#content #dashboard #launch-stats-container {
-  min-height: 400px;
+#content #left-navbar-container .list-group-item {
+  background-color: transparent;
+  border: 0;
+  border-bottom: 1px solid #DDD;
+  border-radius: 0;
+  margin: 0;
 }
 
-#content #dashboard #launch-stats-container
-#launch-deal-container {
-  float: left;
-  width: 500px;
+#content #left-navbar-container .list-group-item a {
+  color: #555;
+  text-align: center;
 }
 
-#content #dashboard #launch-stats-container
-#daily-stats-container {
-  float: right;
-  font-size: 20px;
-  width: 500px;
+#content #left-navbar-container .list-group-item.selected,
+#content #left-navbar-container .list-group-item.selected a,
+#content #left-navbar-container .list-group-item:focus,
+#content #left-navbar-container .list-group-item:hover,
+#content #left-navbar-container .list-group-item:focus a,
+#content #left-navbar-container .list-group-item:hover a,
+#content #left-navbar-container .list-group-item a:hover,
+#content #left-navbar-container .list-group-item a:focus {
+  background-color: #34495e;
+  color: white;
 }
 
-#content #dashboard #launch-stats-container
-#daily-stats-container span {
-  font-size: 40px;
+#content #dashboard-container {
+  padding: 30px;
   position: relative;
-  top: 5px;
+  margin-left: 200px;
+  top: 50px;
+}
+
+#content #dashboard-container input[type="text"],
+#content #dashboard-container textarea,
+#content #dashboard-container select {
+  margin: 5px;
 }
 
 /** Login page CSS **/
