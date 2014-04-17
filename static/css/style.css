@@ -163,7 +163,7 @@ textarea:focus:-moz-placehoder { color:transparent; }
 #content #left-navbar-container .list-group-item {
   background-color: transparent;
   border: 0;
-  border-bottom: 1px solid #EEE;
+  border-bottom: 1px solid #DDD;
   border-radius: 0;
   margin: 0;
 }
