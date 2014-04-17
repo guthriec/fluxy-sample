@@ -24,7 +24,6 @@ DashboardApp.DealModel = Backbone.Model.extend({ });
  * @author: Chris
  */
 var SmartDealsSync = function(method, collection, options) {
-  console.log(collection);
   if (method=='read') {
     options.url = '/api/v1/vendor/' + collection.vendorId + '/deals/all/';
   } else {
@@ -71,7 +70,6 @@ DashboardApp.DealsCollection = Backbone.Collection.extend({
     var self = this;
     scheduledCollection.listenTo(self, 'add remove reset sync', function() {
       this.reset(self.scheduled(), { 'vendorId' : self.vendorId });
-      console.log(this);
     });
     return scheduledCollection;
   },
@@ -286,9 +284,7 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
       newModel['max_deals'] = Number(formValues['max-deals']);
     }
     newModel['instructions'] = 'Show to waiter';
-    console.log(DashboardApp.events);
     DashboardApp.events.trigger('createDealConfirmTrigger', newModel);
-    console.log('triggered confirmation modal');
     this.$el.find('#submit-btn').blur();
   }
 });
