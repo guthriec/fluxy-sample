@@ -142,8 +142,8 @@ DashboardApp.ModalControllerView = Backbone.Marionette.ItemView.extend({
   template: '#modal-controller-template',
 
   events: {
-    'click #confirm-create-deal-modal #create-btn': 'createDeal',
-    'click #confirm-create-deal-modal #cancel-btn': 'cancelCreateDeal'
+    'click #create-deal-modal #create-btn': 'createDeal',
+    'click #create-deal-modal #cancel-btn': 'cancelCreateDeal'
   },
 
   initialize: function() {
@@ -151,7 +151,6 @@ DashboardApp.ModalControllerView = Backbone.Marionette.ItemView.extend({
   },
 
   confirmDealCreation: function(deal) {
-    console.log('confirmDealCreation');
     this.newDeal = deal;
 
     var $modal = this.$el.find('#create-deal-modal');
@@ -165,21 +164,23 @@ DashboardApp.ModalControllerView = Backbone.Marionette.ItemView.extend({
     $modal.find('#duration td:nth-child(2)').html(hours + 'H ' + minutes + 'M');
 
     $modal.modal('show');
-    console.log('modal has been instructed to show');
   },
 
   cancelCreateDeal: function() {
     // TODO: send trigger to clear form
+    console.log('cancelling');
     this.$el.find('#create-deal-modal').modal('hide');
   },
 
   createDeal: function() {
     // TODO: send trigger to clear from
+    console.log('creating');
     DashboardApp.events.trigger('createDealTrigger', this.newDeal);
     this.$el.find('#create-deal-modal').modal('hide');
   }
 
 });
+
 DashboardApp.addInitializer(function(options) {
   var modalControllerView = new DashboardApp.ModalControllerView();
   DashboardApp.modalRegion.show(modalControllerView);
@@ -272,9 +273,9 @@ DealCreateFormView = Backbone.Marionette.ItemView.extend({
       newModel['max_deals'] = Number(formValues['max-deals']);
     }
     newModel['instructions'] = 'Show to waiter';
-    console.log(newModel);
-
+    console.log(DashboardApp.events);
     DashboardApp.events.trigger('createDealConfirmTrigger', newModel);
+    console.log('triggered confirmation modal');
     this.$el.find('#submit-btn').blur();
   }
 });
@@ -366,19 +367,19 @@ DashboardApp.Layout = Backbone.Marionette.Layout.extend({
   },
 
 
-  showCreate: function(e) {
+  showCreate: function() {
     this.dashboard.show(this.dealCreateForm);
   },
 
-  showRevive: function(e) {
+  showRevive: function() {
     this.dashboard.show(this.expiredDealsCollectionView);
   },
 
-  showReview: function(e) {
+  showReview: function() {
     this.dashboard.show(this.scheduledDealsCollectionView);
   },
 
-  showActive: function(e) {
+  showActive: function() {
     this.dashboard.show(this.activeDealsCollectionView);
   },
 
@@ -389,8 +390,6 @@ DashboardApp.Layout = Backbone.Marionette.Layout.extend({
 
 // Load the initializer
 DashboardApp.addInitializer(function(options) {
-  DashboardApp.events = _.extend({}, Backbone.Events);
-
   // Load all deals, pass them into a new layout
   var layoutOptions = {};
   layoutOptions.deals= new DashboardApp.DealsCollection([], { 'vendorId': vendorId});
