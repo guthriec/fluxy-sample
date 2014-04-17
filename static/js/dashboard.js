@@ -21,6 +21,19 @@ DashboardApp.addRegions({
 DashboardApp.DealModel = Backbone.Model.extend({ });
 
 /*
+ * @author: Chris
+ */
+var SmartDealsSync = function(method, collection, options) {
+  console.log(collection);
+  if (method=='read') {
+    options.url = '/api/v1/vendor/' + collection.vendorId + '/deals/all/';
+  } else {
+    options.url = '/api/v1/vendor/' + collection.vendorId + '/deals/';
+  }
+  return Backbone.sync(method, collection, options);
+}
+
+/*
  * @author: Ayush, Chris
  * @desc: Defines the collection that represents a grouping of DealModel items.
  *        This collection also has functions scheduledColl and expiredColl that
@@ -32,13 +45,14 @@ DashboardApp.DealsCollection = Backbone.Collection.extend({
 
   model: DashboardApp.DealModel,
 
+  sync: SmartDealsSync,
+
   initialize: function(models, options) {
     this.vendorId = options.vendorId || -1;
-    DashboardApp.events.on('createDealTrigger', this.create, this);
-  },
-
-  url: function() {
-    return '/api/v1/vendor/' + this.vendorId + '/deals/all/';
+    this.url = '/api/v1/vendor/' + this.vendorId + '/deals/';
+    if (options.listenForCreate == true) {
+      DashboardApp.events.on('createDealTrigger', this.create, this);
+    }
   },
 
   // Filter collection to include only deals that have not started.
@@ -57,6 +71,7 @@ DashboardApp.DealsCollection = Backbone.Collection.extend({
     var self = this;
     scheduledCollection.listenTo(self, 'add remove reset sync', function() {
       this.reset(self.scheduled(), { 'vendorId' : self.vendorId });
+      console.log(this);
     });
     return scheduledCollection;
   },
@@ -168,13 +183,11 @@ DashboardApp.ModalControllerView = Backbone.Marionette.ItemView.extend({
 
   cancelCreateDeal: function() {
     // TODO: send trigger to clear form
-    console.log('cancelling');
     this.$el.find('#create-deal-modal').modal('hide');
   },
 
   createDeal: function() {
     // TODO: send trigger to clear from
-    console.log('creating');
     DashboardApp.events.trigger('createDealTrigger', this.newDeal);
     this.$el.find('#create-deal-modal').modal('hide');
   }
@@ -392,7 +405,7 @@ DashboardApp.Layout = Backbone.Marionette.Layout.extend({
 DashboardApp.addInitializer(function(options) {
   // Load all deals, pass them into a new layout
   var layoutOptions = {};
-  layoutOptions.deals= new DashboardApp.DealsCollection([], { 'vendorId': vendorId});
+  layoutOptions.deals= new DashboardApp.DealsCollection([], { 'vendorId': vendorId, 'listenForCreate': true });
   layoutOptions.deals.fetch({ reset: true });
 
   var layout = new DashboardApp.Layout(layoutOptions);
