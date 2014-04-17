@@ -21,30 +21,25 @@ DashboardApp.addRegions({
 DashboardApp.DealModel = Backbone.Model.extend({ });
 
 /*
- * @author: Chris
- */
-var SmartDealsSync = function(method, collection, options) {
-  if (method=='read') {
-    options.url = '/api/v1/vendor/' + collection.vendorId + '/deals/all/';
-  } else {
-    options.url = '/api/v1/vendor/' + collection.vendorId + '/deals/';
-  }
-  return Backbone.sync(method, collection, options);
-}
-
-/*
  * @author: Ayush, Chris
  * @desc: Defines the collection that represents a grouping of DealModel items.
- *        This collection also has functions scheduledColl and expiredColl that
- *        return DealsCollections filtered into scheduled and expired deals.
- *        These new collections listen to the original collection for changes
- *        and update themselves accordingly.
+ *        This collection also has functions scheduledCollection and 
+ *        expiredCollection that return DealsCollections filtered into 
+ *        scheduled and expired deals. These new collections listen to the 
+ *        original collection for changes and update themselves accordingly.
  */
 DashboardApp.DealsCollection = Backbone.Collection.extend({
 
   model: DashboardApp.DealModel,
 
-  sync: SmartDealsSync,
+  sync: function(method, collection, options) {
+    if(method=='read') {
+      options.url = '/api/v1/vendor/' + collection.vendorId + '/deals/all/';
+    } else {
+      options.url = '/api/v1/vendor/' + collection.vendorId + '/deals/';
+    }
+    return Backbone.sync(method, collection, options);
+  },
 
   initialize: function(models, options) {
     this.vendorId = options.vendorId || -1;
@@ -64,7 +59,7 @@ DashboardApp.DealsCollection = Backbone.Collection.extend({
 
   // Returns collection that has only scheduled deals and updates whenever
   // the original DealsCollection gets updated.
-  scheduledColl: function() {
+  scheduledCollection: function() {
     var filtered = this.scheduled();
     var scheduledCollection = new DashboardApp.DealsCollection(filtered, { 'vendorId': this.vendorId });
     var self = this;
@@ -84,7 +79,7 @@ DashboardApp.DealsCollection = Backbone.Collection.extend({
 
   // Returns collection that has only scheduled deals and updates whenever
   // the original DealsCollection gets updated.
-  activeColl: function() {
+  activeCollection: function() {
     var filtered = this.active();
     var activeCollection = new DashboardApp.DealsCollection(filtered, { 'vendorId': this.vendorId });
     var self = this;
@@ -104,7 +99,7 @@ DashboardApp.DealsCollection = Backbone.Collection.extend({
 
   // Returns collection that has only expired deals and updates whenever
   // the original DealsCollection gets updated.
-  expiredColl: function() {
+  expiredCollection: function() {
     var filtered = this.expired();
     var expiredCollection = new DashboardApp.DealsCollection(filtered, { 'vendorId': this.vendorId });
     var self = this;
@@ -360,9 +355,9 @@ DashboardApp.Layout = Backbone.Marionette.Layout.extend({
     DashboardApp.events.on('showActiveView', this.showActive, this);
 
     this.deals = options.deals;
-    this.scheduledDeals = this.deals.scheduledColl();
-    this.expiredDeals = this.deals.expiredColl();
-    this.activeDeals = this.deals.activeColl();
+    this.scheduledDeals = this.deals.scheduledCollection();
+    this.expiredDeals = this.deals.expiredCollection();
+    this.activeDeals = this.deals.activeCollection();
     this.activeDealsCollectionView = new DashboardApp.DealsCollectionView({
       collection: this.activeDeals
     });
