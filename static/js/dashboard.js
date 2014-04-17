@@ -44,7 +44,7 @@ DashboardApp.DealsCollection = Backbone.Collection.extend({
   initialize: function(models, options) {
     this.vendorId = options.vendorId || -1;
     this.url = '/api/v1/vendor/' + this.vendorId + '/deals/';
-    if (options.listenForCreate == true) {
+    if(options.listenForCreate == true) {
       DashboardApp.events.on('createDealTrigger', this.create, this);
     }
   },
@@ -232,12 +232,12 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
 
     this.$el.find('input:radio[name="limit"]').change(
       function() {
-        if ($(this).is(':checked') && (this).value == 'limited') {
+        if($(this).is(':checked') && (this).value == 'limited') {
           $('#max-deals-number').prop('disabled', false);
           $('#max-deals-number').attr('placeholder', '1  --  500');
           $('#max-deals-number').attr('maxlength', '3');
         }
-        if ($(this).is(':checked') && (this).value == 'unlimited') {
+        if($(this).is(':checked') && (this).value == 'unlimited') {
           $('#max-deals-number').prop('disabled', true);
           $('#max-deals-number').attr('placeholder', 'Unlimited');
           $('#max-deals-number').val('');
@@ -261,9 +261,9 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
     newModel['desc'] = formValues['desc'];
     var timeStart = new Date();
     var startHours = Number(formValues['start-hours']);
-    if (formValues['start-am-pm'] == 'pm') {
+    if(formValues['start-am-pm'] == 'pm') {
       startHours += 12;
-    } else if (startHours == 12) {
+    } else if(startHours == 12) {
       startHours = 0;
     }
     var startMinutes = Number(formValues['start-minutes']) + 60 * startHours;
@@ -275,7 +275,7 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
     newModel['time_end'] = timeEnd;
     newModel['max_deals'] = -1;
     var limitRadio = this.$el.find('input:radio[value="limited"]');
-    if (limitRadio.is(':checked')) {
+    if(limitRadio.is(':checked')) {
       newModel['max_deals'] = Number(formValues['max-deals']);
     }
     newModel['instructions'] = 'Show to waiter';
@@ -341,7 +341,7 @@ DashboardApp.addInitializer(function(options) {
  *        proper and the modals. Expects to be intialized with a complete
  *        set of collections for every dashboard view. Handles navigation.
  */
-DashboardApp.Layout = Backbone.Marionette.Layout.extend({
+DashboardApp.MainContent = Backbone.Marionette.Layout.extend({
   template: "#layout-template",
 
   regions: {
@@ -395,12 +395,12 @@ DashboardApp.Layout = Backbone.Marionette.Layout.extend({
 // Load the initializer
 DashboardApp.addInitializer(function(options) {
   // Load all deals, pass them into a new layout
-  var layoutOptions = {};
-  layoutOptions.deals= new DashboardApp.DealsCollection([], { 'vendorId': vendorId, 'listenForCreate': true });
-  layoutOptions.deals.fetch({ reset: true });
+  var opts = {};
+  opts.deals = new DashboardApp.DealsCollection([], { 'vendorId': vendorId, 'listenForCreate': true });
+  opts.deals.fetch({ reset: true });
 
-  var layout = new DashboardApp.Layout(layoutOptions);
-  DashboardApp.dashboardRegion.show(layout);
+  var mainContent = new DashboardApp.MainContent(layoutOptions);
+  DashboardApp.dashboardRegion.show(mainContent);
 });
 
 $(document).ready(function() {
