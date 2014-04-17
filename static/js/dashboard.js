@@ -349,7 +349,7 @@ DashboardApp.Layout = Backbone.Marionette.Layout.extend({
     DashboardApp.events.on('showReviewView', this.showReview, this);
     DashboardApp.events.on('showActiveView', this.showActive, this);
 
-    this.deals= options.deals;
+    this.deals = options.deals;
     this.scheduledDeals = this.deals.scheduledColl();
     this.expiredDeals = this.deals.expiredColl();
     this.activeDeals = this.deals.activeColl();
