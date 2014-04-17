@@ -7,8 +7,6 @@
     <div id="modal-container"></div>
 {% endblock %}
 {% block js %}
-  <script type="text/javascript" src="{% static 'js/lib/jqueryui.min.js' %}"></script>
-
   <script type="text/javascript">
     var vendorId = {{ vendor_id }};
   </script>
@@ -224,8 +222,4 @@
   </script>
 
   <script type="text/javascript" src="{% static 'js/dashboard.js' %}"></script>
-{% endblock %}
-
-{% block css %} 
-  <link rel="stylesheet" href="{% static 'css/lib/jqueryui.min.css' %}">
 {% endblock %}

@@ -207,8 +207,6 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
   render: function() {
     this.$el.html(_.template($(this.template).html()));
 
-    // Set up the JQuery UI Spinners
-
     var currDate = new Date();
     var currDay = currDate.getDate();
     var latestDate = new Date();
