@@ -336,13 +336,13 @@ DashboardApp.addInitializer(function(options) {
 });
 
 /*
- * @author: Chris
- * @desc: a Marionette layout that wraps the left navbar, the dashboard
- *        proper and the modals. Expects to be intialized with a complete
- *        set of collections for every dashboard view. Handles navigation.
+ * @author: Chris, Ayush
+ * @desc: a Marionette layout that warps the main content of the dashboard.
+ *        Expects to be initalized with a complete set of collections for
+ *        every dashboard view. Handles navigation within the dashboard.
  */
 DashboardApp.MainContent = Backbone.Marionette.Layout.extend({
-  template: "#layout-template",
+  template: "#main-content-template",
 
   regions: {
     dashboard: '#dashboard'
@@ -394,12 +394,11 @@ DashboardApp.MainContent = Backbone.Marionette.Layout.extend({
 
 // Load the initializer
 DashboardApp.addInitializer(function(options) {
-  // Load all deals, pass them into a new layout
   var opts = {};
   opts.deals = new DashboardApp.DealsCollection([], { 'vendorId': vendorId, 'listenForCreate': true });
   opts.deals.fetch({ reset: true });
 
-  var mainContent = new DashboardApp.MainContent(layoutOptions);
+  var mainContent = new DashboardApp.MainContent(opts);
   DashboardApp.dashboardRegion.show(mainContent);
 });
 
