@@ -18,19 +18,19 @@ DashboardApp.addRegions({
  * @desc: Defines the model that represents the deal that is going to be
  * displayed.
  */
-DealModel = Backbone.Model.extend({ });
+DashboardApp.DealModel = Backbone.Model.extend({ });
 
 /*
  * @author: Ayush, Chris
  * @desc: Defines the collection that represents a grouping of DealModel items.
  *        This collection also has functions scheduledColl and expiredColl that
- *        return DashboardApp.DealsCollections filtered into scheduled and expired deals.
+ *        return DealsCollections filtered into scheduled and expired deals.
  *        These new collections listen to the original collection for changes
  *        and update themselves accordingly.
  */
 DashboardApp.DealsCollection = Backbone.Collection.extend({
 
-  model: DealModel,
+  model: DashboardApp.DealModel,
 
   initialize: function(models, options) {
     this.vendorId = options.vendorId || -1;
@@ -50,7 +50,7 @@ DashboardApp.DealsCollection = Backbone.Collection.extend({
   },
 
   // Returns collection that has only scheduled deals and updates whenever
-  // the original DashboardApp.DealsCollection gets updated.
+  // the original DealsCollection gets updated.
   scheduledColl: function() {
     var filtered = this.scheduled();
     var scheduledCollection = new DashboardApp.DealsCollection(filtered, { 'vendorId': this.vendorId });
@@ -70,7 +70,7 @@ DashboardApp.DealsCollection = Backbone.Collection.extend({
   },
 
   // Returns collection that has only scheduled deals and updates whenever
-  // the original DashboardApp.DealsCollection gets updated.
+  // the original DealsCollection gets updated.
   activeColl: function() {
     var filtered = this.active();
     var activeCollection = new DashboardApp.DealsCollection(filtered, { 'vendorId': this.vendorId });
@@ -90,7 +90,7 @@ DashboardApp.DealsCollection = Backbone.Collection.extend({
   },
 
   // Returns collection that has only expired deals and updates whenever
-  // the original DashboardApp.DealsCollection gets updated.
+  // the original DealsCollection gets updated.
   expiredColl: function() {
     var filtered = this.expired();
     var expiredCollection = new DashboardApp.DealsCollection(filtered, { 'vendorId': this.vendorId });
@@ -107,7 +107,7 @@ DashboardApp.DealsCollection = Backbone.Collection.extend({
  * @desc: Defines the view that is associated with the DealModel. It represents
  * a DealModel as a <tr> tag.
  */
-DealView = Backbone.Marionette.ItemView.extend({
+DashboardApp.DealView = Backbone.Marionette.ItemView.extend({
   template: '#deal-template',
   tagName: 'tr',
   className: 'deal'
@@ -118,12 +118,12 @@ DealView = Backbone.Marionette.ItemView.extend({
  * @desc: Defines the view that is associated with DealsCollection. Is
  * responsible for showing all the DealView objects in a <table>.
  */
-DealsCollectionView = Backbone.Marionette.CompositeView.extend({
+DashboardApp.DealsCollectionView = Backbone.Marionette.CompositeView.extend({
   tagname: 'table',
   id: 'deals-list-view',
   className: 'table table-striped table-bordered',
   template: '#deals-collection-template',
-  itemView: DealView,
+  itemView: DashboardApp.DealView,
 
   collectionEvents: {
     "sync": "render"
@@ -192,7 +192,7 @@ DashboardApp.addInitializer(function(options) {
  * to create a new deal. It is responsible for handling all events associated
  * with the form.
  */
-DealCreateFormView = Backbone.Marionette.ItemView.extend({
+DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
   events: {
     'click #submit-btn': 'createDeal'
   },
@@ -354,16 +354,16 @@ DashboardApp.Layout = Backbone.Marionette.Layout.extend({
     this.scheduledDeals = this.deals.scheduledColl();
     this.expiredDeals = this.deals.expiredColl();
     this.activeDeals = this.deals.activeColl();
-    this.activeDealsCollectionView = new DealsCollectionView({
+    this.activeDealsCollectionView = new DashboardApp.DealsCollectionView({
       collection: this.activeDeals
     });
-    this.scheduledDealsCollectionView = new DealsCollectionView({
+    this.scheduledDealsCollectionView = new DashboardApp.DealsCollectionView({
       collection: this.scheduledDeals
     });
-    this.expiredDealsCollectionView = new DealsCollectionView({
+    this.expiredDealsCollectionView = new DashboardApp.DealsCollectionView({
       collection: this.expiredDeals
     });
-    this.dealCreateForm = new DealCreateFormView();
+    this.dealCreateForm = new DashboardApp.DealCreateFormView();
   },
 
 
