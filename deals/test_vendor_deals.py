@@ -1,17 +1,18 @@
 from deals.models import Deal
-from django.test import Client 
+from django.test import Client
 from django.test import TestCase
 import json
 
 class VendorDealTestCase(TestCase):
   fixtures = ['deals.json']
-  
+
   def setUp(self):
     # Create our test client object.
     self.client = Client()
+    self.client.login(username="kingofpaloalto", password="password")
     self.donut_list = list(range(1, 4))
     self.inactive_donuts = [3]
-         
+
   def test_deals_post(self):
     """
     @author: Chris

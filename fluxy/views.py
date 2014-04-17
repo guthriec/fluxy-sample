@@ -82,7 +82,7 @@ def register_page(request):
       messages.add_message(request, messages.ERROR, error_message)
     else:
       return redirect(reverse('fluxy.views.login_page'))
-  
+
   return render(request, 'fluxy/register.html', {
                  'title': 'Fluxy Registration',
                  'error_message': error_message,
@@ -104,20 +104,18 @@ def login_page(request):
 
   if request.method == 'POST':
     api_resp = user_auth(request)
-    api_content = None
-    if api_resp.status_code != 200:
-      api_content = json.loads(api_resp.content)
+    api_content = json.loads(api_resp.content)
+    if api_resp.status_code != 200 or not api_content['success']:
       error_message = api_content['message']
     else:
       try:
-        api_content = json.loads(api_resp.content)[0]
-        vendor_id = api_content['vendors'][0]
+        vendor_id = api_content['response']['vendors'][0]
         request.session['vendor_id'] = vendor_id
       # If no associated vendor, just don't set the vendor_id session attribute
       except IndexError:
         pass
       return redirect(reverse('dashboard.views.dashboard'))
-  
+
   return render(request, 'fluxy/login.html', {
                  'title': 'Fluxy Login',
                  'error_message': error_message,
@@ -138,36 +136,46 @@ def logout_page(request):
 @require_http_methods(["POST"])
 def user_auth(request):
   """
-  @author: Chris, Rahul
-  @desc: This method is used to log a user in. Returns 200 upon success, 401
-  upon invalid credentials, and 400 upon an improperly formatted POST.
-  Accepts either standard form or JSON formatted POSTs with the following keys:
-      *username
+  @author: Chris, Rahul, Ayush
+  @desc: This method is used to log a user in. Returns a 200 upon a valid
+  request and a 400 on a badly formated request. Accepts either standard form
+  or JSON formatted POSTs with the following keys:
+      *email
       *password
 
   @param request: the request object
 
-  @return: 200 on successful auth, 400 or 401 otherwise
+  @return: 200 on valid request, 400 otherwise. Valid post's reponse is JSON
+  with key "success" indicating the success of the login.
   """
   post_data = request.POST
   try:
     if request.META['CONTENT_TYPE'] == 'application/json':
       post_data = json.loads(request.body)
-    username = post_data['username']
+    username = post_data['email']
     password = post_data['password']
   except Exception:
     response = { 'code': 400, 'message': 'Bad request' }
     return HttpResponse(json.dumps(response), status = 400,
         content_type='application/json')
+
   user = authenticate(username=username, password=password)
+  response = {}
   if user is not None:
     login(request, user)
-    response = [user.get_safe_user()]
-    return HttpResponse(json.dumps(response), content_type="application/json",
-                        status = 200)
+    response = {
+      "code": 200,
+      "message": "Valid username and password",
+      "success": True,
+      "response": user.get_safe_user()
+    }
   else:
-    response = {"code": 401, "message": "Invalid username/password", "success": False}
-    return HttpResponse(json.dumps(response), content_type="application/json", status = response["code"])
+    response = {
+      "code": 200,
+      "message": "Invalid username/password",
+      "success": False
+    }
+  return HttpResponse(json.dumps(response), content_type="application/json", status = 200)
 
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -177,8 +185,9 @@ def user_register(request):
   @desc: This method registers a new user. Returns 200 upon success, 400
   otherwise. It does not log the user in upon successful registration.
   Accepts either standard form or JSON formatted POSTs with the following keys:
-      *username
+      *email
       *password
+      *password_confirm
 
   @param request: the request object
 
@@ -189,7 +198,7 @@ def user_register(request):
     if request.META['CONTENT_TYPE'] == 'application/json':
       post_data = json.loads(request.body)
     email = post_data['email']
-    username = post_data['username']
+    username = post_data['email']
     password = post_data['password']
     password_confirm = post_data['password_confirm']
   except Exception:
