@@ -400,6 +400,8 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
     newModel['title'] = formValues['title'];
     newModel['desc'] = formValues['desc'];
     var timeEnd = new Date();
+    var timeStart = this.computeStart(this.$el.find('#start-day-group'), this.$el.find('#start-time-group'));
+    var minutes = this.computeDuration(this.$el.find('#duration-group'));
     timeEnd.setTime(timeStart.getTime() + minutes * 60000);
     newModel['time_end'] = timeEnd;
     newModel['max_deals'] = -1;
