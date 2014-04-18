@@ -212,25 +212,12 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
 
   template: '#deal-create-form-template',
 
-  validateTitleGroup: function(e) {
-    var titleEl = $('#title-group');
-    var titleInputEl = titleEl.find('input:text[name="deal-title"]');
-    var title = titleInputEl.val();
-    if (title.length > 7) {
-      titleEl.removeClass('has-error');
-      titleEl.find('#title-validation-error').remove();
-    } else {
-      titleEl.addClass('has-error');
-      var thirdEl = titleEl.find(':nth-child(3)');
-      if (!(thirdEl.attr('id') == 'title-validation-error')) {
-        thirdEl.before('<p id="title-validation-error" class="help-block col-sm-offset-2 col-sm-6">Deal title must be at least 8 characters long.</p>');
-      }
-    }
-    this.events['keyup #title-group'] = 'validateTitleGroup';
-    delete this.events['focusout #title-group'];
-    this.delegateEvents();
-  },
-
+  /*
+   * @author: Chris
+   * @desc: Utility function to take the start-day-group and start-time-group
+   *         elements, extract input, and compute the start time as a
+   *         Javascript date.
+   */
   computeStart: function(startDayEl, startTimeEl) {
     var dayInputEl = startDayEl.find('select[name="start-day"]');
     var hoursInputEl = startTimeEl.find('select[name="start-hours"]');
@@ -248,12 +235,23 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
     return timeStart;
   },
 
+  /*
+   * @author: Chris
+   * @desc: Utility function to take the duration-group element, extract
+   *        input, and compute the duration.
+   */
   computeDuration: function(durationEl) {
     var minutesEl = durationEl.find('#duration-minutes');
     var hoursEl = durationEl.find('#duration-hours');
     return Number(minutesEl.val()) + 60 * Number(hoursEl.val());
   },
 
+  /*
+   * @author: Chris
+   * @desc: Event handler to extract the input for start time,
+   *        validate that the start time is after the current time, and update
+   *        the form with appropriate errors.
+   */
   validateStart: function(e) {
     var timeArea = this.$el.find('#time-area');
     var startDayEl = timeArea.find('#start-day-group');
@@ -262,11 +260,10 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
     var startTime = this.computeStart(startDayEl, startTimeEl);
     if (0 < (startTime - Date.now())) {
       startGroups.removeClass('has-error');
-      timeArea.find('#start-validation-error').remove();
+      this.$el.find('#start-validation-error').remove();
     } else {
       startGroups.addClass('has-error');
-      var thirdEl = startTimeEl.add(':nth-child(3)');
-      if (!(thirdEl.attr('id') == 'start-validation-error')) {
+      if (this.$el.find('#start-validation-error').length == 0) {
         startTimeEl.append('<p id="start-validation-error" class="help-block col-sm-offset-2 col-sm-6">Start time must be in the future!</p>');
       }
     }
@@ -276,6 +273,37 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
     this.delegateEvents();
   },
 
+  /*
+   * @author: Chris
+   * @desc: Event handler to extract the input for deal title,
+   *        validate that the title is long enough, and update
+   *        the form with appropriate errors.
+   */
+  validateTitleGroup: function(e) {
+    var titleEl = $('#title-group');
+    var titleInputEl = titleEl.find('input:text[name="deal-title"]');
+    var title = titleInputEl.val();
+    if (title.length > 7) {
+      titleEl.removeClass('has-error');
+      this.$el.find('#title-validation-error').remove();
+    } else {
+      titleEl.addClass('has-error');
+      var thirdChild= this.$el.find('#title-group :nth-child(3)');
+      if (!(thirdChild.attr('id') == 'title-validation-error')) {
+        thirdChild.before('<p id="title-validation-error" class="help-block col-sm-offset-2 col-sm-6">Deal title must be at least 8 characters long.</p>');
+      }
+    }
+    this.events['keyup #title-group'] = 'validateTitleGroup';
+    delete this.events['focusout #title-group'];
+    this.delegateEvents();
+  },
+
+  /*
+   * @author: Chris
+   * @desc: Event handler to extract the input for duration,
+   *        validate that duration is positive, and update
+   *        the form with appropriate errors.
+   */
   validateDuration: function(e) {
     var durationEl = this.$el.find('#duration-group');
     var duration = this.computeDuration(durationEl);
@@ -294,6 +322,14 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
     this.delegateEvents();
   },
 
+
+
+  /*
+   * @author: Chris
+   * @desc: Event handler to extract the input for maximum number of deals,
+   *        validate that this is a number between 1 and 500, and update
+   *        the form with appropriate errors.
+   */
   validateMaxDeals: function(e) {
     var maxDealsEl = this.$el.find('#max-deals-group');
     var maxDeals = parseInt(maxDealsEl.find('#max-deals-number').val(), 10);
@@ -302,8 +338,7 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
       this.$el.find('#max-deals-validation-error').remove();
     } else {
       maxDealsEl.addClass('has-error');
-      lastChild = this.$el.find('#max-deals-group > :nth-child(3)');
-      if (!(lastChild.attr('id') == 'max-deals-validation-error')) {
+      if (this.$el.find('#max-deals-validation-error').length == 0) {
         maxDealsEl.append('<p id="max-deals-validation-error" class="help-block col-sm-6">Maximum number of deals must be a number between 1 and 500 (inclusive)</p>');
       }
     }
