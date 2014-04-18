@@ -272,6 +272,7 @@ def user_vendors(request):
     return HttpResponse(serializers.serialize('json', request.user.vendors.all()),
                         content_type="application/json")
 
+@csrf_exempt
 @require_http_methods(['GET', 'POST'])
 def user_deals(request, active_only=True):
   """

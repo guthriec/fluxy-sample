@@ -41,6 +41,7 @@ def deal(request, deal_id=None, active_only=True):
 
   return make_get_response(deal_list, known_error)
 
+@csrf_exempt
 @require_http_methods(["GET", "POST"])
 @api_login_required(["POST"])
 def vendor(request, vendor_id=None):
@@ -87,6 +88,7 @@ def vendor(request, vendor_id=None):
       known_error = { 'code': 400, 'message': 'Bad post request' }
     return make_post_response(vendor, 'vendors/' + str(vendor_id), known_error)
 
+@csrf_exempt
 @require_http_methods(["GET", "POST"])
 @api_vendor_required(["POST"])
 def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
