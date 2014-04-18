@@ -5,6 +5,7 @@ from deals.decorators import api_login_required, api_vendor_required
 from deals.models import ClaimedDeal, Deal, Vendor
 from distance import in_radius
 from django.utils.timezone import utc
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 import json
 

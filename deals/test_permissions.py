@@ -97,7 +97,7 @@ class ApiPermissionsTestCase(TestCase):
     response = self.client.post('/api/v1/vendor/1/deals/',
                                 json.dumps(self.new_deal),
                                 content_type="application/javascript")
-    self.assertEqual(response.status_code, 403)
+    self.assertEqual(response.status_code, 401)
     with self.assertRaises(Deal.DoesNotExist):
       Deal.objects.get(title=self.new_deal["title"])
 
@@ -125,7 +125,7 @@ class ApiPermissionsTestCase(TestCase):
     response = self.client.post('/api/v1/user/claimed_deals/',
                                 json.dumps(self.new_claimed_deal),
                                 content_type="application/javascript")
-    self.assertEqual(response.status_code, 403)
+    self.assertEqual(response.status_code, 401)
     with self.assertRaises(ClaimedDeal.DoesNotExist):
       ClaimedDeal.objects.get(deal=self.new_claimed_deal["deal_id"])
 
@@ -135,11 +135,11 @@ class ApiPermissionsTestCase(TestCase):
     @desc: test that a logged out user can't view claimed deals
     """
     response = self.client.get('/api/v1/user/claimed_deals/')
-    self.assertEqual(response.status_code, 403)
+    self.assertEqual(response.status_code, 401)
     response = self.client.get('/api/v1/vendor/1/claimed_deals/')
-    self.assertEqual(response.status_code, 403)
+    self.assertEqual(response.status_code, 401)
     response = self.client.get('/api/v1/user/claimed_deals/all/')
-    self.assertEqual(response.status_code, 403)
+    self.assertEqual(response.status_code, 401)
 
   def test_logged_out_create_vendor(self):
     """
@@ -149,7 +149,7 @@ class ApiPermissionsTestCase(TestCase):
     response = self.client.post('/api/v1/vendors/',
                                 json.dumps(self.new_vendor),
                                 content_type="application/javascript")
-    self.assertEqual(response.status_code, 403)
+    self.assertEqual(response.status_code, 401)
     with self.assertRaises(Vendor.DoesNotExist):
       Vendor.objects.get(name=self.new_vendor["name"])
 
