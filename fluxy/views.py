@@ -202,7 +202,8 @@ def user_register(request):
     password = post_data['password']
     password_confirm = post_data['password_confirm']
   except Exception:
-    return HttpResponse("Bad request.", status = 400)
+    return HttpResponse(json.dumps({'status': 400, 'error': 'Bad request.'}),
+      status = 400, content_type='application/json')
   response = {"code": 400, "message": "Could not register"}
   if password != password_confirm:
     response['message'] = "Passwords do not match"
