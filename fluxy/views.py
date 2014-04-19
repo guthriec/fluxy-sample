@@ -152,7 +152,7 @@ def user_auth(request):
   try:
     if request.META['CONTENT_TYPE'] == 'application/json':
       post_data = json.loads(request.body)
-    username = post_data['email']
+    username = post_data['email'].lower()
     password = post_data['password']
   except Exception:
     response = { 'code': 400, 'message': 'Bad request' }
@@ -197,8 +197,8 @@ def user_register(request):
   try:
     if request.META['CONTENT_TYPE'] == 'application/json':
       post_data = json.loads(request.body)
-    email = post_data['email']
-    username = post_data['email']
+    email = post_data['email'].lower()
+    username = post_data['email'].lower()
     password = post_data['password']
     password_confirm = post_data['password_confirm']
   except Exception:
