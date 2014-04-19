@@ -248,10 +248,10 @@ def user(request):
   @param request: the request object
 
   @return: A JSON encoded subset of the user object if there is a logged in
-  user, otherwise a 403 error
+  user, otherwise a 401 error
   """
   if not request.user.is_authenticated():
-    response = {'code': 403, 'message': 'Authentication error'}
+    response = {'code': 401, 'message': 'Authentication error'}
     return HttpResponse(json.dumps(response), content_type="application/json",
                         status = response['code'])
   else:
@@ -266,13 +266,14 @@ def user_vendors(request):
   administrative power over.
   """
   if not request.user.is_authenticated():
-    response = {'code': 403, 'message': 'Authentication error'}
+    response = {'code': 401, 'message': 'Authentication error'}
     return HttpResponse(json.dumps(response), content_type="application/json",
                         status = response['code'])
   else:
     return HttpResponse(serializers.serialize('json', request.user.vendors.all()),
                         content_type="application/json")
 
+@csrf_exempt
 @require_http_methods(['GET', 'POST'])
 def user_deals(request, active_only=True):
   """
@@ -292,7 +293,7 @@ def user_deals(request, active_only=True):
   @returns: a JSON encoded array of deals the user has claimed
   """
   if not request.user.is_authenticated():
-    response = {'code': 403, 'message': 'Authentication error'}
+    response = {'code': 401, 'message': 'Authentication error'}
     return HttpResponse(json.dumps(response), content_type="application/json",
                         status = response['code'])
   now = datetime.datetime.utcnow().replace(tzinfo=utc)
