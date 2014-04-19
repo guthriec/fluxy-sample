@@ -202,10 +202,11 @@ DashboardApp.addInitializer(function(options) {
 DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
   events: {
     'focusout #title-group' : 'validateTitleGroup',
-    'focusout #title-group' : 'validateTitleGroup',
-    'focusout #duration-group' : 'validateStart',
-    'focusout #start-am-pm' : 'validateStart',
-    'focusout #duration-group' : 'validateDuration',
+    'focusout #duration-group' : function() {
+      this.validateStart();
+      this.validateDuration();
+    },
+    'focusout #start-time-group' : 'validateStart',
     'focusout #max-deals-group' : 'validateMaxDeals',
     'click #submit-btn': 'createDeal'
   },
