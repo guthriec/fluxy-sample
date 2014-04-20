@@ -398,14 +398,17 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
     $formInputs.each(function() {
       formValues[this.name] = this.value;
     });
-    newModel['title'] = formValues['title'];
+    newModel['title'] = formValues['deal-title'];
     newModel['desc'] = formValues['desc'];
     var timeEnd = new Date();
     var timeStart = this.computeStart(this.$el.find('#start-day-group'), this.$el.find('#start-time-group'));
     var minutes = this.computeDuration(this.$el.find('#duration-group'));
     timeEnd.setTime(timeStart.getTime() + minutes * 60000);
     newModel['time_end'] = timeEnd;
-    newModel['max_deals'] = -1;
+    var maxDealsEl = this.$el.find('#max-deals-group');
+    var maxDeals = parseInt(maxDealsEl.find('#max-deals-number').val(), 10);
+    console.log(maxDeals);
+    newModel['max_deals'] = maxDeals;
     var limitRadio = this.$el.find('input:radio[value="limited"]');
     if(limitRadio.is(':checked')) {
       newModel['max_deals'] = Number(formValues['max-deals']);
