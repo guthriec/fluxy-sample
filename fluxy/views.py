@@ -1,6 +1,8 @@
 # Filename: /fluxy/views.py
 # Notes: Includes view functions for the overall Fluxy project
 
+from deals.api_tools import make_post_response
+from deals.models import Deal, ClaimedDeal
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.core import serializers
@@ -11,7 +13,6 @@ from django.utils.timezone import utc
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from fluxy.models import FluxyUser
-from deals.models import Deal, ClaimedDeal
 import datetime
 import json
 import mailchimp
@@ -138,8 +139,9 @@ def user_auth(request):
   """
   @author: Chris, Rahul, Ayush
   @desc: This method is used to log a user in. Returns a 200 upon a valid
-  request and a 400 on a badly formated request. Accepts either standard form
-  or JSON formatted POSTs with the following keys:
+  request, 401 on invalid login credientials and a 400 on a badly formated
+  request. Accepts either standard form or JSON formatted POSTs with the
+  following keys:
       *email
       *password
 
@@ -152,7 +154,7 @@ def user_auth(request):
   try:
     if request.META['CONTENT_TYPE'] == 'application/json':
       post_data = json.loads(request.body)
-    username = post_data['email']
+    username = post_data['email'].lower()
     password = post_data['password']
   except Exception:
     response = { 'code': 400, 'message': 'Bad request' }
@@ -169,13 +171,14 @@ def user_auth(request):
       "success": True,
       "response": user.get_safe_user()
     }
+    return HttpResponse(json.dumps(response), content_type="application/json", status = 200)
   else:
     response = {
-      "code": 200,
+      "code": 401,
       "message": "Invalid username/password",
       "success": False
     }
-  return HttpResponse(json.dumps(response), content_type="application/json", status = 200)
+    return HttpResponse(json.dumps(response), content_type="application/json", status = 401)
 
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -197,28 +200,26 @@ def user_register(request):
   try:
     if request.META['CONTENT_TYPE'] == 'application/json':
       post_data = json.loads(request.body)
-    email = post_data['email']
-    username = post_data['email']
+    email = post_data['email'].lower()
+    username = post_data['email'].lower()
     password = post_data['password']
     password_confirm = post_data['password_confirm']
   except Exception:
-    return HttpResponse(json.dumps({'status': 400, 'error': 'Bad request.'}),
-      status = 400, content_type='application/json')
-  response = {"code": 400, "message": "Could not register"}
+    return make_post_response(None, None, {'code': 400, 'message': 'Missing fields or malformed request.'})
+  known_error = {'code': 400, 'message': 'Could not register'}
   if password != password_confirm:
-    response['message'] = "Passwords do not match"
+    known_error['message'] = "Passwords do not match"
   else:
     try:
       FluxyUser.objects.get(username__exact=username)
-      response['message'] = "Username already registered"
+      known_error['message'] = "Username already registered"
     except FluxyUser.DoesNotExist:
       new_user = FluxyUser.objects.create_user(email=email, username=username, password=password)
       new_user.save()
-      return HttpResponseRedirect('/user/auth/',
-          json.dumps([new_user.get_safe_user()]), content_type="application/json",
-          status = 201)
-  return HttpResponse(json.dumps(response), content_type='application/json',
-      status = response['code'])
+      logged_in_user = authenticate(username=username, password=password)
+      login(request, logged_in_user)
+      return make_post_response(logged_in_user, '/user/')
+  return make_post_response(None, None, known_error)
 
 @require_http_methods(["GET"])
 def user_logout(request):
