@@ -139,8 +139,9 @@ def user_auth(request):
   """
   @author: Chris, Rahul, Ayush
   @desc: This method is used to log a user in. Returns a 200 upon a valid
-  request and a 400 on a badly formated request. Accepts either standard form
-  or JSON formatted POSTs with the following keys:
+  request, 401 on invalid login credientials and a 400 on a badly formated
+  request. Accepts either standard form or JSON formatted POSTs with the
+  following keys:
       *email
       *password
 
@@ -170,13 +171,14 @@ def user_auth(request):
       "success": True,
       "response": user.get_safe_user()
     }
+    return HttpResponse(json.dumps(response), content_type="application/json", status = 200)
   else:
     response = {
-      "code": 200,
+      "code": 401,
       "message": "Invalid username/password",
       "success": False
     }
-  return HttpResponse(json.dumps(response), content_type="application/json", status = 200)
+    return HttpResponse(json.dumps(response), content_type="application/json", status = 401)
 
 @csrf_exempt
 @require_http_methods(["POST"])
