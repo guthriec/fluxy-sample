@@ -69,11 +69,12 @@ def deal(request, deal_id=None, active_only=True):
 
   return make_get_response(deal_list, known_error)
 
-@require_http_methods(["GET", "POST", "PUT"])
-@api_login_required(["POST", "PUT"])
+@require_http_methods(['GET', 'POST', 'PUT'])
+@api_login_required(['POST', 'PUT'])
+@api_vendor_required(['PUT'])
 def vendor(request, vendor_id=None):
   """
-  @author: Chris, Ayush
+  @author: Chris, Ayush, Rahul
   @desc: Routes request to appropriate handler based on request method. Returns
   JSON HttpResponse for GET, 201 redirect with JSON for POST (regardless of
   success). Returns/creates vendor objects
@@ -101,41 +102,24 @@ def vendor(request, vendor_id=None):
     vendor_list = list_from_qset(vendor_set, include_nested=False, flatten=True)
     return make_get_response(vendor_list, known_error)
   else:
-    if request.user.is_authenticated():
-      vendor = None
-      try:
-        print request
-        data = None
-        if request.META['CONTENT_TYPE'] == 'application/json':
-          data = json.loads(request.body)
-        known_error = None
-        vendor_form = None
-        if request.method == 'POST':
-          if not data:
-            data = request.POST
-          if vendor_id:
-            vendor = Vendor.objects.get(pk = vendor_id)
-          vendor_form = VendorForm(data, request.FILES, instance=vendor)
-        else: # PUT
-          if not data:
-            data = request.PUT # TODO This doesn't work
-          vendor = Vendor.objects.get(pk = vendor_id)
-          if not vendor in request.user.vendors.all():
-            return HttpResponse(json.dumps({ 'code': 403,
-                                             'message': 'Invalid permissions.'
-                                           }), content_type = 'application/json',
-                                           status = 403)
-          vendor_form = VendorForm(data, request.FILES, instance=vendor)
+    try:
+      data = json.loads(request.body)
+      known_error = None
+      vendor_form = None
+      if request.method == 'POST':
+        vendor_form = VendorForm(data, instance=vendor)
         vendor = vendor_form.save()
         vendor_id = str(vendor.id)
-      except (TypeError, ValueError), e:
-        print e
-        known_error = { 'code': 400, 'message': 'Bad post request: ' }
+        return _make_post_response(vendor, 'vendors/' + str(vendor_id), known_error)
+      else: # PUT
+        vendor = Vendor.objects.get_object_or_404(pk = vendor_id)
+        vendor_form = VendorForm(data, instance=vendor)
+        vendor = vendor_form.save()
+        vendor_id = str(vendor.id)
+        return HttpResponse(serializers.serialize([vendor]))
+    except (TypeError, ValueError), e:
+      known_error = { 'status': 400, 'error': 'Bad request.' }
       return _make_post_response(vendor, 'vendors/' + str(vendor_id), known_error)
-    return HttpResponse(json.dumps({ 'code': 403,
-                                     'message': 'Authentication Required.'
-                                   }), content_type = 'application/json',
-                                   status = 403)
 
 @require_http_methods(['POST', 'DELETE'])
 @api_login_required(['POST', 'DELETE'])
