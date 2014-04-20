@@ -137,10 +137,10 @@ def vendor(request, vendor_id=None):
                                    }), content_type = 'application/json',
                                    status = 403)
 
-@require_http_methods(["POST"])
-@api_login_required(["POST"])
-@api_vendor_required(["POST"])
-def vendor_photo(request, vendor_id):
+@require_http_methods(['POST', 'DELETE'])
+@api_login_required(['POST', 'DELETE'])
+@api_vendor_required(['POST', 'DELETE'])
+def vendor_photo(request, vendor_id, photo_id=None):
   """
   @author: Rahul
   @desc: Creates a new VendorPhoto object and associates it with the specified
@@ -153,15 +153,21 @@ def vendor_photo(request, vendor_id):
   @return: a 201 response with the JSON encoded VendorPhoto object
   """
   vendor = get_object_or_404(Vendor, pk=vendor_id)
-  try:
-    vendor_photo = VendorPhoto(photo=request.FILES['photo'],
-        vendor=vendor)
-    vendor_photo.save()
-  except:
-    return HttpResponse(json.dumps({ 'status': 400, 'error': 'Bad request.' }),
-      content_type='application/json', status=400)
-  return HttpResponse(serializers.serialize('json', [vendor_photo]),
-      content_type='application/json', status=201)
+  if request.method == 'POST':
+    try:
+      vendor_photo = VendorPhoto(photo=request.FILES['photo'],
+          vendor=vendor)
+      vendor_photo.save()
+    except:
+      return HttpResponse(json.dumps({ 'status': 400, 'error': 'Bad request.' }),
+        content_type='application/json', status=400)
+    return HttpResponse(serializers.serialize('json', [vendor_photo]),
+        content_type='application/json', status=201)
+  else:
+    vendor_photo = get_object_or_404(VendorPhoto, pk=photo_id)
+    vendor_photo.photo.delete()
+    vendor_photo.delete()
+    return HttpResponse('')
 
 
 @require_http_methods(["GET", "POST"])
