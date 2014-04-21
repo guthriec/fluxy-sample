@@ -1,4 +1,5 @@
 import datetime
+from django.core import serializers
 from django.db import models
 from django.utils.timezone import utc
 
@@ -11,6 +12,7 @@ class Vendor(models.Model):
     web_url - URL of vendor's website
     yelp_url - URL of vendor's Yelp page
     phone - Phone number
+    profile_photo - primary photo for vendor
   """
   name = models.CharField(max_length=100)
   address = models.CharField(max_length=100)
@@ -19,6 +21,10 @@ class Vendor(models.Model):
   web_url = models.URLField()
   yelp_url = models.URLField()
   phone = models.CharField(max_length=20)
+  profile_photo = models.ForeignKey('VendorPhoto', related_name='+',
+      blank=True, null=True)
+
+  # TODO Validate photo belongs to vendor
 
   def __unicode__(self):
     """
@@ -39,6 +45,7 @@ class Vendor(models.Model):
         'web_url': self.web_url,
         'yelp_url': self.yelp_url,
         'phone': self.phone,
+        'profile_photo': self.profile_photo.url,
     }
 
 
@@ -50,10 +57,11 @@ class VendorPhoto(models.Model):
     is_primary : A boolean indicating whether this photo is the primary photo
                  for its vendor
   """
-  photo = models.ImageField(upload_to='vendors',
-      default='defaults/vendors.jpg')
+  photo = models.ImageField(upload_to='vendors')
   vendor = models.ForeignKey(Vendor)
-  is_primary = models.BooleanField(default=False)
+
+  def natural_key(self):
+    return self.photo.url
 
 
 class Deal(models.Model):
@@ -90,6 +98,7 @@ class Deal(models.Model):
       'time_end': self.time_end,
       'instructions': self.instructions,
     }
+
 
 class ClaimedDeal(models.Model):
   """

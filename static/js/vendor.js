@@ -7,9 +7,12 @@ VendorApp.addRegions({
 
 VendorPhotoFormView = Backbone.Marionette.ItemView.extend({
   events: {
-    'click #save-picture-btn': 'postPhoto',
+    'click #save-photo-btn': 'postPhoto',
+    'click #cancel-photo-btn': 'deletePhoto',
     'change #photo-src': 'changePhoto',
   },
+
+  photo: null,
 
   template: '#vendor-photo-form-template',
 
@@ -20,21 +23,29 @@ VendorPhotoFormView = Backbone.Marionette.ItemView.extend({
 
   postPhoto: function(e) {
     e.preventDefault();
-    $('#photo-form').ajaxSubmit({
-      'success': function(res, status) {
-        /*
-        $('#vendor-image').attr('src', '/media/' +
-          JSON.parse(res)[0].fields.image);
-          */
-        $('#change-vendor-photo').modal('hide');
-      },
-      'error': function() {
-      },
-    });
+    $('#change-vendor-photo').modal('hide');
+  },
+
+  deletePhoto: function(e) {
+    e.preventDefault();
+    this.vendorId = this.vendorId || $('#photo-form').attr('data-vendor-id');
+    if (this.photo)
+      $.ajax('/api/v1/vendor/' + this.vendorId  + '/photo/' + this.photo.pk + '/',
+          { 'type': 'delete' });
   },
 
   changePhoto: function(e) {
-    $('#save-picture-btn').removeClass('disabled');
+    $('#photo-form').ajaxSubmit({
+      'success': function(context) {
+        return function(res, status) {
+          $('#modal-photo').attr('src', '/media/' + res[0].fields.photo);
+          $('#save-photo-btn').removeClass('disabled');
+          context.photo = res[0];
+        };
+      }(this),
+      'error': function() {
+      },
+    });
   }
 });
 

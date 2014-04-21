@@ -94,9 +94,12 @@ def vendor(request, vendor_id=None):
   if request.method == 'GET':
     known_error = None
     vendor_list = None
+    vendor = Vendor.objects.get(pk = vendor_id)
+    #return HttpResponse(serializers.serialize('json', [vendor],
+    #    use_natural_keys=True))
     vendor_set = _get_vendor(vendor_id)
     if vendor_id and vendor_set.count() == 0:
-      known_error = { 'code': 404, 'message': 'Vendor not found' }
+      known_error = { 'status': 404, 'message': 'Vendor not found.' }
       return make_get_response(vendor_list, known_error)
 
     vendor_list = list_from_qset(vendor_set, include_nested=False, flatten=True)
@@ -116,7 +119,7 @@ def vendor(request, vendor_id=None):
         vendor_form = VendorForm(data, instance=vendor)
         vendor = vendor_form.save()
         vendor_id = str(vendor.id)
-        return HttpResponse(serializers.serialize([vendor]))
+        return HttpResponse(serializers.serialize('json', [vendor]))
     except (TypeError, ValueError), e:
       known_error = { 'status': 400, 'error': 'Bad request.' }
       return _make_post_response(vendor, 'vendors/' + str(vendor_id), known_error)
@@ -151,7 +154,8 @@ def vendor_photo(request, vendor_id, photo_id=None):
     vendor_photo = get_object_or_404(VendorPhoto, pk=photo_id)
     vendor_photo.photo.delete()
     vendor_photo.delete()
-    return HttpResponse('')
+    return HttpResponse(json.dumps({'status': 200,
+        'message': 'Successfully deleted photo.'}))
 
 
 @require_http_methods(["GET", "POST"])

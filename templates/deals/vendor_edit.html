@@ -4,7 +4,7 @@
 {% block content %}
 
 <h1>Update Vendor Information</h1>
-<img src="" style="width:200px" id="vendor-image"/>
+<img src="{{ vendor.profile_photo.photo.url }}" style="width:200px" id="vendor-image"/>
 
 <div id="vendor-photo-form"></div>
 <div id="vendor-form">
@@ -33,16 +33,17 @@
           <h4 class="modal-title">Change Vendor Picture</h4>
         </div>
         <form enctype="multipart/form-data" action="/api/v1/vendor/{{ vendor_id }}/photo/"
-          method="post" id="photo-form">
+          method="post" id="photo-form" data-vendor-id="{{ vendor_id }}">
           <div class="modal-body">
             {% csrf_token %}
+            <img style="width:200px" src="{{ vendor.profile_photo.photo.url }}" id="modal-photo" />
             <input type="file" name="photo" id="photo-src" />
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default"
-              data-dismiss="modal">Cancel</button>
+              id="cancel-photo-btn" data-dismiss="modal">Cancel</button>
             <button type="submit"  class="btn btn-primary disabled"
-              id="save-picture-btn">Save Picture</button>
+              id="save-photo-btn">Save Picture</button>
           </div>
         </form>
       </div>
