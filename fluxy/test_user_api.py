@@ -18,7 +18,7 @@ class UserApiTestCase(TestCase):
     @desc: Test the auth endpoint with a valid username and password.
     """
     data = { 'username': 'kingofpaloalto', 'password': 'password' }
-    response = self.client.post('/user/auth/', data=data)
+    response = self.client.post('/api/v1/user/auth/', data=data)
     self.assertEqual(response.status_code, 200)
     self.assertEqual(self.client.session['_auth_user_id'], 1)
 
@@ -29,7 +29,7 @@ class UserApiTestCase(TestCase):
     instead of form data. Important for Backbone.
     """
     data = { 'username': 'kingofpaloalto', 'password': 'password' }
-    response = self.client.post('/user/auth/', data=json.dumps(data),
+    response = self.client.post('/api/v1/user/auth/', data=json.dumps(data),
     content_type='application/json')
     self.assertEqual(response.status_code, 200)
     self.assertEqual(self.client.session['_auth_user_id'], 1)
@@ -40,7 +40,7 @@ class UserApiTestCase(TestCase):
     @desc: Test the auth endpoint with a nonexistent username.
     """
     data = { 'username': 'invalid', 'password': 'password' }
-    response = self.client.post('/user/auth/', data=data)
+    response = self.client.post('/api/v1/user/auth/', data=data)
     self.assertEqual(response.status_code, 401)
     self.assertNotIn('auth_user_id', self.client.session)
 
@@ -50,7 +50,7 @@ class UserApiTestCase(TestCase):
     @desc: Test the auth endpoint with a valid username and invalid password.
     """
     data = { 'username': 'kingofpaloalto', 'password': 'invalid' }
-    response = self.client.post('/user/auth/', data=data)
+    response = self.client.post('/api/v1/user/auth/', data=data)
     self.assertEqual(response.status_code, 401)
     self.assertNotIn('auth_user_id', self.client.session)
 
@@ -60,7 +60,7 @@ class UserApiTestCase(TestCase):
     @desc: Test the auth endpoint without password data.
     """
     data = { 'username': 'kingofpaloalto' }
-    response = self.client.post('/user/auth/', data=data)
+    response = self.client.post('/api/v1/user/auth/', data=data)
     self.assertEqual(response.status_code, 400)
     self.assertNotIn('auth_user_id', self.client.session)
 
@@ -70,10 +70,10 @@ class UserApiTestCase(TestCase):
     @desc: Test registration of a new user.
     """
     data = { 'username': 'testuser', 'password': 'password' }
-    response = self.client.post('/user/register/', data=data)
+    response = self.client.post('/api/v1/user/register/', data=data)
     self.assertEqual(response.status_code, 201)
 
-    response = self.client.post('/user/auth/', data=data)
+    response = self.client.post('/api/v1/user/auth/', data=data)
     self.assertEqual(response.status_code, 200)
 
   def test_register_json(self):
@@ -82,11 +82,11 @@ class UserApiTestCase(TestCase):
     @desc: Test registration of a new user using a JSON formatted POST.
     """
     data = { 'username': 'testuser', 'password': 'password' }
-    response = self.client.post('/user/register/', data=json.dumps(data),
+    response = self.client.post('/api/v1/user/register/', data=json.dumps(data),
                                 content_type='application/json')
     self.assertEqual(response.status_code, 201)
 
-    response = self.client.post('/user/auth/', data=data)
+    response = self.client.post('/api/v1/user/auth/', data=data)
     self.assertEqual(response.status_code, 200)
 
   def test_register_existing_user(self):
@@ -95,7 +95,7 @@ class UserApiTestCase(TestCase):
     @desc: Test registration of an already existing username.
     """
     data = { 'username': 'kingofpaloalto', 'password': 'password' }
-    response = self.client.post('/user/register/', data=data)
+    response = self.client.post('/api/v1/user/register/', data=data)
     self.assertEqual(response.status_code, 400)
 
   def test_register_invalid_data(self):
@@ -104,7 +104,7 @@ class UserApiTestCase(TestCase):
     @desc: Test registration without a username field.
     """
     data = { 'password': 'password' }
-    response = self.client.post('/user/register/', data=data)
+    response = self.client.post('/api/v1/user/register/', data=data)
     self.assertEqual(response.status_code, 400)
 
   def test_user_details(self):
@@ -113,7 +113,7 @@ class UserApiTestCase(TestCase):
     @desc: Test user details api endpoint with a currently authenticated user.
     """
     data = { 'username': 'kingofpaloalto', 'password': 'password' }
-    response = self.client.post('/user/auth/', data=data)
+    response = self.client.post('/api/v1/user/auth/', data=data)
     self.assertEqual(response.status_code, 200)
 
     response = self.client.get('/api/v1/user/')
@@ -133,7 +133,7 @@ class UserApiTestCase(TestCase):
     user.
     """
     response = self.client.get('/api/v1/user/')
-    self.assertEqual(response.status_code, 403)
+    self.assertEqual(response.status_code, 401)
 
   def test_logout(self):
     """
@@ -143,10 +143,10 @@ class UserApiTestCase(TestCase):
     logged in user.
     """
     data = { 'username': 'kingofpaloalto', 'password': 'password' }
-    response = self.client.post('/user/auth/', data=data)
+    response = self.client.post('/api/v1/user/auth/', data=data)
     self.assertEqual(response.status_code, 200)
 
-    response = self.client.get('/user/logout/')
+    response = self.client.get('/api/v1/user/logout/')
     self.assertEqual(response.status_code, 200)
     self.assertNotIn('_auth_user_id', self.client.session)
 
@@ -156,7 +156,7 @@ class UserApiTestCase(TestCase):
     @desc: Test user logout without a currently authenticated
     user. Expects a 302 temporary redirect.
     """
-    response = self.client.get('/user/logout/')
+    response = self.client.get('/api/v1/user/logout/')
     self.assertEqual(response.status_code, 302)
 
   def test_user_vendors(self):
@@ -166,7 +166,7 @@ class UserApiTestCase(TestCase):
     vendor objects associated with user.
     """
     data = { 'username': 'kingofpaloalto', 'password': 'password' }
-    response = self.client.post('/user/auth/', data=data)
+    response = self.client.post('/api/v1/user/auth/', data=data)
     self.assertEqual(response.status_code, 200)
 
     response = self.client.get('/api/v1/user/vendors/')
@@ -186,7 +186,7 @@ class UserApiTestCase(TestCase):
     vendors. Expects an empty JSON array.
     """
     data = { 'username': 'idontownrestaurants', 'password': 'password' }
-    response = self.client.post('/user/auth/', data=data)
+    response = self.client.post('/api/v1/user/auth/', data=data)
     self.assertEqual(response.status_code, 200)
 
     response = self.client.get('/api/v1/user/vendors/')
@@ -202,10 +202,10 @@ class UserApiTestCase(TestCase):
     """
     @author: Rahul
     @desc: Test user vendors api endpoint without a logged in user. Expects a
-    403.
+    401.
     """
     response = self.client.get('/api/v1/user/vendors/')
-    self.assertEqual(response.status_code, 403)
+    self.assertEqual(response.status_code, 401)
 
   def test_active_claimed_deals(self):
     """
@@ -214,7 +214,7 @@ class UserApiTestCase(TestCase):
     list of active claimed deals.
     """
     data = { 'username': 'idontownrestaurants', 'password': 'password' }
-    response = self.client.post('/user/auth/', data=data)
+    response = self.client.post('/api/v1/user/auth/', data=data)
     self.assertEqual(response.status_code, 200)
 
     response = self.client.get('/api/v1/user/claimed_deals/')
@@ -230,10 +230,10 @@ class UserApiTestCase(TestCase):
     """
     @author: Rahul
     @desc: Test user claimed deal endpoint without an authenticated user.
-    Expects a 403.
+    Expects a 401.
     """
     response = self.client.get('/api/v1/user/claimed_deals/')
-    self.assertEqual(response.status_code, 403)
+    self.assertEqual(response.status_code, 401)
 
   def test_all_claimed_deals(self):
     """
@@ -243,7 +243,7 @@ class UserApiTestCase(TestCase):
     which have yet to start.
     """
     data = { 'username': 'idontownrestaurants', 'password': 'password' }
-    response = self.client.post('/user/auth/', data=data)
+    response = self.client.post('/api/v1/user/auth/', data=data)
     self.assertEqual(response.status_code, 200)
 
     response = self.client.get('/api/v1/user/claimed_deals/all/')
@@ -263,7 +263,7 @@ class UserApiTestCase(TestCase):
     hitting the all user claimed deals endpoint.
     """
     data = { 'username': 'kingofpaloalto', 'password': 'password' }
-    response = self.client.post('/user/auth/', data=data)
+    response = self.client.post('/api/v1/user/auth/', data=data)
     self.assertEqual(response.status_code, 200)
 
     random_lat = round(random.random() * 180, 3)
@@ -281,7 +281,7 @@ class UserApiTestCase(TestCase):
     hitting the all user claimed deals endpoint. POSTs the data as JSON.
     """
     data = { 'username': 'kingofpaloalto', 'password': 'password' }
-    response = self.client.post('/user/auth/', data=json.dumps(data),
+    response = self.client.post('/api/v1/user/auth/', data=json.dumps(data),
                                 content_type='application/json')
     self.assertEqual(response.status_code, 200)
 
@@ -296,10 +296,10 @@ class UserApiTestCase(TestCase):
     """
     @author: Rahul
     @desc: Test claiming a deal for a user without an authenticated user.
-    Expects a 403.
+    Expects a 401.
     """
     response = self.client.post('/api/v1/user/claimed_deals/')
-    self.assertEqual(response.status_code, 403)
+    self.assertEqual(response.status_code, 401)
 
   def test_claim_deal_with_nonexistent_deal(self):
     """
@@ -308,7 +308,7 @@ class UserApiTestCase(TestCase):
     a 400 response.
     """
     data = { 'username': 'kingofpaloalto', 'password': 'password' }
-    response = self.client.post('/user/auth/', data=json.dumps(data),
+    response = self.client.post('/api/v1/user/auth/', data=json.dumps(data),
                                 content_type='application/json')
     self.assertEqual(response.status_code, 200)
 
@@ -334,7 +334,7 @@ class UserApiTestCase(TestCase):
     400 response.
     """
     data = { 'username': 'kingofpaloalto', 'password': 'password' }
-    response = self.client.post('/user/auth/', data=json.dumps(data),
+    response = self.client.post('/api/v1/user/auth/', data=json.dumps(data),
                                 content_type='application/json')
     self.assertEqual(response.status_code, 200)
 
