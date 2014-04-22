@@ -27,7 +27,7 @@ def list_from_qset(qset, include_nested=False, flatten=True):
       return_list.append(obj)
   return return_list
 
-def make_post_response(obj_list, redirect_addr, known_error=None):
+def make_post_response(obj_list, redirect_addr=None, known_error=None):
   """
   @author: Ayush, Chris
   @desc: Helper function that generates appropriate response given any "known
