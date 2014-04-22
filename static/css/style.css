@@ -145,6 +145,13 @@ textarea:focus:-moz-placehoder { color:transparent; }
   background-color: white;
 }
 
+.btn-success,
+.btn-success:active,
+.btn-success:hover,
+.btn-success:focus {
+  background-color: #1abc9c;
+}
+
 /** Dashboard CSS **/
 #content #left-navbar-container {
   height: 100%;
@@ -196,6 +203,11 @@ textarea:focus:-moz-placehoder { color:transparent; }
 #content #dashboard-container textarea,
 #content #dashboard-container select {
   margin: 5px;
+}
+
+#content .form-area {
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 
 /** Login page CSS **/

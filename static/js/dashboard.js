@@ -142,6 +142,30 @@ DashboardApp.DealsCollectionView = Backbone.Marionette.CompositeView.extend({
   }
 });
 
+DashboardApp.monthNames = [ "January", "February", "March", "April", "May", "June",
+                             "July", "August", "September", "October", "November",
+                             "December" ];
+DashboardApp.dayNames = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
+                           "Friday", "Saturday" ];
+
+DashboardApp.dateString = function(date) {
+  var hours = date.getHours();
+  var minutes = date.getMinutes();
+  if (minutes < 10) {
+    minutes = "0" + minutes;
+  }
+  var amPm = "AM";
+  if (hours > 12) {
+    amPm = "PM";
+    hours -= 12;
+  }
+  var month = DashboardApp.monthNames[date.getMonth()];
+  var day = date.getDate();
+  var dayOfWeek = DashboardApp.dayNames[date.getDay()];
+  return dayOfWeek + " " + month + " " + day + " - " + hours +
+           ":" + minutes + " " + amPm;
+};
+
 /*
  * @author: Ayush
  * @desc: Responsible for rendering and displaying any necessary modals.
@@ -164,12 +188,17 @@ DashboardApp.ModalControllerView = Backbone.Marionette.ItemView.extend({
     var $modal = this.$el.find('#create-deal-modal');
 
     $modal.find('#title td:nth-child(2)').html(deal.title);
-    $modal.find('#description td:nth-child(2)').html(deal.desc);
-
+    $modal.find('#extra-info td:nth-child(2)').html(deal.desc);
+    if (deal.max_deals > 0) {
+      $modal.find('#max-deals td:nth-child(2)').html(deal.max_deals);
+    } else {
+      $modal.find('#max-deals td:nth-child(2)').html("Unlimited");
+    }
+    $modal.find('#start-time td:nth-child(2)').html(DashboardApp.dateString(deal.time_start));
+    $modal.find('#end-time td:nth-child(2)').html(DashboardApp.dateString(deal.time_end));
     var d = Math.abs((new Date(deal.time_start)) - (new Date(deal.time_end)));
     var hours = parseInt(d / 3600000);
     var minutes = d % 3600000 / 60000;
-    $modal.find('#duration td:nth-child(2)').html(hours + 'H ' + minutes + 'M');
 
     $modal.modal('show');
   },
@@ -254,6 +283,7 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
    *        the form with appropriate errors.
    */
   validateStart: function(e) {
+    var valid = true;
     var timeArea = this.$el.find('#time-area');
     var startDayEl = timeArea.find('#start-day-group');
     var startTimeEl = timeArea.find('#start-time-group');
@@ -266,12 +296,14 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
       startGroups.addClass('has-error');
       if (this.$el.find('#start-validation-error').length == 0) {
         startTimeEl.append('<p id="start-validation-error" class="help-block col-sm-offset-2 col-sm-6">Start time must be in the future!</p>');
+      valid = false;
       }
     }
     this.events['change #start-day-group'] = 'validateStart';
     this.events['change #start-time-group'] = 'validateStart';
     delete this.events['focusout #start-am-pm'];
     this.delegateEvents();
+    return valid;
   },
 
   /*
@@ -281,6 +313,7 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
    *        the form with appropriate errors.
    */
   validateTitleGroup: function(e) {
+    var valid = true;
     var titleEl = $('#title-group');
     var titleInputEl = titleEl.find('input:text[name="deal-title"]');
     var title = titleInputEl.val();
@@ -293,10 +326,12 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
       if (!(thirdChild.attr('id') == 'title-validation-error')) {
         thirdChild.before('<p id="title-validation-error" class="help-block col-sm-offset-2 col-sm-6">Deal title must be at least 8 characters long.</p>');
       }
+      valid = false;
     }
     this.events['keyup #title-group'] = 'validateTitleGroup';
     delete this.events['focusout #title-group'];
     this.delegateEvents();
+    return valid;
   },
 
   /*
@@ -306,6 +341,7 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
    *        the form with appropriate errors.
    */
   validateDuration: function(e) {
+    var valid = true;
     var durationEl = this.$el.find('#duration-group');
     var duration = this.computeDuration(durationEl);
     if (duration > 0) {
@@ -317,10 +353,12 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
       if (!(pEl.attr('id') == 'duration-validation-error')) {
         pEl.before('<p id="duration-validation-error" class="help-block col-sm-offset-2 col-sm-6">Duration must be greater than 0</p>');
       }
+      valid = false;
     }
     this.events['change #duration-group'] = 'validateDuration';
     delete this.events['focusout #duration-group'];
     this.delegateEvents();
+    return valid;
   },
 
 
@@ -332,20 +370,45 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
    *        the form with appropriate errors.
    */
   validateMaxDeals: function(e) {
+    var valid = true;
     var maxDealsEl = this.$el.find('#max-deals-group');
     var maxDeals = parseInt(maxDealsEl.find('#max-deals-number').val(), 10);
-    if (!isNaN(maxDeals) && maxDeals > 0 && maxDeals <= 500) {
+    var maxDealsRadio = this.$el.find('#max-deals-radio');
+    var radioSelection = this.$el.find('#max-deals-radio input[type=radio]:checked');
+    if (radioSelection.length == 0) {
+      maxDealsRadio.addClass('has-error');
+      if (this.$el.find('#max-deals-validation-error').length == 0) {
+        maxDealsRadio.append('<p id="max-deals-validation-error" class="help-block col-sm-6">Select an option!</p>');
+      }
+      valid = false;
+    } else {
+      maxDealsRadio.removeClass('has-error');
+      maxDealsRadio.find('#max-deals-validation-error').remove();
+    }
+    if (!this.$el.find('#unlimited').checked ||
+        (!isNaN(maxDeals) && maxDeals > 0 && maxDeals <= 500)) {
       maxDealsEl.removeClass('has-error');
-      this.$el.find('#max-deals-validation-error').remove();
+      maxDealsEl.find('#max-deals-validation-error').remove();
     } else {
       maxDealsEl.addClass('has-error');
       if (this.$el.find('#max-deals-validation-error').length == 0) {
         maxDealsEl.append('<p id="max-deals-validation-error" class="help-block col-sm-6">Maximum number of deals must be a number between 1 and 500 (inclusive)</p>');
       }
+      valid = false;
     }
     this.events['keyup #max-deals-group'] = 'validateMaxDeals';
+    this.events['click #max-deals-radio'] = 'validateMaxDeals';
     delete this.events['focusout #max-deals-group'];
     this.delegateEvents();
+    return valid;
+  },
+
+  validateAll: function(e) {
+    var startValid = this.validateStart(e);
+    var titleValid = this.validateTitleGroup(e);
+    var durationValid = this.validateDuration(e);
+    var maxDealsValid = this.validateMaxDeals(e);
+    return (startValid && titleValid && durationValid && maxDealsValid);
   },
 
   render: function() {
@@ -354,11 +417,6 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
     var currDay = currDate.getDate();
     var latestDate = new Date();
     latestDate.setDate(currDay + 7);
-    var monthNames = [ "January", "February", "March", "April", "May", "June",
-                       "July", "August", "September", "October", "November",
-                       "December" ]
-    var dayNames = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
-                     "Friday", "Saturday" ]
     var daySelect = this.$el.find('#start-day');
     daySelect.empty();
     var possibleDay = new Date();
@@ -368,7 +426,7 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
     possibleDay.setMilliseconds(0);
     for (var i=0; i < 8; i++) {
       possibleDay.setDate(currDay + i);
-      daySelect.append('<option value="' + possibleDay.getTime()  + '">' + dayNames[possibleDay.getDay()] + ', ' + monthNames[possibleDay.getMonth()] + ' ' + possibleDay.getDate().toString() + '</option>');
+      daySelect.append('<option value="' + possibleDay.getTime()  + '">' + DashboardApp.dayNames[possibleDay.getDay()] + ', ' + DashboardApp.monthNames[possibleDay.getMonth()] + ' ' + possibleDay.getDate().toString() + '</option>');
     }
 
     this.$el.find('input:radio[name="limit"]').change(
@@ -390,7 +448,23 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
 
   createDeal: function(e) {
     e.preventDefault();
-
+    var buttonGroup = this.$el.find('#button-group');
+    if (!this.validateAll(e)) {
+      buttonGroup.addClass('has-error');
+      if (this.$el.find('#submit-failure').length == 0) {
+        buttonGroup.prepend('<p class="help-block col-sm-6" id="submit-failure">Deal form not completed! Go back over the form and submit again.</p>');
+        window.scrollTo(0, document.body.scrollHeight);
+        this.events['click #deal-form'] = function(e) {
+          if (e.target.id == "submit-btn") return;
+          this.$el.find('#submit-failure').remove();
+        };
+        this.delegateEvents();
+      }
+      return;
+    } else {
+      this.$el.find('#submit-failure').remove();
+      buttonGroup.removeClass('has-error');
+    }
     var newModel = {};
 
     var $formInputs = $('#deal-form :input');
@@ -404,15 +478,14 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
     var timeStart = this.computeStart(this.$el.find('#start-day-group'), this.$el.find('#start-time-group'));
     var minutes = this.computeDuration(this.$el.find('#duration-group'));
     timeEnd.setTime(timeStart.getTime() + minutes * 60000);
+    newModel['time_start'] = timeStart;
     newModel['time_end'] = timeEnd;
-    var maxDealsEl = this.$el.find('#max-deals-group');
-    var maxDeals = parseInt(maxDealsEl.find('#max-deals-number').val(), 10);
-    console.log(maxDeals);
-    newModel['max_deals'] = maxDeals;
+    var maxDeals = -1;
     var limitRadio = this.$el.find('input:radio[value="limited"]');
     if(limitRadio.is(':checked')) {
-      newModel['max_deals'] = Number(formValues['max-deals']);
+      maxDeals = Number(formValues['max-deals']);
     }
+    newModel['max_deals'] = maxDeals;
     newModel['instructions'] = 'Show to waiter';
     DashboardApp.events.trigger('createDealConfirmTrigger', newModel);
     this.$el.find('#submit-btn').blur();

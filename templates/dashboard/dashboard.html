@@ -150,14 +150,14 @@
         </div>
       </div>
       <div class="form-area">
-        <div class="form-group">
+        <div class="form-group" id="max-deals-radio">
           <label class="col-sm-2 control-label">Do you want to limit the total number of deals that can be claimed?</label>
-          <div id="max-deals" class="col-sm-4">
+          <div id="max-deals" class="col-sm-3">
             <label class="radio-inline">
               <input type="radio" name="limit" value="limited"> Yes
             </label>
             <label class="radio-inline">
-              <input type="radio" name="limit" value="unlimited"> No
+              <input type="radio" name="limit" value="unlimited" id="unlimited"> No
             </label>
           </div>
         </div>
@@ -180,9 +180,9 @@
         </div>
       </div>
       <div class="form-area">
-        <div class="form-group">
+        <div class="form-group" id="button-group">
           <div class="col-sm-offset-2 col-sm-6">
-          <button type="submit" id="submit-btn" class="btn btn-default">Schedule</button>
+          <button type="submit" id="submit-btn" class="btn btn-success btn-lg">Review and schedule</button>
           </div>
         </div>
       </div>
@@ -202,12 +202,20 @@
                 <td>Title:</td>
                 <td></td>
               </tr>
-              <tr id="description">
-                <td>Description:</td>
+              <tr id="start-time">
+                <td>Starts:</td>
                 <td></td>
               </tr>
-              <tr id="duration">
-                <td>Duration:</td>
+              <tr id="end-time">
+                <td>Ends:</td>
+                <td></td>
+              </tr>
+              <tr id="max-deals">
+                <td>Maximum number of deals:</td>
+                <td></td>
+              </tr>
+              <tr id="extra-info">
+                <td>Extra information:</td>
                 <td></td>
               </tr>
             </table>
