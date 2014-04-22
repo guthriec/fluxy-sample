@@ -39,14 +39,19 @@ def make_post_response(obj_list, redirect_addr, known_error=None):
 
   @return: JSON HttpResponse with status 200 on sucess otherwise with error
   """
+  response = { 'code': 201,
+               'message': None,
+               'created_object_list': None }
   if known_error:
-    code = known_error['code']
-    err_message = known_error['message']
-    return HttpResponse(json.dumps(known_error),\
-                        content_type="application/json", status=code)
+    response['code'] = known_error['code']
+    response['message'] = known_error['message']
+  response['created_object_list'] = obj_list
+  if redirect_addr:
+    return HttpResponseRedirect(redirect_addr, json.dumps(response),\
+                                content_type="application/json", status=response['code'])
   else:
-    return HttpResponseRedirect(redirect_addr, json.dumps(obj_list),\
-                                content_type="application/json", status=201)
+    return HttpResponse(json.dumps(response),\
+                        content_type="application/json", status=response['code'])
 
 def make_get_response(resp_list, known_error=None):
   """
