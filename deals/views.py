@@ -10,6 +10,7 @@ from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.utils.timezone import utc
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect, render, get_object_or_404
 import json
@@ -69,6 +70,7 @@ def deal(request, deal_id=None, active_only=True):
 
   return make_get_response(deal_list, known_error)
 
+@csrf_exempt
 @require_http_methods(['GET', 'POST', 'PUT'])
 @api_login_required(['POST', 'PUT'])
 @api_vendor_required(['PUT'])
@@ -158,6 +160,7 @@ def vendor_photo(request, vendor_id, photo_id=None):
         'message': 'Successfully deleted photo.'}))
 
 
+@csrf_exempt
 @require_http_methods(["GET", "POST"])
 @api_vendor_required(["POST"])
 def vendor_deals(request, vendor_id, deal_id=None, active_only=True):

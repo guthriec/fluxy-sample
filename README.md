@@ -80,7 +80,7 @@ to set the request's CONTENT-TYPE header to the appropriate type.
 
 * ``` /user/auth ```
   * Accepts POST.
-  * Takes POST parameters 'username' and 'password', attempts to authenticate the user. Returns a 200, or a 400 on a bad request. Has JSON, whose 'success' key indicates if the login credentials were valid or not. Authentication lasts until cookie is cleared (for now).
+  * Takes POST parameters 'username' and 'password', attempts to authenticate the user. Returns a 200 on success, 401 on bad credentials, or a 400 on a bad request. Has JSON, whose 'success' key indicates if the login credentials were valid or not. Authentication lasts until cookie is cleared (for now).
 
 * ``` /user/vendors ```
   * Accepts GET.
