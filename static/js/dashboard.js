@@ -23,9 +23,9 @@ DashboardApp.DealModel = Backbone.Model.extend({ });
 /*
  * @author: Ayush, Chris
  * @desc: Defines the collection that represents a grouping of DealModel items.
- *        This collection also has functions scheduledCollection and 
- *        expiredCollection that return DealsCollections filtered into 
- *        scheduled and expired deals. These new collections listen to the 
+ *        This collection also has functions scheduledCollection and
+ *        expiredCollection that return DealsCollections filtered into
+ *        scheduled and expired deals. These new collections listen to the
  *        original collection for changes and update themselves accordingly.
  */
 DashboardApp.DealsCollection = Backbone.Collection.extend({
@@ -292,7 +292,9 @@ DashboardApp.LeftNavView = Backbone.Marionette.ItemView.extend({
     'click #nav-create': 'showCreate',
     'click #nav-revive': 'showRevive',
     'click #nav-review': 'showReview',
-    'click #nav-active': 'showActive'
+    'click #nav-active': 'showActive',
+    'click #nav-photos': 'showPhotos',
+    'click #nav-profile': 'showProfile',
   },
 
   showCreate: function(e) {
@@ -323,6 +325,20 @@ DashboardApp.LeftNavView = Backbone.Marionette.ItemView.extend({
     DashboardApp.events.trigger('showActiveView');
   },
 
+  showPhotos: function(e) {
+    e.preventDefault();
+    var links = $("#left-navbar").find(".list-group-item").removeClass("selected");
+    $("#nav-photos").addClass("selected");
+    DashboardApp.events.trigger('showPhotosView');
+  },
+
+  showProfile: function(e) {
+    e.preventDefault();
+    var links = $("#left-navbar").find(".list-group-item").removeClass("selected");
+    $("#nav-profile").addClass("selected");
+    DashboardApp.events.trigger('showProfileView');
+  },
+
   onShow: function() {
     $("#nav-create").addClass("selected");
   }
@@ -351,6 +367,8 @@ DashboardApp.MainContent = Backbone.Marionette.Layout.extend({
     DashboardApp.events.on('showReviveView', this.showRevive, this);
     DashboardApp.events.on('showReviewView', this.showReview, this);
     DashboardApp.events.on('showActiveView', this.showActive, this);
+    DashboardApp.events.on('showPhotosView', this.showPhotos, this);
+    DashboardApp.events.on('showProfileView', this.showProfile, this);
 
     this.deals = options.deals;
     this.scheduledDeals = this.deals.scheduledCollection();
@@ -383,6 +401,14 @@ DashboardApp.MainContent = Backbone.Marionette.Layout.extend({
 
   showActive: function() {
     this.dashboard.show(this.activeDealsCollectionView);
+  },
+
+  showPhotos: function() {
+    // TODO Fill this in
+  },
+
+  showProfile: function() {
+    // TODO Fill this in
   },
 
   onShow: function() {
