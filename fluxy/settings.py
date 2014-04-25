@@ -65,6 +65,10 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
+AUTHENTICATION_BACKENDS = (
+    'fluxy.facebook_backend.FacebookEnabledBackend',
+)
+
 ROOT_URLCONF = 'fluxy.urls'
 
 WSGI_APPLICATION = 'fluxy.wsgi.application'

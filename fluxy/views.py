@@ -136,24 +136,17 @@ def logout_page(request):
 def _login_user_and_respond(request, fluxy_user):
   response = {}
   if fluxy_user is not None:
-    if fluxy_user.fb_only:
-      response = {
-        "code": 403,
-        "message": "This email is associated with a Facebook account - login with Facebook or create a new account",
-        "success": False
-      }
-    else:
-      login(request, fluxy_user)
-      response = {
-        "code": 200,
-        "message": "Valid username and password",
-        "success": True,
-        "response": fluxy_user.get_safe_user()
-      }
+    login(request, fluxy_user)
+    response = {
+      "code": 200,
+      "message": "Authentication successful",
+      "success": True,
+      "response": fluxy_user.get_safe_user()
+    }
   else:
     response = {
       "code": 401,
-      "message": "Invalid username/password",
+      "message": "Authentication failed - try a different username/password or user Facebook login",
       "success": False
     }
     return HttpResponse(json.dumps(response), content_type="application/json", status = response['code'])
@@ -176,59 +169,23 @@ def user_auth(request):
   with key "success" indicating the success of the login.
   """
   post_data = request.POST
-  try:
-    if request.META['CONTENT_TYPE'] == 'application/json':
-      post_data = json.loads(request.body)
+  username = None
+  password = None
+  access_token = None
+  if request.META['CONTENT_TYPE'] == 'application/json':
+    post_data = json.loads(request.body)
+  if 'username' in post_data and 'password' in post_data:
     username = post_data['email'].lower()
     password = post_data['password']
-  except Exception:
-    response = { 'code': 400, 'message': 'Bad request' }
-    return HttpResponse(json.dumps(response), status = 400,
-        content_type='application/json')
-
-  user = authenticate(username=username, password=password)
-  return _login_user_and_respond(user)
-
-@csrf_exempt
-@require_http_methods(["POST"])
-def fb_auth(request):
-  """
-  @author: Chris
-  @desc: This method is used to log a user in via facebook. Returns a 200 upon a valid
-  request, 401 on invalid login credientials and a 400 on a badly formated
-  request. Accepts JSON formatted POSTs with the
-  following keys:
-      *access_token
-
-  @param request: the request object
-
-  @return: 200 on valid request, 400 otherwise. Valid post's reponse is JSON
-  with key "success" indicating the success of the login.
-  """
-  post_data = json.loads(request.body)
-  try:
+  elif 'access_token' in post_data:
     access_token = post_data['access_token']
-  except KeyError:
-    response = { 'code': 400, 'success': False, 'message': 'Request must include access token.' }
+  else:
+    response = { 'code': 400, 'success': False, 'message': 'Request must include either username/password or a Facebook access token.' }
     return HttpResponse(json.dumps(response), status = 400,
         content_type='application/json')
 
-  fb_profile = urllib.urlopen('https://graph.facebook.com/me?access_token={0}'.format(access_token))
-  fb_profile = json.loads(fb_profile)
-  fb_id = fb_profile['id']
-  try:
-    fb_user = FacebookUser.objects.get(facebook_id=fb_id)
-    fb_user.access_token = access_token
-    fb_user.save()
-    user = FluxyUser.objects.get(pk=fb_user.user_id)
-    return _login_user_and_respond(user)
-  except FacebookUser.DoesNotExist:
-    fb_email = fb_profile.email
-    new_user = FluxyUser.objects.create_user(email=fb_email, username=fb_email, password="unsafeunsaferedalert")
-    new_user.save()
-    new_fb_user = FacebookUser.objects.create(user_id=new_user.id, facebook_id=fb_id, access_token=access_token)
-    user = FluxyUser.objects.get(pk=new_fb_user.user_id)
-    return _login_user_and_respond(user)
+  user = authenticate(username=username, password=password, access_token=access_token)
+  return _login_user_and_respond(user)
 
 @csrf_exempt
 @require_http_methods(["POST"])
