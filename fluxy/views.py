@@ -134,6 +134,12 @@ def logout_page(request):
   return redirect(reverse('fluxy.views.login_page'))
 
 def _login_user_and_respond(request, fluxy_user, fb_login):
+  """
+  @author: Chris
+  @desc: takes a fluxy_user object, logs in the appropriate user
+         (making sure that the user isn't a fb_only user) and
+         returns an appropriate error message.
+  """
   response = {}
   if fluxy_user is not None:
     if not fb_login and fluxy_user.fb_only:
