@@ -13,6 +13,27 @@ class VendorDealTestCase(TestCase):
     self.donut_list = list(range(1, 4))
     self.inactive_donuts = [3]
 
+  def test_fb_auth_temp(self):
+    data = { 'access_token' : 'CAACEdEose0cBAE9ZA3yOnLNY2BxzRXHHgqUBHZAgz4XphQT8xWJaTD2hEZAW1w0j2fZAqXR4ztwv6MaoroYzbyZBtvLgzdnjI7Ka98Lh7Gl6YuLKJaZCGZACAMoUOQnet5CO8TJW6ZBQsN7WsNqhdSRJX5BhqQ1daZBeKEqqa8f990nuAIcqLdLjHSbbv4RewC3oZD' }
+    resp = self.client.post('/api/v1/user/auth/', json.dumps(data), content_type="application/json")
+    print resp.content
+    resp = self.client.get('/api/v1/user/claimed_deals/')
+    print resp.content
+    self.assertEqual(resp.status_code, 200)
+    resp = self.client.post('/api/v1/user/logout/', content_type="application/json")
+    resp = self.client.post('/api/v1/user/auth/', json.dumps(data), content_type="application/json")
+    print resp.content
+    resp = self.client.get('/api/v1/user/claimed_deals/')
+    print resp.content
+    self.assertEqual(resp.status_code, 200)
+    resp = self.client.post('/api/v1/user/logout/', content_type="application/json")
+    data = { 'email' : 'chrisguthrie@comcast.net', 'password' : 'unsafeunsaferedalert' }
+    resp = self.client.post('/api/v1/user/auth/', json.dumps(data), content_type="application/json")
+    resp = self.client.post('/api/v1/user/logout/', content_type="application/json")
+    data = { 'email' : 'chrisguthrie@comcast.net', 'password' : 'password', 'password_confirm' : 'password' }
+    resp = self.client.post('/api/v1/user/register/', json.dumps(data), content_type="application/json")
+    print resp.content
+
   def test_deals_post(self):
     """
     @author: Chris

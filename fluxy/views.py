@@ -192,7 +192,7 @@ def user_auth(request):
     access_token = post_data['access_token']
     user = authenticate(access_token=access_token)
   else:
-    response = { 'code': 400, 'success': False, 'message': 'Request must include either username/password or a Facebook access token.' }
+    response = { 'code': 400, 'success': False, 'message': 'Request must include either email/password or a Facebook access token.' }
     return HttpResponse(json.dumps(response), status = 400,
         content_type='application/json')
   return _login_user_and_respond(request, user, fb_login)
