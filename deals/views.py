@@ -96,7 +96,7 @@ def vendor(request, vendor_id=None):
   if request.method == 'GET':
     known_error = None
     vendor_list = None
-    vendor = Vendor.objects.get(pk = vendor_id)
+    #vendor = Vendor.objects.get(pk = vendor_id)
     #return HttpResponse(serializers.serialize('json', [vendor],
     #    use_natural_keys=True))
     vendor_set = _get_vendor(vendor_id)

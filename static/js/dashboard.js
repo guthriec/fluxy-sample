@@ -21,6 +21,26 @@ DashboardApp.addRegions({
 DashboardApp.DealModel = Backbone.Model.extend({ });
 
 /*
+ * @author: Rahul
+ * @desc: Defines the model that represents the vendor that is going to be
+ * displayed.
+ */
+DashboardApp.VendorModel = Backbone.Model.extend({ });
+
+/*
+ * @author: Rahul
+ * @desc: Defines the collection of vendors that a user controls.
+ */
+DashboardApp.VendorsCollection = Backbone.Collection.extend({
+
+  model: DashboardApp.VendorModel,
+  url: '/api/v1/vendors/',
+
+  initialize: function(models, options) {
+  },
+});
+
+/*
  * @author: Ayush, Chris
  * @desc: Defines the collection that represents a grouping of DealModel items.
  *        This collection also has functions scheduledCollection and
@@ -428,7 +448,11 @@ DashboardApp.MainContent = Backbone.Marionette.Layout.extend({
       collection: this.expiredDeals
     });
     this.dealCreateForm = new DashboardApp.DealCreateFormView();
-    this.profileEditForm = new DashboardApp.ProfileEditFormView();
+
+    this.vendors = options.vendors;
+    this.profileEditForm = new DashboardApp.ProfileEditFormView({
+      collection: this.vendors
+    });
   },
 
 
@@ -464,8 +488,13 @@ DashboardApp.MainContent = Backbone.Marionette.Layout.extend({
 // Load the initializer
 DashboardApp.addInitializer(function(options) {
   var opts = {};
+
   opts.deals = new DashboardApp.DealsCollection([], { 'vendorId': vendorId, 'listenForCreate': true });
   opts.deals.fetch({ reset: true });
+
+  opts.vendors = new DashboardApp.VendorsCollection([], { });
+  opts.vendors.fetch({ reset: true });
+  console.log(opts.vendors); vendors = opts.vendors;
 
   var mainContent = new DashboardApp.MainContent(opts);
   DashboardApp.dashboardRegion.show(mainContent);
