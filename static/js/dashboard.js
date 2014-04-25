@@ -282,6 +282,50 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
   }
 });
 
+DashboardApp.ProfileEditFormView = Backbone.Marionette.ItemView.extend({
+  events: {
+    'click #save-photo-btn': 'postPhoto',
+    'click #cancel-photo-btn': 'deletePhoto',
+    'change #photo-src': 'changePhoto',
+  },
+
+  photo: null,
+
+  template: '#profile-photo-form-template',
+
+  render: function() {
+    this.$el.html(_.template($(this.template).html()));
+    return this;
+  },
+
+  postPhoto: function(e) {
+    e.preventDefault();
+    $('#change-vendor-photo').modal('hide');
+  },
+
+  deletePhoto: function(e) {
+    e.preventDefault();
+    this.vendorId = this.vendorId || $('#photo-form').attr('data-vendor-id');
+    if (this.photo)
+      $.ajax('/api/v1/vendor/' + this.vendorId  + '/photo/' + this.photo.pk + '/',
+          { 'type': 'delete' });
+  },
+
+  changePhoto: function(e) {
+    $('#photo-form').ajaxSubmit({
+      'success': function(context) {
+        return function(res, status) {
+          // $('#modal-photo').attr('src', '/media/' + res[0].fields.photo);
+          $('#save-photo-btn').removeClass('disabled');
+          context.photo = res[0];
+        };
+      }(this),
+      'error': function() {
+      },
+    });
+  }
+});
+
 DashboardApp.LeftNavView = Backbone.Marionette.ItemView.extend({
   tagName: 'ul',
   className: 'nav nav-stacked list-group',
@@ -384,6 +428,7 @@ DashboardApp.MainContent = Backbone.Marionette.Layout.extend({
       collection: this.expiredDeals
     });
     this.dealCreateForm = new DashboardApp.DealCreateFormView();
+    this.profileEditForm = new DashboardApp.ProfileEditFormView();
   },
 
 
@@ -408,7 +453,7 @@ DashboardApp.MainContent = Backbone.Marionette.Layout.extend({
   },
 
   showProfile: function() {
-    // TODO Fill this in
+    this.dashboard.show(this.profileEditForm);
   },
 
   onShow: function() {

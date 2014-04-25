@@ -200,6 +200,42 @@
     </form>
   </script>
 
+  <script type="text/template" id="profile-photo-form-template">
+    <button class="btn" data-toggle="modal" data-target="#change-vendor-photo">
+      Change Photo
+    </button>
+    <form action="/api/v1/vendor/{{ vendor_id }}/" id="profile-edit-form"
+      method="post">
+      <button type="submit" id="submit-btn"
+        class="btn btn-default">Update</button>
+    </form>
+    <div class="modal fade" id="change-vendor-photo">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"
+              aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Change Vendor Picture</h4>
+          </div>
+          <form enctype="multipart/form-data" action="/api/v1/vendor/{{ vendor_id }}/photo/"
+            method="post" id="photo-form" data-vendor-id="{{ vendor_id }}">
+            <div class="modal-body">
+              {% csrf_token %}
+              <img style="width:200px" src="" id="modal-photo" />
+              <input type="file" name="photo" id="photo-src" />
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default"
+                id="cancel-photo-btn" data-dismiss="modal">Cancel</button>
+              <button type="submit"  class="btn btn-primary disabled"
+                id="save-photo-btn">Save Picture</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </script>
+
   <script type="text/template" id="modal-controller-template">
     <div class="modal fade" id="create-deal-modal">
       <div class="modal-dialog">
