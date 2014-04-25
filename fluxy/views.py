@@ -133,10 +133,10 @@ def logout_page(request):
     user_logout(request)
   return redirect(reverse('fluxy.views.login_page'))
 
-def _login_user_and_respond(request, fluxy_user):
+def _login_user_and_respond(request, fluxy_user, fb_login):
   response = {}
   if fluxy_user is not None:
-    if fluxy_user.fb_only:
+    if not fb_login and fluxy_user.fb_only:
       response = {
         "code": 403,
         "message": "This email is associated with a Facebook account - login with Facebook or create a new account",
@@ -179,20 +179,23 @@ def user_auth(request):
   password = None
   access_token = None
   post_data = request.POST
+  fb_login = False
   if request.META['CONTENT_TYPE'] == 'application/json':
     post_data = json.loads(request.body)
+  user = None
   if 'email' in post_data and 'password' in post_data:
     username = post_data['email'].lower()
     password = post_data['password']
+    user = authenticate(username=username, password=password)
   elif 'access_token' in post_data:
+    fb_login = True
     access_token = post_data['access_token']
+    user = authenticate(access_token=access_token)
   else:
     response = { 'code': 400, 'success': False, 'message': 'Request must include either username/password or a Facebook access token.' }
     return HttpResponse(json.dumps(response), status = 400,
         content_type='application/json')
-
-  user = authenticate(username=username, password=password, access_token=access_token)
-  return _login_user_and_respond(request, user)
+  return _login_user_and_respond(request, user, fb_login)
 
 @csrf_exempt
 @require_http_methods(["POST"])
