@@ -136,20 +136,27 @@ def logout_page(request):
 def _login_user_and_respond(request, fluxy_user):
   response = {}
   if fluxy_user is not None:
-    login(request, fluxy_user)
-    response = {
-      "code": 200,
-      "message": "Authentication successful",
-      "success": True,
-      "response": fluxy_user.get_safe_user()
-    }
+    if fluxy_user.fb_only:
+      response = {
+        "code": 403,
+        "message": "This email is associated with a Facebook account - login with Facebook or create a new account",
+        "success": False
+      }
+    else:
+      login(request, fluxy_user)
+      response = {
+        "code": 200,
+        "message": "Valid username and password",
+        "success": True,
+        "response": fluxy_user.get_safe_user()
+      }
   else:
     response = {
       "code": 401,
-      "message": "Authentication failed - try a different username/password or user Facebook login",
+      "message": "Invalid username/password - try again or login with Facebook",
       "success": False
     }
-    return HttpResponse(json.dumps(response), content_type="application/json", status = response['code'])
+  return HttpResponse(json.dumps(response), content_type="application/json", status = response['code'])
 
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -168,13 +175,13 @@ def user_auth(request):
   @return: 200 on valid request, 400 otherwise. Valid post's reponse is JSON
   with key "success" indicating the success of the login.
   """
-  post_data = request.POST
   username = None
   password = None
   access_token = None
+  post_data = request.POST
   if request.META['CONTENT_TYPE'] == 'application/json':
     post_data = json.loads(request.body)
-  if 'username' in post_data and 'password' in post_data:
+  if 'email' in post_data and 'password' in post_data:
     username = post_data['email'].lower()
     password = post_data['password']
   elif 'access_token' in post_data:
@@ -185,7 +192,7 @@ def user_auth(request):
         content_type='application/json')
 
   user = authenticate(username=username, password=password, access_token=access_token)
-  return _login_user_and_respond(user)
+  return _login_user_and_respond(request, user)
 
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -210,11 +217,12 @@ def user_register(request):
     email = post_data['email'].lower()
     username = post_data['email'].lower()
     password = post_data['password']
-    password_confirm = post_data['password_confirm']
+    if 'password_confirm' in post_data:
+      password_confirm = post_data['password_confirm']
   except Exception:
     return make_post_response(None, None, {'code': 400, 'message': 'Missing fields or malformed request.'})
   known_error = {'code': 400, 'message': 'Could not register'}
-  if password != password_confirm:
+  if 'password_confirm' in post_data and password != password_confirm:
     known_error['message'] = "Passwords do not match"
   else:
     try:

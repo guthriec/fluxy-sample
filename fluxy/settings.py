@@ -66,7 +66,8 @@ MIDDLEWARE_CLASSES = (
 )
 
 AUTHENTICATION_BACKENDS = (
-    'fluxy.facebook_backend.FacebookEnabledBackend',
+    'fluxy.facebook_backend.FacebookBackend',
+    'django.contrib.auth.backends.ModelBackend',
 )
 
 ROOT_URLCONF = 'fluxy.urls'

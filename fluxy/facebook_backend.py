@@ -2,8 +2,8 @@ import django.contrib.auth
 from django.contrib.auth.models import check_password
 from fluxy.models import FluxyUser
 
-class FacebookEnabledBackend(object):
-  def authenticate(self, username=None, password=None, access_token=None):
+class FacebookBackend(object):
+  def authenticate(self, access_token=None):
     if access_token:
       fb_profile = urllib.urlopen('https://graph.facebook.com/me?access_token={0}'.format(access_token))
       fb_profile = json.loads(fb_profile)
