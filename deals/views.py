@@ -1,6 +1,7 @@
 from datetime import datetime
 from dateutil import parser
-from deals.api_tools import make_get_response, make_post_response, list_from_qset
+from deals.api_tools import make_get_response, make_post_response, \
+                            list_from_qset, custom_serialize
 from deals.decorators import api_login_required, api_vendor_required
 from deals.models import ClaimedDeal, Deal, Vendor, VendorPhoto
 from deals.forms import VendorForm
@@ -126,9 +127,9 @@ def vendor(request, vendor_id=None):
       known_error = { 'status': 400, 'error': 'Bad request.' }
       return _make_post_response(vendor, 'vendors/' + str(vendor_id), known_error)
 
-@require_http_methods(['POST', 'DELETE'])
-@api_login_required(['POST', 'DELETE'])
-@api_vendor_required(['POST', 'DELETE'])
+@require_http_methods(['GET', 'POST', 'DELETE'])
+@api_login_required(['GET', 'POST', 'DELETE'])
+@api_vendor_required(['GET', 'POST', 'DELETE'])
 def vendor_photo(request, vendor_id, photo_id=None):
   """
   @author: Rahul
@@ -140,9 +141,13 @@ def vendor_photo(request, vendor_id, photo_id=None):
   @param vendor_id: the id of the vendor to associate the photo with.
 
   @return: a 201 response with the JSON encoded VendorPhoto object
+
+  TODO Validate POSTed filetype
   """
   vendor = get_object_or_404(Vendor, pk=vendor_id)
-  if request.method == 'POST':
+  if request.method == 'GET':
+    return HttpResponse(custom_serialize(vendor.vendorphoto_set.all()))
+  elif request.method == 'POST':
     try:
       vendor_photo = VendorPhoto(photo=request.FILES['photo'],
           vendor=vendor)

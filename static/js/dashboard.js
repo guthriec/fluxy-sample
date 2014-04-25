@@ -40,6 +40,16 @@ DashboardApp.VendorsCollection = Backbone.Collection.extend({
   },
 });
 
+DashboardApp.PhotoModel = Backbone.Model.extend({ });
+
+DashboardApp.PhotosCollection = Backbone.Collection.extend({
+
+  initialize: function(models, options) {
+    this.url = '/api/v1/' + options.vendorId + '/photos/';
+  },
+
+});
+
 /*
  * @author: Ayush, Chris
  * @desc: Defines the collection that represents a grouping of DealModel items.
@@ -495,6 +505,9 @@ DashboardApp.addInitializer(function(options) {
   opts.vendors = new DashboardApp.VendorsCollection([], { });
   opts.vendors.fetch({ reset: true });
   console.log(opts.vendors); vendors = opts.vendors;
+
+  opts.photos = new DashboardApp.PhotosCollection([], { 'vendorId': vendorId });
+  opts.photos.fetch({ reset: true });
 
   var mainContent = new DashboardApp.MainContent(opts);
   DashboardApp.dashboardRegion.show(mainContent);

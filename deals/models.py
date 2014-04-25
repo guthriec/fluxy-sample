@@ -63,6 +63,13 @@ class VendorPhoto(models.Model):
   def natural_key(self):
     return self.photo.url
 
+  def get_custom_serializable(self):
+    return {
+          'id': self.id,
+          'photo': self.photo.url,
+          'vendor': self.vendor.id,
+        }
+
 
 class Deal(models.Model):
   """
