@@ -31,9 +31,9 @@ class FacebookBackend(object):
         new_user.save()
         new_fb_user = FacebookUser.objects.create(user_id=new_user.id, facebook_id=fb_id, access_token=access_token)
         user = FluxyUser.objects.get(pk=new_fb_user.user_id)
+      return user
     else:
       return None
-    return user
 
   def get_user(self, user_id):
     '''
