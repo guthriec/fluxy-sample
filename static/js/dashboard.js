@@ -20,26 +20,6 @@ DashboardApp.addRegions({
  */
 DashboardApp.DealModel = Backbone.Model.extend({ });
 
-/*
- * @author: Rahul
- * @desc: Defines the model that represents the vendor that is going to be
- * displayed.
- */
-DashboardApp.VendorModel = Backbone.Model.extend({ });
-
-/*
- * @author: Rahul
- * @desc: Defines the collection of vendors that a user controls.
- */
-DashboardApp.VendorsCollection = Backbone.Collection.extend({
-
-  model: DashboardApp.VendorModel,
-  url: '/api/v1/vendors/',
-
-  initialize: function(models, options) {
-  },
-});
-
 DashboardApp.PhotoModel = Backbone.Model.extend({ });
 
 DashboardApp.PhotosCollection = Backbone.Collection.extend({
@@ -490,8 +470,6 @@ DashboardApp.MainContent = Backbone.Marionette.Layout.extend({
     DashboardApp.events.on('showReviveView', this.showRevive, this);
     DashboardApp.events.on('showReviewView', this.showReview, this);
     DashboardApp.events.on('showActiveView', this.showActive, this);
-    DashboardApp.events.on('showPhotosView', this.showPhotos, this);
-    DashboardApp.events.on('showProfileView', this.showProfile, this);
 
     this.deals = options.deals;
     this.scheduledDeals = this.deals.scheduledCollection();
@@ -507,11 +485,6 @@ DashboardApp.MainContent = Backbone.Marionette.Layout.extend({
       collection: this.expiredDeals
     });
     this.dealCreateForm = new DashboardApp.DealCreateFormView();
-
-    this.vendors = options.vendors;
-    this.profileEditForm = new DashboardApp.ProfileEditFormView({
-      collection: this.vendors
-    });
   },
 
 
@@ -529,10 +502,6 @@ DashboardApp.MainContent = Backbone.Marionette.Layout.extend({
 
   showActive: function() {
     this.dashboard.show(this.activeDealsCollectionView);
-  },
-
-  showProfile: function() {
-    this.dashboard.show(this.profileEditForm);
   },
 
   onShow: function() {

@@ -133,6 +133,14 @@ def logout_page(request):
     user_logout(request)
   return redirect(reverse('fluxy.views.login_page'))
 
+def vendor_page(request, vendor_id):
+  """
+  @author: Rahul
+  @desc: The profile page for a specific vendor. Allows editing of vendor
+  details.
+  """
+  return HttpResponse("Hello world")
+
 @csrf_exempt
 @require_http_methods(["POST"])
 def user_auth(request):
