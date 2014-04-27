@@ -132,19 +132,24 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
     try:
       deal = Deal.objects.get(pk=deal_id)
     except Deal.DoesNotExist:
-      known_error = { 'code': 404, 'message': 'Deal not found' }
-      return make_put_response(None, 'deals/' + str(deal_id), known_error)
+      known_error = { 'status': 404,
+                      'error': 'Resource not found',
+                      'detail': 'No deal of specified id exists' }
+      return make_put_response(None, known_error)
     updates = json.loads(request.body)
     for key, val in updates.iteritems():
       try:
         getattr(deal, key)
       except AttributeError:
-        known_error = { 'code' : 400, 'message': 'Bad PUT request for deal' }
-        return _make_put_response(None, 'deals/' + str(deal_id), known_error)
+        known_error = { 'status' : 400, 
+                        'error': 'Bad PUT request', 
+                        'detail': '''PUT request tried to update a 
+                                   non-existent attribute''' }
+        return make_put_response(None, known_error)
       setattr(deal, key, val) 
     deal.save()
     single_deal_list = list_from_qset([deal], flatten=True, include_nested=False)
-    return _make_put_response(single_deal_list, 'deals/' + str(deal_id), known_error)
+    return make_put_response(single_deal_list, known_error)
   
   else:
     # ---- POST ----

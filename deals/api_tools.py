@@ -74,12 +74,16 @@ def make_get_response(resp_list, known_error=None):
     json_out = json.dumps(resp_list)
     return HttpResponse(json_out, content_type="application/json", status=200)
 
-def _make_put_response(single_obj_list, redirect_addr, known_error=None):
+def make_put_response(single_obj_list, known_error=None):
+  response = { 'status': 200,
+               'error': None,
+               'detail': None,
+               'success': True,
+               'data': single_obj_list }
   if known_error:
-    code = known_error['code']
-    err_message = known_error['message']
-    return HttpResponse(json.dumps(known_error),
-                        content_type="application/json", status=code)
-  else:
-    return HttpResponseRedirect(json.dumps(single_obj_list),
-                                content_type="application/json", status=200)
+    response['status'] = known_error['status']
+    response['error'] = known_error['error']
+    response['detail'] = known_error['detail']
+    response['success'] = False
+  return HttpResponse(json.dumps(response), content_type="application/json",
+                      status=response['status'])

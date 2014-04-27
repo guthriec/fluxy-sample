@@ -87,7 +87,7 @@ class VendorDealTestCase(TestCase):
     response = self.client.put('/api/v1/vendor/1/deal/1/',
                                data=json.dumps(deal_edit),
                                content_type="application/json")
-    returned_deal = json.loads(response.content)[0]
+    returned_deal = json.loads(response.content)['data'][0]
     self.assertEqual(returned_deal['desc'], "A new description")
     self.assertEqual(returned_deal['max_deals'], "300")
     self.assertEqual(response.status_code, 200)
