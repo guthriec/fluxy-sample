@@ -186,7 +186,8 @@ DashboardApp.ModalControllerView = Backbone.Marionette.ItemView.extend({
   },
 
   initialize: function() {
-    DashboardApp.events.on('createDealConfirmTrigger', this.confirmDealCreation, this);
+    DashboardApp.events.on('createDealConfirmTrigger', this.confirmDealCreation,
+                           this);
   },
 
   confirmDealCreation: function(deal) {
@@ -194,15 +195,17 @@ DashboardApp.ModalControllerView = Backbone.Marionette.ItemView.extend({
 
     var $modal = this.$el.find('#create-deal-modal');
 
-    $modal.find('#title td:nth-child(2)').html(deal.title);
-    $modal.find('#extra-info td:nth-child(2)').html(deal.desc);
+    $modal.find('#create-title-cell').html(deal.title);
+    $modal.find('#create-extra-info-cell').html(deal.desc);
     if (deal.max_deals > 0) {
-      $modal.find('#max-deals td:nth-child(2)').html(deal.max_deals);
+      $modal.find('#create-max-deals-cell').html(deal.max_deals);
     } else {
-      $modal.find('#max-deals td:nth-child(2)').html("Unlimited");
+      $modal.find('#create-max-deals-cell').html("Unlimited");
     }
-    $modal.find('#start-time td:nth-child(2)').html(DashboardApp.dateString(deal.time_start));
-    $modal.find('#end-time td:nth-child(2)').html(DashboardApp.dateString(deal.time_end));
+    $modal.find('#create-start-time-cell').html(DashboardApp.dateString(
+                                                              deal.time_start));
+    $modal.find('#create-end-time-cell').html(DashboardApp.dateString(
+                                                              deal.time_end));
     var d = Math.abs((new Date(deal.time_start)) - (new Date(deal.time_end)));
     var hours = parseInt(d / 3600000);
     var minutes = d % 3600000 / 60000;
@@ -234,8 +237,10 @@ DashboardApp.addInitializer(function(options) {
  * to create a new deal. It is responsible for handling all events associated
  * with the form.
  */
-
 DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
+
+  template: '#deal-create-form-template',
+
   events: {
     'focusout #title-group' : 'validateTitleGroup',
     'focusout #duration-group' : 'validateStartAndDuration',
@@ -243,13 +248,6 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
     'focusout #max-deals-group' : 'validateMaxDeals',
     'click #submit-btn': 'createDeal'
   },
-
-  validateStartAndDuration: function() {
-    this.validateStart();
-    this.validateDuration();
-  },
-
-  template: '#deal-create-form-template',
 
   /*
    * @author: Chris
@@ -305,13 +303,18 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
       startGroups.addClass('has-error');
 
       if (this.$el.find('#start-validation-error').length == 0) {
-        startTimeEl.append('<p id="start-validation-error" class="help-block col-sm-offset-2 col-sm-6">Start time must be in the future!</p>');
+        startTimeEl.append('<p id="start-validation-error" ' + 
+                           'class="help-block col-sm-offset-2 col-sm-6">' + 
+                           'Start time must be in the future!</p>');
       valid = false;
       }
     }
+    // Attach event handlers to validate on any change, giving user immediate
+    // feedback while editing the form
     this.events['change #start-day-group'] = 'validateStart';
     this.events['change #start-time-group'] = 'validateStart';
     delete this.events['focusout #start-am-pm'];
+    // Register changes made to events
     this.delegateEvents();
     return valid;
   },
@@ -332,14 +335,21 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
       this.$el.find('#title-validation-error').remove();
     } else {
       titleEl.addClass('has-error');
-      var thirdChild= this.$el.find('#title-group :nth-child(3)');
-      if (!(thirdChild.attr('id') == 'title-validation-error')) {
-        thirdChild.before('<p id="title-validation-error" class="help-block col-sm-offset-2 col-sm-6">Deal title must be at least 8 characters long.</p>');
+      var errorEl = this.$el.find('#title-validation-error');
+      if (errorEl.length == 0) {
+        this.$el.find('#deal-title-container').after(
+                                           '<p id="title-validation-error" ' +
+                                           'class="help-block col-sm-offset-2' +
+                                           ' col-sm-6">Deal title must be at ' +
+                                           'least 8 characters long.</p>');
       }
       valid = false;
     }
+    // Attach event handlers to validate on any change, giving user immediate
+    // feedback while editing the form
     this.events['keyup #title-group'] = 'validateTitleGroup';
     delete this.events['focusout #title-group'];
+    // Register changes made to events
     this.delegateEvents();
     return valid;
   },
@@ -362,18 +372,30 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
       durationEl.addClass('has-error');
       var pEl= durationEl.find('p');
       if (!(pEl.attr('id') == 'duration-validation-error')) {
-        pEl.before('<p id="duration-validation-error" class="help-block col-sm-offset-2 col-sm-6">Duration must be greater than 0</p>');
+        pEl.before('<p id="duration-validation-error" ' +
+                       'class="help-block col-sm-offset-2 col-sm-6">' +
+                       'Duration must be greater than 0</p>');
       }
       valid = false;
     }
+    // Attach event handlers to validate on any change, giving user immediate
+    // feedback while editing the form
     this.events['change #duration-group'] = 'validateDuration';
     delete this.events['focusout #duration-group'];
+    // Register changes made to events
     this.delegateEvents();
     return valid;
   },
 
-
-
+  /*
+   * @author: Chris
+   * @desc: an event handler to validate both start and duration.
+   */
+  validateStartAndDuration: function(e) {
+    this.validateStart(e);
+    this.validateDuration(e);
+  },
+  
   /*
    * @author: Chris
    * @desc: Event handler to extract the input for maximum number of deals,
@@ -385,11 +407,14 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
     var maxDealsEl = this.$el.find('#max-deals-group');
     var maxDeals = parseInt(maxDealsEl.find('#max-deals-number').val(), 10);
     var maxDealsRadio = this.$el.find('#max-deals-radio');
-    var radioSelection = this.$el.find('#max-deals-radio input[type=radio]:checked');
+    var radioSelection = this.$el.find('#max-deals-radio ' +
+                                       'input[type=radio]:checked');
     if (radioSelection.length == 0) {
       maxDealsRadio.addClass('has-error');
       if (this.$el.find('#max-deals-validation-error').length == 0) {
-        maxDealsRadio.append('<p id="max-deals-validation-error" class="help-block col-sm-6">Select an option!</p>');
+        maxDealsRadio.append('<p id="max-deals-validation-error" ' +
+                             'class="help-block col-sm-6">' +
+                             'Select an option!</p>');
       }
       valid = false;
     } else {
@@ -404,13 +429,19 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
     } else {
       maxDealsEl.addClass('has-error');
       if (this.$el.find('#max-deals-validation-error').length == 0) {
-        maxDealsEl.append('<p id="max-deals-validation-error" class="help-block col-sm-6">Maximum number of deals must be a number between 1 and 500 (inclusive)</p>');
+        maxDealsEl.append('<p id="max-deals-validation-error" ' +
+                          'class="help-block col-sm-6">' +
+                          'Maximum number of deals must be a number between' +
+                          ' 1 and 500 (inclusive)</p>');
       }
       valid = false;
     }
+    // Attach event handlers to validate on any change, giving user immediate
+    // feedback while editing the form
     this.events['keyup #max-deals-group'] = 'validateMaxDeals';
     this.events['click #max-deals-radio'] = 'validateMaxDeals';
     delete this.events['focusout #max-deals-group'];
+    // Register changes made to events
     this.delegateEvents();
     return valid;
   },
@@ -467,7 +498,9 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
     if (!this.validateAll(e)) {
       buttonGroup.addClass('has-error');
       if (this.$el.find('#submit-failure').length == 0) {
-        buttonGroup.prepend('<p class="help-block col-sm-6" id="submit-failure">Deal form not completed! Go back over the form and submit again.</p>');
+        buttonGroup.prepend('<p class="help-block col-sm-6" ' +
+                            'id="submit-failure">Deal form not completed! ' +
+                            'Go back over the form and submit again.</p>');
         window.scrollTo(0, document.body.scrollHeight);
         this.events['click #deal-form'] = function(e) {
           if (e.target.id == "submit-btn") return;
@@ -490,7 +523,8 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
     newModel['title'] = formValues['deal-title'];
     newModel['desc'] = formValues['desc'];
     var timeEnd = new Date();
-    var timeStart = this.computeStart(this.$el.find('#start-day-group'), this.$el.find('#start-time-group'));
+    var timeStart = this.computeStart(this.$el.find('#start-day-group'),
+                                      this.$el.find('#start-time-group'));
     var minutes = this.computeDuration(this.$el.find('#duration-group'));
     timeEnd.setTime(timeStart.getTime() + minutes * 60000);
     newModel['time_start'] = timeStart;
@@ -619,7 +653,8 @@ DashboardApp.MainContent = Backbone.Marionette.Layout.extend({
 // Load the initializer
 DashboardApp.addInitializer(function(options) {
   var opts = {};
-  opts.deals = new DashboardApp.DealsCollection([], { 'vendorId': vendorId, 'listenForCreate': true });
+  opts.deals = new DashboardApp.DealsCollection([], { 'vendorId': vendorId,
+                                                      'listenForCreate': true });
   opts.deals.fetch({ reset: true });
 
   var mainContent = new DashboardApp.MainContent(opts);
