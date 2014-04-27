@@ -45,7 +45,8 @@ DashboardApp.PhotoModel = Backbone.Model.extend({ });
 DashboardApp.PhotosCollection = Backbone.Collection.extend({
 
   initialize: function(models, options) {
-    this.url = '/api/v1/' + options.vendorId + '/photos/';
+    this.vendorId = options.vendorId;
+    this.url = '/api/v1/vendor/' + options.vendorId + '/photos/';
   },
 
 });
@@ -138,6 +139,23 @@ DashboardApp.DealsCollection = Backbone.Collection.extend({
     });
     return expiredCollection;
   }
+});
+
+/*
+ * @author: Rahul
+ * @desc: Defines the view associated with the PhotoModel.
+ */
+DashboardApp.PhotoView = Backbone.Marionette.ItemView.extend({
+  template: '#photo-template',
+});
+
+DashboardApp.PhotosCollectionView = Backbone.Marionette.CompositeView.extend({
+  template: '#photos-collection-template',
+  itemView: DashboardApp.PhotoView,
+
+  collectionEvents: {
+    'sync': 'render'
+  },
 });
 
 /*
@@ -459,6 +477,11 @@ DashboardApp.MainContent = Backbone.Marionette.Layout.extend({
     });
     this.dealCreateForm = new DashboardApp.DealCreateFormView();
 
+    this.photos = options.photos;
+    this.photosCollectionView = new DashboardApp.PhotosCollectionView({
+      collection: this.photos
+    });
+
     this.vendors = options.vendors;
     this.profileEditForm = new DashboardApp.ProfileEditFormView({
       collection: this.vendors
@@ -483,7 +506,7 @@ DashboardApp.MainContent = Backbone.Marionette.Layout.extend({
   },
 
   showPhotos: function() {
-    // TODO Fill this in
+    this.dashboard.show(this.photosCollectionView);
   },
 
   showProfile: function() {
@@ -504,10 +527,9 @@ DashboardApp.addInitializer(function(options) {
 
   opts.vendors = new DashboardApp.VendorsCollection([], { });
   opts.vendors.fetch({ reset: true });
-  console.log(opts.vendors); vendors = opts.vendors;
 
   opts.photos = new DashboardApp.PhotosCollection([], { 'vendorId': vendorId });
-  opts.photos.fetch({ reset: true });
+  photos = opts.photos;
 
   var mainContent = new DashboardApp.MainContent(opts);
   DashboardApp.dashboardRegion.show(mainContent);
