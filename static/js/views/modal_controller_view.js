@@ -4,8 +4,9 @@
  */
 define([
   'marionette',
-  'vent'
-], function(Marionette, vent) {
+  'vent',
+  'bootstrap'
+], function(Marionette, vent, Bootstrap) {
   var ModalControllerView = Marionette.ItemView.extend({
     template: '#modal-controller-template',
 

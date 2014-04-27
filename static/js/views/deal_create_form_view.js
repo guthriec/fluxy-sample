@@ -91,6 +91,7 @@ define([
         newModel['max_deals'] = Number(formValues['max-deals']);
       }
       newModel['instructions'] = 'Show to waiter';
+      console.log('createDealConfirmTrigger sent');
       vent.trigger('createDealConfirmTrigger', newModel);
       this.$el.find('#submit-btn').blur();
     }
