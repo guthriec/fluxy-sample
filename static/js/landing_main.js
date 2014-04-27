@@ -1,3 +1,8 @@
+/*
+ * @author: Chris
+ * I didn't test this but it should be a good main function for 
+ */
+
 require.config({
   paths: {
     backbone: 'lib/backbone-1.1.2.min',
@@ -28,7 +33,7 @@ require.config({
   }
 });
 
-require(['dashboard'], function(DashboardApp) {
-  console.log('starting the app');
-  DashboardApp.start();
+require(['analytics', 'csrf'], function(Analytics, Csrf) {
+  Analytics.start();
+  Csrf.start()
 });
