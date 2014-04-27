@@ -201,6 +201,22 @@
   </script>
 
   <script type="text/template" id="photos-collection-template">
+    <div class="modal fade">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"
+            aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Choose Deal Photo</h4>
+        </div>
+        <div class="modal-body" id="photos-modal-content">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default"
+            data-dismiss="modal">Cancel</button>
+          <button type="submit"  class="btn btn-primary disabled">Save Picture</button>
+        </div>
+      </div>
+    </div>
   </script>
 
   <script type="text/template" id="photo-template">
@@ -243,7 +259,7 @@
     </div>
   </script>
 
-  <script type="text/template" id="modal-controller-template">
+  <script type="text/template" id="deal-create-modal-template">
     <div class="modal fade" id="create-deal-modal">
       <div class="modal-dialog">
         <div class="modal-content">

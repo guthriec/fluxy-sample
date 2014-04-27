@@ -80,6 +80,7 @@ class Deal(models.Model):
     time_start, time_end - Duration of the deal
     max_deals - Cap on number of deals available
     instructions - Instructions for users to claim deal at point of sale
+    photo - deal specific photo
   """
   vendor = models.ForeignKey(Vendor)
   title = models.CharField(max_length=40)
@@ -88,6 +89,7 @@ class Deal(models.Model):
   time_end = models.DateTimeField()
   max_deals = models.PositiveIntegerField(default=100)
   instructions = models.CharField(max_length=1000, default="Show to waiter.")
+  photo = models.ForeignKey(VendorPhoto)
 
   def __unicode__(self):
     """

@@ -156,6 +156,10 @@ DashboardApp.PhotosCollectionView = Backbone.Marionette.CompositeView.extend({
   collectionEvents: {
     'sync': 'render'
   },
+
+  appendHtml: function(collectionView, itemView) {
+    collectionView.$('#photos-modal-content').append(itemView.el);
+  }
 });
 
 /*
@@ -192,10 +196,10 @@ DashboardApp.DealsCollectionView = Backbone.Marionette.CompositeView.extend({
 
 /*
  * @author: Ayush
- * @desc: Responsible for rendering and displaying any necessary modals.
+ * @desc: Responsible for rendering and displaying deal creation modals.
  */
-DashboardApp.ModalControllerView = Backbone.Marionette.ItemView.extend({
-  template: '#modal-controller-template',
+DashboardApp.DealCreateModalView = Backbone.Marionette.ItemView.extend({
+  template: '#deal-create-modal-template',
 
   events: {
     'click #create-deal-modal #create-btn': 'createDeal',
@@ -236,7 +240,7 @@ DashboardApp.ModalControllerView = Backbone.Marionette.ItemView.extend({
 });
 
 DashboardApp.addInitializer(function(options) {
-  var modalControllerView = new DashboardApp.ModalControllerView();
+  var modalControllerView = new DashboardApp.DealCreateModalView();
   DashboardApp.modalRegion.show(modalControllerView);
 });
 
