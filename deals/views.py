@@ -78,16 +78,16 @@ def vendor(request, vendor_id=None):
   else:
     # POST request.
     known_error = None
-    vendor = None
+    vendor_list = None
     vendor_id = -1
-
     try:
       vendor = Vendor(**json.loads(request.body))
       vendor.save()
       vendor_id = str(vendor.id)
+      vendor_list = list_from_qset([vendor])
     except TypeError:
       known_error = { 'code': 400, 'message': 'Bad post request' }
-    return make_post_response(vendor, 'vendors/' + str(vendor_id), known_error)
+    return make_post_response(vendor_list, 'vendors/' + str(vendor_id), known_error)
 
 @csrf_exempt
 @require_http_methods(["GET", "POST"])
@@ -124,7 +124,7 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
     deal_list = list_from_qset(deal_set, include_nested=False)
     return make_get_response(deal_list, known_error)
   else:
-    deal = None
+    deal_list = None
     deal_id = -1
     try:
       deal = Deal(**json.loads(request.body))
@@ -133,9 +133,10 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
       deal.time_end = parser.parse(deal.time_end)
       deal.save()
       deal_id = deal.id
-    except TypeError:
+      deal_list = list_from_qset([deal])
+    except Exception:
       known_error={ 'code': 400, 'message': 'Bad deal POST' }
-    return make_post_response(deal, 'deals/' + str(deal_id), known_error)
+    return make_post_response(deal_list, 'deals/' + str(deal_id), known_error)
 
 @require_http_methods(['GET'])
 @api_vendor_required(['GET'])
