@@ -33,7 +33,7 @@ DashboardApp.DealsCollection = Backbone.Collection.extend({
   model: DashboardApp.DealModel,
 
   sync: function(method, collection, options) {
-    if(method=='read') {
+    if (method=='read') {
       options.url = '/api/v1/vendor/' + collection.vendorId + '/deals/all/';
     } else {
       options.url = '/api/v1/vendor/' + collection.vendorId + '/deals/';
@@ -44,7 +44,7 @@ DashboardApp.DealsCollection = Backbone.Collection.extend({
   initialize: function(models, options) {
     this.vendorId = options.vendorId || -1;
     this.url = '/api/v1/vendor/' + this.vendorId + '/deals/';
-    if(options.listenForCreate == true) {
+    if (options.listenForCreate == true) {
       DashboardApp.events.on('createDealTrigger', this.create, this);
     }
   },
@@ -264,10 +264,9 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
     var amPmInputEl = startTimeEl.find('select[name="start-am-pm"]');
     var timeStart = new Date();
     var startHours = Number(hoursInputEl.val());
-
-    if(amPmInputEl.val() == 'pm') {
+    if (amPmInputEl.val() == 'pm') {
       startHours += 12;
-    } else if(startHours == 12) {
+    } else if (startHours == 12) {
       startHours = 0;
     }
     var startMinutes = Number(minutesInputEl.val()) + 60 * startHours;
@@ -299,7 +298,6 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
     var startTimeEl = timeArea.find('#start-time-group');
     var startGroups = timeArea.find('#start-day-group').add('#start-time-group');
     var startTime = this.computeStart(startDayEl, startTimeEl);
-
     if (0 < (startTime - Date.now())) {
       startGroups.removeClass('has-error');
       this.$el.find('#start-validation-error').remove();
@@ -329,7 +327,6 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
     var titleEl = $('#title-group');
     var titleInputEl = titleEl.find('input:text[name="deal-title"]');
     var title = titleInputEl.val();
-
     if (title.length > 7) {
       titleEl.removeClass('has-error');
       this.$el.find('#title-validation-error').remove();
@@ -389,7 +386,6 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
     var maxDeals = parseInt(maxDealsEl.find('#max-deals-number').val(), 10);
     var maxDealsRadio = this.$el.find('#max-deals-radio');
     var radioSelection = this.$el.find('#max-deals-radio input[type=radio]:checked');
-
     if (radioSelection.length == 0) {
       maxDealsRadio.addClass('has-error');
       if (this.$el.find('#max-deals-validation-error').length == 0) {
@@ -442,17 +438,20 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
     possibleDay.setMilliseconds(0);
     for (var i=0; i < 8; i++) {
       possibleDay.setDate(currDay + i);
-      daySelect.append('<option value="' + possibleDay.getTime()  + '">' + DashboardApp.dayNames[possibleDay.getDay()] + ', ' + DashboardApp.monthNames[possibleDay.getMonth()] + ' ' + possibleDay.getDate().toString() + '</option>');
+      daySelect.append('<option value="' + possibleDay.getTime()  + '">' + 
+                       DashboardApp.dayNames[possibleDay.getDay()] + ', ' + 
+                       DashboardApp.monthNames[possibleDay.getMonth()] + ' ' + 
+                       possibleDay.getDate().toString() + '</option>');
     }
 
     this.$el.find('input:radio[name="limit"]').change(
       function() {
-        if($(this).is(':checked') && (this).value == 'limited') {
+        if ($(this).is(':checked') && (this).value == 'limited') {
           $('#max-deals-number').prop('disabled', false);
           $('#max-deals-number').attr('placeholder', '1  --  500');
           $('#max-deals-number').attr('maxlength', '3');
         }
-        if($(this).is(':checked') && (this).value == 'unlimited') {
+        if ($(this).is(':checked') && (this).value == 'unlimited') {
           $('#max-deals-number').prop('disabled', true);
           $('#max-deals-number').attr('placeholder', 'Unlimited');
           $('#max-deals-number').val('');
@@ -465,10 +464,8 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
   createDeal: function(e) {
     e.preventDefault();
     var buttonGroup = this.$el.find('#button-group');
-
     if (!this.validateAll(e)) {
       buttonGroup.addClass('has-error');
-
       if (this.$el.find('#submit-failure').length == 0) {
         buttonGroup.prepend('<p class="help-block col-sm-6" id="submit-failure">Deal form not completed! Go back over the form and submit again.</p>');
         window.scrollTo(0, document.body.scrollHeight);
@@ -501,7 +498,7 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
     var maxDeals = -1;
     var limitRadio = this.$el.find('input:radio[value="limited"]');
 
-    if(limitRadio.is(':checked')) {
+    if (limitRadio.is(':checked')) {
       maxDeals = Number(formValues['max-deals']);
     }
     newModel['max_deals'] = maxDeals;
@@ -533,21 +530,21 @@ DashboardApp.LeftNavView = Backbone.Marionette.ItemView.extend({
 
   showRevive: function(e) {
     e.preventDefault();
-    var links = $("#left-navbar").find(".list-group-item").removeClass("selected");
+    $("#left-navbar").find(".list-group-item").removeClass("selected");
     $("#nav-revive").addClass("selected");
     DashboardApp.events.trigger('showReviveView');
   },
 
   showReview: function(e) {
     e.preventDefault();
-    var links = $("#left-navbar").find(".list-group-item").removeClass("selected");
+    $("#left-navbar").find(".list-group-item").removeClass("selected");
     $("#nav-review").addClass("selected");
     DashboardApp.events.trigger('showReviewView');
   },
 
   showActive: function(e) {
     e.preventDefault();
-    var links = $("#left-navbar").find(".list-group-item").removeClass("selected");
+    $("#left-navbar").find(".list-group-item").removeClass("selected");
     $("#nav-active").addClass("selected");
     DashboardApp.events.trigger('showActiveView');
   },
