@@ -22,7 +22,7 @@
     <p><strong>Thanks for subscribing!</strong></p>
     {% endif %}
     <!-- Form to submit email to our list -->
-    <form action="subscribe" method="post">
+    <form action="/subscribe/" method="post">
       {% csrf_token %}
       <input name="email" type="email" class="required email"
       placeholder="Your email" id="email" />
