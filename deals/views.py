@@ -1,6 +1,6 @@
 from datetime import datetime
 from dateutil import parser
-from deals.api_tools import make_get_response, make_post_response, list_from_qset
+from deals.api_tools import make_get_response, make_post_response, make_put_response, list_from_qset
 from deals.decorators import api_login_required, api_vendor_required
 from deals.models import ClaimedDeal, Deal, Vendor
 from distance import in_radius
@@ -133,7 +133,7 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
       deal = Deal.objects.get(pk=deal_id)
     except Deal.DoesNotExist:
       known_error = { 'code': 404, 'message': 'Deal not found' }
-      return _make_put_response(None, 'deals/' + str(deal_id), known_error)
+      return make_put_response(None, 'deals/' + str(deal_id), known_error)
     updates = json.loads(request.body)
     for key, val in updates.iteritems():
       try:
@@ -143,7 +143,7 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
         return _make_put_response(None, 'deals/' + str(deal_id), known_error)
       setattr(deal, key, val) 
     deal.save()
-    single_deal_list = _list_from_qset([deal], flatten=True, include_nested=False)
+    single_deal_list = list_from_qset([deal], flatten=True, include_nested=False)
     return _make_put_response(single_deal_list, 'deals/' + str(deal_id), known_error)
   
   else:

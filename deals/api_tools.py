@@ -73,3 +73,13 @@ def make_get_response(resp_list, known_error=None):
   else:
     json_out = json.dumps(resp_list)
     return HttpResponse(json_out, content_type="application/json", status=200)
+
+def _make_put_response(single_obj_list, redirect_addr, known_error=None):
+  if known_error:
+    code = known_error['code']
+    err_message = known_error['message']
+    return HttpResponse(json.dumps(known_error),
+                        content_type="application/json", status=code)
+  else:
+    return HttpResponseRedirect(json.dumps(single_obj_list),
+                                content_type="application/json", status=200)
