@@ -5,8 +5,9 @@
 define([
   'marionette',
   'vent',
-  'bootstrap'
-], function(Marionette, vent, Bootstrap) {
+  'bootstrap',
+  'fluxy_time'
+], function(Marionette, vent, Bootstrap, FluxyTime) {
   var ModalControllerView = Marionette.ItemView.extend({
     template: '#modal-controller-template',
 
@@ -24,14 +25,20 @@ define([
 
       var $modal = this.$el.find('#create-deal-modal');
 
-      $modal.find('#title td:nth-child(2)').html(deal.title);
-      $modal.find('#description td:nth-child(2)').html(deal.desc);
-
+      $modal.find('#create-title-cell').html(deal.title);
+      $modal.find('#create-extra-info-cell').html(deal.desc);
+      if (deal.max_deals > 0) {
+        $modal.find('#create-max-deals-cell').html(deal.max_deals);
+      } else {
+        $modal.find('#create-max-deals-cell').html("Unlimited");
+      }
+      $modal.find('#create-start-time-cell').html(FluxyTime.getDateString(
+                                                             deal.time_start));
+      $modal.find('#create-end-time-cell').html(FluxyTime.getDateString(
+                                                             deal.time_end));
       var d = Math.abs((new Date(deal.time_start)) - (new Date(deal.time_end)));
       var hours = parseInt(d / 3600000);
       var minutes = d % 3600000 / 60000;
-      $modal.find('#duration td:nth-child(2)').html(hours + 'H ' + 
-                                                    minutes + 'M');
 
       $modal.modal('show');
     },
