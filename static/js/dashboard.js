@@ -411,18 +411,18 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
                                        'input[type=radio]:checked');
     if (radioSelection.length == 0) {
       maxDealsRadio.addClass('has-error');
-      if (this.$el.find('#max-deals-validation-error').length == 0) {
-        maxDealsRadio.append('<p id="max-deals-validation-error" ' +
+      if (this.$el.find('#max-deals-radio-validation-error').length == 0) {
+        maxDealsRadio.append('<p id="max-deals-radio-validation-error" ' +
                              'class="help-block col-sm-6">' +
                              'Select an option!</p>');
       }
       valid = false;
     } else {
       maxDealsRadio.removeClass('has-error');
-      maxDealsRadio.find('#max-deals-validation-error').remove();
+      maxDealsRadio.find('#max-deals-radio-validation-error').remove();
     }
 
-    if (!this.$el.find('#unlimited').checked ||
+    if (this.$el.find('#unlimited').checked ||
         (!isNaN(maxDeals) && maxDeals > 0 && maxDeals <= 500)) {
       maxDealsEl.removeClass('has-error');
       maxDealsEl.find('#max-deals-validation-error').remove();
@@ -498,7 +498,7 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
     if (!this.validateAll(e)) {
       buttonGroup.addClass('has-error');
       if (this.$el.find('#submit-failure').length == 0) {
-        buttonGroup.prepend('<p class="help-block col-sm-6" ' +
+        buttonGroup.prepend('<p class="help-block col-sm-offset-2 col-sm-6" ' +
                             'id="submit-failure">Deal form not completed! ' +
                             'Go back over the form and submit again.</p>');
         window.scrollTo(0, document.body.scrollHeight);
