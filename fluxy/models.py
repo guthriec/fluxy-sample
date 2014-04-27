@@ -9,8 +9,8 @@ class FluxyUser(AbstractUser):
   @desc: This model extends the standard django user model with a phone number and
   many-to-many vendor_id which describes which vendors the user can edit.
   """
-  phone = models.CharField(max_length=20)
-  vendors = models.ManyToManyField(Vendor)
+  phone = models.CharField(max_length=20, blank=True)
+  vendors = models.ManyToManyField(Vendor, blank=True)
 
   def get_safe_user(self):
     """

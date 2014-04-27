@@ -1,6 +1,8 @@
 # Filename: /fluxy/views.py
 # Notes: Includes view functions for the overall Fluxy project
 
+from deals.api_tools import make_post_response
+from deals.models import Deal, ClaimedDeal
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.core import serializers
@@ -11,7 +13,6 @@ from django.utils.timezone import utc
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from fluxy.models import FluxyUser
-from deals.models import Deal, ClaimedDeal
 import datetime
 import json
 import mailchimp
@@ -138,8 +139,9 @@ def user_auth(request):
   """
   @author: Chris, Rahul, Ayush
   @desc: This method is used to log a user in. Returns a 200 upon a valid
-  request and a 400 on a badly formated request. Accepts either standard form
-  or JSON formatted POSTs with the following keys:
+  request, 401 on invalid login credientials and a 400 on a badly formated
+  request. Accepts either standard form or JSON formatted POSTs with the
+  following keys:
       *email
       *password
 
@@ -152,7 +154,7 @@ def user_auth(request):
   try:
     if request.META['CONTENT_TYPE'] == 'application/json':
       post_data = json.loads(request.body)
-    username = post_data['email']
+    username = post_data['email'].lower()
     password = post_data['password']
   except Exception:
     response = { 'code': 400, 'message': 'Bad request' }
@@ -169,13 +171,14 @@ def user_auth(request):
       "success": True,
       "response": user.get_safe_user()
     }
+    return HttpResponse(json.dumps(response), content_type="application/json", status = 200)
   else:
     response = {
-      "code": 200,
+      "code": 401,
       "message": "Invalid username/password",
       "success": False
     }
-  return HttpResponse(json.dumps(response), content_type="application/json", status = 200)
+    return HttpResponse(json.dumps(response), content_type="application/json", status = 401)
 
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -197,27 +200,27 @@ def user_register(request):
   try:
     if request.META['CONTENT_TYPE'] == 'application/json':
       post_data = json.loads(request.body)
-    email = post_data['email']
-    username = post_data['email']
+    email = post_data['email'].lower()
+    username = post_data['email'].lower()
     password = post_data['password']
     password_confirm = post_data['password_confirm']
   except Exception:
-    return HttpResponse("Bad request.", status = 400)
-  response = {"code": 400, "message": "Could not register"}
+    return make_post_response(None, None, {'code': 400, 'message': 'Missing fields or malformed request.'})
+  known_error = {'code': 400, 'message': 'Could not register'}
   if password != password_confirm:
-    response['message'] = "Passwords do not match"
+    known_error['message'] = "Passwords do not match"
   else:
     try:
       FluxyUser.objects.get(username__exact=username)
-      response['message'] = "Username already registered"
+      known_error['message'] = "Username already registered"
     except FluxyUser.DoesNotExist:
       new_user = FluxyUser.objects.create_user(email=email, username=username, password=password)
       new_user.save()
-      return HttpResponseRedirect('/user/auth/',
-          json.dumps([new_user.get_safe_user()]), content_type="application/json",
-          status = 201)
-  return HttpResponse(json.dumps(response), content_type='application/json',
-      status = response['code'])
+      logged_in_user = authenticate(username=username, password=password)
+      login(request, logged_in_user)
+      user_list = [logged_in_user.get_safe_user()]
+      return make_post_response(user_list, '/user/')
+  return make_post_response(None, None, known_error)
 
 @require_http_methods(["GET"])
 def user_logout(request):
@@ -247,10 +250,10 @@ def user(request):
   @param request: the request object
 
   @return: A JSON encoded subset of the user object if there is a logged in
-  user, otherwise a 403 error
+  user, otherwise a 401 error
   """
   if not request.user.is_authenticated():
-    response = {'code': 403, 'message': 'Authentication error'}
+    response = {'code': 401, 'message': 'Authentication error'}
     return HttpResponse(json.dumps(response), content_type="application/json",
                         status = response['code'])
   else:
@@ -265,13 +268,14 @@ def user_vendors(request):
   administrative power over.
   """
   if not request.user.is_authenticated():
-    response = {'code': 403, 'message': 'Authentication error'}
+    response = {'code': 401, 'message': 'Authentication error'}
     return HttpResponse(json.dumps(response), content_type="application/json",
                         status = response['code'])
   else:
     return HttpResponse(serializers.serialize('json', request.user.vendors.all()),
                         content_type="application/json")
 
+@csrf_exempt
 @require_http_methods(['GET', 'POST'])
 def user_deals(request, active_only=True):
   """
@@ -291,7 +295,7 @@ def user_deals(request, active_only=True):
   @returns: a JSON encoded array of deals the user has claimed
   """
   if not request.user.is_authenticated():
-    response = {'code': 403, 'message': 'Authentication error'}
+    response = {'code': 401, 'message': 'Authentication error'}
     return HttpResponse(json.dumps(response), content_type="application/json",
                         status = response['code'])
   now = datetime.datetime.utcnow().replace(tzinfo=utc)
