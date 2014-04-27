@@ -1,5 +1,6 @@
 import datetime
 from django.db import models
+from django.utils.timezone import utc
 
 class Vendor(models.Model):
   """
@@ -18,7 +19,7 @@ class Vendor(models.Model):
   longitude = models.FloatField()
   web_url = models.URLField()
   yelp_url = models.URLField()
-  image = models.ImageField(upload_to='vendors')
+  image = models.ImageField(upload_to='vendors', default='defaults/pizza.jpeg')
   phone = models.CharField(max_length=20)
 
   def __unicode__(self):
@@ -59,14 +60,25 @@ class Deal(models.Model):
   desc = models.CharField(max_length=500)
   time_start = models.DateTimeField()
   time_end = models.DateTimeField()
-  max_deals = models.PositiveIntegerField()
-  instructions = models.CharField(max_length=1000)
+  max_deals = models.PositiveIntegerField(default=100)
+  instructions = models.CharField(max_length=1000, default="Show to waiter.")
 
   def __unicode__(self):
     """
     Human readable way to print a Deal instance. e.g. 50% drinks by vendor: Thaiphoon
     """
     return "{0} by vendor: {1}".format(self.title, self.vendor)
+
+  def natural_key(self):
+    """ For nested serialization. """
+    return {
+      'id': self.id,
+      'title': self.title,
+      'desc': self.desc,
+      'time_start': self.time_start,
+      'time_end': self.time_end,
+      'instructions': self.instructions,
+    }
 
 class ClaimedDeal(models.Model):
   """
@@ -81,7 +93,8 @@ class ClaimedDeal(models.Model):
   """
   user = models.ForeignKey('fluxy.FluxyUser')
   deal = models.ForeignKey(Deal)
-  time_claimed = models.DateTimeField(default=datetime.datetime.now)
+  time_claimed = models.DateTimeField(default=datetime.datetime.
+                                      utcnow().replace(tzinfo=utc))
   claimed_latitude = models.FloatField(null=True, blank=True)
   claimed_longitude = models.FloatField(null=True, blank=True)
   completed = models.BooleanField(default = False)

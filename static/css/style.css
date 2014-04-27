@@ -1,9 +1,9 @@
 html, body {
-  background-color: #ecf0f1;
   font-family: 'Josefin Sans', sans-serif;
+  height: 100%;
 }
 
-input[type="text"], input[type="email"] {
+input[type="text"], input[type="email"], input[type="password"] {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
@@ -11,29 +11,34 @@ input[type="text"], input[type="email"] {
   padding: 5px 10px;
 }
 
+input:focus::-webkit-input-placeholder { color:transparent; }
+input:focus:-moz-placehoder { color:transparent; }
+textarea:focus::-webkit-input-placeholder { color:transparent; }
+textarea:focus:-moz-placehoder { color:transparent; }
+
 /** LANDING PAGE CSS **/
 #landing-page {
   width: 900px;
-  margin: 50px auto 0 auto;
+  margin: -30px auto 0 auto;
 }
 
 #landing-page #left-col {
   float: left;
   position: relative;
   left: 30px;
-  top: 30px;
+  top: 0px;
 }
 
 #landing-page #right-col {
   position: relative;
-  top: 80px;
+  top: 40px;
   left: 80px;
   padding-right: 150px;
 }
 
 #landing-page #form-container {
   position: relative;
-  top: 125px;
+  top: 105px;
 }
 
 #landing-page #form-container #email {
@@ -47,6 +52,12 @@ input[type="text"], input[type="email"] {
 #landing-page #form-container #submit-btn {
   position: relative;
   left: -95px;
+}
+
+#landing-page #restaurants {
+  position: relative;
+  top: 170px;
+  display: block;
 }
 
 #landing-page h1 {
@@ -64,4 +75,161 @@ input[type="text"], input[type="email"] {
 
 #landing-page #logo-name {
   margin: 10px 0 20px 0;
+}
+
+#landing-page #restaurants h2 {
+  text-align: center;
+}
+
+#landing-page #login {
+  text-align: center;
+  display: block;
+  position: relative;
+  top: 230px;
+  font-size: 24px;
+  margin-bottom: 50px;
+}
+
+#landing-page .separator {
+  position: relative;
+  display: block;
+  width: 200px;
+  height: 1px;
+  background-color: black;
+  margin: 0 auto 60px auto;
+}
+
+/** Base Template CSS **/
+.navbar-default {
+  background-color: #1abc9c;
+  border: none;
+
+  /* Dropshadow */
+  -webkit-box-shadow: 0px 1px 5px 1px rgba(0,0,0,0.11);
+  -moz-box-shadow: 0px 1px 5px 1px rgba(0,0,0,0.11);
+  box-shadow: 0px 1px 5px 1px rgba(0,0,0,0.11);
+}
+
+.navbar .container {
+  color: white;
+  font-size: 28px;
+}
+
+.navbar .container  #logo {
+  background-image: url('../img/fluxy_logo_white_header.png');
+  background-repeat: no-repeat;
+  top: 5px;
+  min-height: 40px;
+  min-width: 60px;
+  position: fixed;
+  left: 70px;
+  text-indent: 9999px;
+}
+
+.navbar .container #page-title {
+  position: relative;
+  margin: 5px auto;
+  text-align: center;
+  width: 100%;
+}
+
+.navbar .container #account-links {
+  position: fixed;
+  right: 30px;
+  top: 3px;
+}
+
+#content {
+  height: 100%;
+  min-height: 100%;
+  background-color: white;
+}
+
+/** Dashboard CSS **/
+#content #left-navbar-container {
+  height: 100%;
+  left: 0;
+  min-height: 100%;
+  position: fixed;
+  top: 50px;
+  width: 200px;
+
+  /* Box shadow */
+  -webkit-box-shadow: inset -1px 0px 5px 1px rgba(0,0,0,0.11);
+  -moz-box-shadow: inset -1px 0px 5px 1px rgba(0,0,0,0.11);
+  box-shadow: inset -1px 0px 5px 1px rgba(0,0,0,0.11);
+}
+
+#content #left-navbar-container .list-group-item {
+  background-color: transparent;
+  border: 0;
+  border-bottom: 1px solid #DDD;
+  border-radius: 0;
+  margin: 0;
+}
+
+#content #left-navbar-container .list-group-item a {
+  color: #555;
+  text-align: center;
+}
+
+#content #left-navbar-container .list-group-item.selected,
+#content #left-navbar-container .list-group-item.selected a,
+#content #left-navbar-container .list-group-item:focus,
+#content #left-navbar-container .list-group-item:hover,
+#content #left-navbar-container .list-group-item:focus a,
+#content #left-navbar-container .list-group-item:hover a,
+#content #left-navbar-container .list-group-item a:hover,
+#content #left-navbar-container .list-group-item a:focus {
+  background-color: #34495e;
+  color: white;
+}
+
+#content #dashboard-container {
+  padding: 30px;
+  position: relative;
+  margin-left: 200px;
+  top: 50px;
+}
+
+#content #dashboard-container input[type="text"],
+#content #dashboard-container textarea,
+#content #dashboard-container select {
+  margin: 5px;
+}
+
+/** Login page CSS **/
+
+#login-page #form-container{
+  display: block;
+  margin: 50px auto;
+  text-align: center;
+}
+
+#login-page #auth-form-table {
+  border-collapse: separate;
+  border-spacing: 5px;
+  text-align: center;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: rgba(26, 188, 156, 0.7);
+}
+
+#login-page #contact-us {
+  text-align: center;
+}
+
+#register-page #form-container{
+  display: block;
+  margin: 50px auto;
+  text-align: center;
+}
+
+#register-page #reg-form-table {
+  border-collapse: separate;
+  border-spacing: 5px;
+  text-align: center;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: rgba(26, 188, 156, 0.7);
 }

@@ -6,15 +6,20 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
   # Registration/authentication
-  url(r'^user/auth/$', views.user_auth),
-  url(r'^user/register/$', views.user_register),
-  url(r'^user/logout/$', views.user_logout),
+  url(r'^api/v1/user/auth/$', views.user_auth),
+  url(r'^api/v1/user/register/$', views.user_register),
+  url(r'^api/v1/user/logout/$', views.user_logout),
 
   # User model
   url(r'^api/v1/user/$', views.user),
   url(r'^api/v1/user/vendors/$', views.user_vendors),
-  url(r'^api/v1/user/claimed-deals/$', views.user_deals),
-  url(r'^api/v1/user/claimed-deals/all/$', views.user_deals_all),
+  url(r'^api/v1/user/claimed_deals/$', views.user_deals),
+  url(r'^api/v1/user/claimed_deals/all/$', views.user_deals, {'active_only':
+                                                              False}),
+  # Route login
+  url(r'^login/$', views.login_page),
+  url(r'^logout/$', views.logout_page),
+  url(r'^register/$', views.register_page),
 
   # Route landing page resources: /, /success, /subscribe
   url(r'^$', views.index),
@@ -25,4 +30,5 @@ urlpatterns = patterns('',
   url(r'^admin/', include(admin.site.urls)),
 
   url(r'', include('deals.urls')),
+  url(r'', include('dashboard.urls'))
 )

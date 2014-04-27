@@ -1,0 +1,29 @@
+[
+ {
+   "model": "deals.vendor",
+   "pk": 4,
+   "fields": {
+     "name": "CS 210",
+     "address": "353 Serra Street, Stanford, CA  94305",
+     "latitude": "37.43002",
+     "longitude": "-122.173633",
+     "web_url": "http://www.pizzamyheart.com",
+     "yelp_url": "http://www.yelp.com/biz/pizza-my-heart-palo-alto",
+     "phone": "111-111-1111",
+     "image": "peyton-manning2.jpg"
+   }
+ },
+ {
+   "model": "deals.deal",
+   "pk": 1,
+   "fields": {
+     "vendor": "4",
+     "title": "100% off donuts",
+     "desc": "Delicious donuts to delight you.",
+     "time_start": "2014-02-01 00:00:00+17:00",
+     "time_end": "2014-03-14 00:00:00-07:00",
+     "max_deals": "30",
+     "instructions": "Show to Jay Borenstein."
+   }
+ }
+]

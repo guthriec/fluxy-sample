@@ -16,62 +16,58 @@
         <link rel="stylesheet" href="{% static 'css/lib/normalize.css' %}">
         <link rel="stylesheet" href="{% static 'css/lib/bootstrap.min.css' %}">
         <link rel="stylesheet" href="{% static 'css/style.css' %}">
-
-        <!-- Facebook Conversion Code for Fluxy Registration -->
-        <!-- DISCOVERY_V1 -->
-        <script type="text/javascript">
-        var fb_param = {};
-        fb_param.pixel_id = '6012700285719';
-        fb_param.value = '0.01';
-        fb_param.currency = 'USD';
-        (function(){
-        var fpw = document.createElement('script');
-        fpw.async = true;
-        fpw.src = '//connect.facebook.net/en_US/fp.js';
-        var ref = document.getElementsByTagName('script')[0];
-        ref.parentNode.insertBefore(fpw, ref);
-        })();
-        </script>
-        <noscript><img height="1" width="1" alt="" style="display:none" src="https://www.facebook.com/offsite_event.php?id=6012700285719&amp;value=0.01&amp;currency=USD" /></noscript>
-
-        <!-- DISCOVERY_V2 -->
-        <script type="text/javascript">
-        var fb_param = {};
-        fb_param.pixel_id = '6012317026702';
-
-        fb_param.value = '0.01';
-        fb_param.currency = 'USD';
-        (function(){
-        var fpw = document.createElement('script');
-        fpw.async = true;
-        fpw.src = '//connect.facebook.net/en_US/fp.js';
-        var ref = document.getElementsByTagName('script')[0];
-        ref.parentNode.insertBefore(fpw, ref);
-        })();
-        </script>
-        <noscript><img height="1" width="1" alt="" style="display:none" src="https://www.facebook.com/offsite_event.php?id=6012317026702&amp;value=0.01&amp;currency=USD" /></noscript>
-
+        {% block css %}{% endblock %}
     </head>
     <body>
+     <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+          <div id="logo">Logo</div>
+          <div id="page-title">{{ page_title }}</div>
+          <div id="account-links">
+            {% if user.is_authenticated %}
+            <a class="btn btn-default btn-navbar" href="{% url 'fluxy.views.logout_page' %}">Logout</a>
+            {% elif page_title != 'Login'  %}
+            <a class="btn btn-default btn-navbar" href="{% url 'fluxy.views.login_page' %}">Login</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
       <div id="content">
         {% block content %}{% endblock %}
       </div>
-        <script type="text/javascript" src="{% static 'js/lib/jquery-2.1.0.min.js' %}"></script>
-        <script type="text/javascript" src="{% static 'js/lib/underscore-1.6.0.min.js' %}"></script>
-        <script type="text/javascript" src="{% static 'js/lib/backbone-1.1.2.min.js'%}"></script>
-        <script type="text/javascript" src="{% static 'js/lib/backbone.marionette.min.js'%}"></script>
-        <script type="text/javascript" src="{% static 'js/lib/bootstrap.min.js'%}"></script>
-        {% block scripts %}{% endblock %}
 
-        <!-- Google Analytics -->
-        <script>
-          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      <script type="text/javascript" src="{% static 'js/lib/jquery-2.1.0.min.js' %}"></script>
+      <script type="text/javascript" src="{% static 'js/lib/underscore-1.6.0.min.js' %}"></script>
+      <script type="text/javascript" src="{% static 'js/lib/backbone-1.1.2.min.js'%}"></script>
+      <script type="text/javascript" src="{% static 'js/lib/backbone.marionette.min.js'%}"></script>
+      <script type="text/javascript" src="{% static 'js/lib/bootstrap.min.js'%}"></script>
 
-          ga('create', 'UA-48371840-1', 'fluxyapp.com');
-          ga('send', 'pageview');
-        </script>
+      <!-- Django CSRF -->
+      <script type="text/javascript">
+        function csrfSafeMethod(method) {
+          return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        var csrfToken = "{{ csrf_token }}";
+        $.ajaxSetup({
+          beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type)) {
+              xhr.setRequestHeader("X-CSRFToken", csrfToken);
+            }
+          }
+        });
+      </script>
+
+      {% block js %}{% endblock %}
+
+      <!-- Google Analytics -->
+      <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-48371840-1', 'fluxyapp.com');
+        ga('send', 'pageview');
+      </script>
     </body>
 </html>

@@ -1,6 +1,42 @@
 Fluxy Web Stack
 ===============
 
+Getting started
+---------------
+We assume that you have ```pip``` installed. If you do not, use ```brew``` to
+install it.
+
+Make sure you have ```virtualenv``` installed by running:
+```sh
+[sudo] pip install virtualenv
+```
+
+Next we create the virtual environment and load the necessary dependencies:
+```sh
+virtualenv venv
+. venv/bin/activate
+pip install -r requirements.txt
+```
+
+Next we need to make sure you create a local database. Run the following and
+follow the instructions:
+```sh
+python manage.py syncdb
+```
+
+Good, you are now setup. Close this terminal window and follow the instructions
+in the "Starting your local enviornment" part of the README.
+
+Starting your local enviornment
+-------------------------------
+Assuming you are in the correct directory, you need to activate the virtual
+environment and run the server. Run:
+```sh
+. venv/bin/activate
+python manage runserver
+```
+
+You can now access the web stack at: ```127.0.0.1:8000```
 
 Deploying
 -----------
@@ -35,14 +71,17 @@ API
   * Returns all deals ever created.
   * If all of the following GET parameters are set: "lat", "long", and "radius," the returned set is limited to deals within 'radius' of the given coordinates. Radius <= 0 is taken as an unlimited radius.
 
+* ``` /user/ ```
+  * Accepts GET.
+  * If user is authenticated, returns the user object associated with the user. Otherwise, returns a 403.
 
 * ``` /user/auth ```
   * Accepts POST.
-  * Takes POST parameters 'username' and 'password', attempts to authenticate the user, returns 200 on success, 401 on inability ot authenticate. Authentication lasts until cookie is cleared (for now).
+  * Takes POST parameters 'username' and 'password', attempts to authenticate the user. Returns a 200 on success, 401 on bad credentials, or a 400 on a bad request. Has JSON, whose 'success' key indicates if the login credentials were valid or not. Authentication lasts until cookie is cleared (for now).
 
-* ``` /user/vendor ```
+* ``` /user/vendors ```
   * Accepts GET.
-  * If user is authenticated, returns the vendor object associated with the user. If the user is not associated with a vendor, returns an empty object. If the user is not authenticated, returns 403.
+  * If user is authenticated, returns the vendor objects associated with the user. If the user is not associated with a vendor, returns an empty object. If the user is not authenticated, returns 403.
 
 * ``` /user/claimed_deals ```
   * Accepts GET, POST.
@@ -82,19 +121,13 @@ API
 
 * ``` /vendor/{id}/claimed_deals ```
   * Accepts GET.
-  * Returns all active claimed_deals objects associated with {id}. Returns 200 on success, 404 if no vendor of {id} exists.
+  * Returns all active claimed_deals objects associated with {id}. Returns 200 on success, 403 if logged in user doesn't have permissions for vendor of {id}, 404 if no vendor of {id} exists.
 
 * ``` /vendor/{id}/claimed_deals/all ```
   * Accepts GET.
-  * Returns all claimed_deals objects associated with {id}. Returns 200 on success, 404 if no vendor of {id} exists.
+  * Returns all claimed_deals objects associated with {id}. Returns 200 on success, 403 if logged in user doesn't have permissions for vendor of {id}, 404 if no vendor of {id} exists.
 
-
-Mock API
--------------
-Supports only GET:
-```
-/api/mock/deals
-/api/mock/vendors
-/api/mock/deals/{id}
-/api/mock/vendors/{id}
-```
+=======
+APPENDIX A - Notes About Libraries
+----------------------------------
+* ```JQuery UI``` - Requires: Spinner with Smoothness Theme

@@ -49,7 +49,7 @@
      "title": "50% off donuts",
      "desc": "donuts donuts donuts donuts donuts donuts donuts donuts",
      "time_start": "2014-02-01 00:00:00+00:00",
-     "time_end": "2015-02-01 00:00:00+00:00",
+     "time_end": "2014-02-24 00:00:00+00:00",
      "max_deals": "30",
      "instructions": "Show to waiter."
    }
@@ -61,8 +61,8 @@
      "vendor": "1",
      "title": "40% off coffee",
      "desc": "coffee coffee coffee coffee coffee coffee donuts donuts donuts donuts donuts donuts donuts donuts",
-     "time_start": "2014-02-01 00:00:00+00:00",
-     "time_end": "2015-02-01 00:00:00+00:00",
+     "time_start": "2014-02-20 00:00:00+00:00",
+     "time_end": "2014-02-24 00:00:00+00:00",
      "max_deals": "1",
      "instructions": "Show to waiter."
    }
@@ -87,8 +87,8 @@
      "vendor": "2",
      "title": "20% off Pad Thai",
      "desc": "pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai",
-     "time_start": "2014-02-01 00:00:00+00:00",
-     "time_end": "2015-02-01 00:00:00+00:00",
+     "time_start": "2014-02-20 00:00:00+00:00",
+     "time_end": "2014-02-24 00:00:00+00:00",
      "max_deals": "20",
      "instructions": "Show to waiter."
    }
@@ -100,8 +100,8 @@
      "vendor": "2",
      "title": "50% off drinks",
      "desc": "drinks drinks drinks drinks pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai pad thai",
-     "time_start": "2014-02-01 00:00:00+00:00",
-     "time_end": "2015-02-01 00:00:00+00:00",
+     "time_start": "2014-02-20 00:00:00+00:00",
+     "time_end": "2014-02-24 00:00:00+00:00",
      "max_deals": "-1",
      "instructions": "Show to waiter."
    }
@@ -113,8 +113,8 @@
      "vendor": "3",
      "title": "50% off pizza",
      "desc": "pizza n stuff",
-     "time_start": "2014-02-01 00:00:00+00:00",
-     "time_end": "2015-02-01 00:00:00+00:00",
+     "time_start": "2014-02-22 00:00:00+00:00",
+     "time_end": "2014-02-24 00:00:00+00:00",
      "max_deals": "50",
      "instructions": "Show to waiter."
    }
@@ -191,7 +191,7 @@
      "password": "pbkdf2_sha256$12000$NrhLLCqHVQa7$TTZiDuWBGNH5kj6UYLBlFFL7788eoCne8MJ/hyULZqs=",
      "email": "don@hotmail.com",
      "vendors":[]
-   }
+   }  
  },
  {
    "model": "deals.claimeddeal",

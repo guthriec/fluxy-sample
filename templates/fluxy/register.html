@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+<div class="container">
+<div id="register-page">
+  <div id="form-container">
+    <!-- Error message -->
+    {% if error_message %}
+    <p><strong>{{ error_message }}</strong></p>
+    {% endif %}
+    <!-- Form to submit user credentials -->
+    <form method="post" id="reg-form">
+      {% csrf_token %}
+      <table id="reg-form-table">
+        <tr><td><input name="email" type="email" class="required email"
+        placeholder="Email address" id="email"/></td></tr>
+        <tr><td><input name="username" type="text" class="required username"
+        placeholder="Username" id="username"/></td></tr>
+        <tr><td><input name="password" type="password" class="required password"
+        placeholder="Password" id="password"/></td></tr>
+        <tr><td><input name="password_confirm" type="password" class="required password"
+        placeholder="Confirm Password" id="password-confirm"/></td></tr>
+        <tr><td><button type="submit" class="btn btn-default btn-lg" id="reg-btn">Register</button></td></tr>
+      </table>
+    </form>
+  </div>
+</div>
+</div>
+{% endblock %}
