@@ -76,5 +76,68 @@ class VendorDealTestCase(TestCase):
     response = self.client.get('/api/v1/vendor/100/deals/')
     self.assertEqual(response.status_code, 404)
 
+  def test_put(self):
+    """
+    @author: Chris
+    Tests that a valid put on /vendor/1/deal/1 returns 200 and updates
+    the deal
+    """
+    deal_edit = { "desc": "A new description",
+                  "max_deals": "300" }
+    response = self.client.put('/api/v1/vendor/1/deal/1/',
+                               data=json.dumps(deal_edit),
+                               content_type="application/json")
+    returned_deal = json.loads(response.content)['data'][0]
+    self.assertEqual(returned_deal['desc'], "A new description")
+    self.assertEqual(returned_deal['max_deals'], "300")
+    self.assertEqual(response.status_code, 200)
+    db_dealset = Deal.objects.filter(pk=1)
+    self.assertEqual(db_dealset.count(), 1)
+    self.assertEqual(db_dealset[0].desc, "A new description")
+    self.assertEqual(db_dealset[0].max_deals, 300)
+
+  def test_malformed_put(self):
+    """
+    @author: Chris
+    Tests that an invalid put on /vendor/1/deal/1 returns 400 and does not
+    update the deal
+    """
+    deal_edit = { "poop": "A new description",
+                  "max_deals": "300" }
+    response = self.client.put('/api/v1/vendor/1/deal/1/',
+                               data=json.dumps(deal_edit),
+                               content_type="application/json")
+    self.assertEqual(response.status_code, 400)
+    db_dealset = Deal.objects.filter(pk=1)
+    self.assertEqual(db_dealset.count(), 1)
+    self.assertEqual(db_dealset[0].max_deals, 30)
+
+  def test_bad_vendor_put(self):
+    """
+    @author: Chris
+    Tests that a valid put on /vendor/100/deal/1 returns 404
+    """
+    deal_edit = { "desc": "A new description",
+                  "max_deals": "300" }
+    response = self.client.put('/api/v1/vendor/100/deal/1/',
+                               data=json.dumps(deal_edit),
+                               content_type="application/json")
+    self.assertEqual(response.status_code, 404)
+    db_dealset = Deal.objects.filter(pk=1)
+    self.assertEqual(db_dealset.count(), 1)
+    self.assertEqual(db_dealset[0].max_deals, 30)
+
+  def test_bad_deal_put(self):
+    """
+    @author: Chris
+    Tests that a valid put on /vendor/1/deal/100 returns 404
+    """
+    deal_edit = { "desc": "A new description",
+                  "max_deals": "300" }
+    response = self.client.put('/api/v1/vendor/1/deal/100/',
+                               data=json.dumps(deal_edit),
+                               content_type="application/json")
+    self.assertEqual(response.status_code, 404)
+
   def tearDown(self):
     pass

@@ -226,7 +226,8 @@ def user_register(request):
       new_user.save()
       logged_in_user = authenticate(username=username, password=password)
       login(request, logged_in_user)
-      return make_post_response(logged_in_user, '/user/')
+      user_list = [logged_in_user.get_safe_user()]
+      return make_post_response(user_list, '/user/')
   return make_post_response(None, None, known_error)
 
 @require_http_methods(["GET"])

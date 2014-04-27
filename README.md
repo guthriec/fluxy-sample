@@ -60,7 +60,7 @@ API
 For all POST requests, data can be encoded as form data or using JSON. Remember
 to set the request's CONTENT-TYPE header to the appropriate type.
 
-* ``` /deal/{id} ```
+* ``` /deals/{id} ```
   * Accepts GET.
   * Returns a full deal object, serializing vendor information as an embedded object.
 
