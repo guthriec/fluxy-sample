@@ -36,11 +36,6 @@
           <p class="list-group-item-text">Monitor active deals</p>
         </a>
       </li>
-      <li class="list-group-item" id="nav-photos">
-        <a href="#">
-          <h3 class="list-group-item-heading">Photos</h3>
-        </a>
-      </li>
       <li class="list-group-item" id="nav-profile">
         <a href="#">
           <h3 class="list-group-item-heading">Profile</h3>
@@ -51,6 +46,10 @@
 
   <script type="text/template" id="main-content-template">
     <div id="dashboard"></div>
+  </script>
+
+  <script type="text/template" id="modal-content-template">
+    <div id="modal"></div>
   </script>
 
   <script type="text/template" id="deal-template">
@@ -82,6 +81,16 @@
             <input name="deal-title" id="deal-title" type="text" class="form-control" placeholder="40% off all non-alcoholic drinks">
           </div>
           <p class="help-block col-sm-offset-2 col-sm-6">A short, to-the-point description of the deal. This will be displayed as-is to users, so pay attention to capitalization, punctuation, etc.</p>
+        </div>
+      </div>
+      <div class="form-area">
+        <div class="form-group">
+          <label for="title" class="col-sm-2 control-label">Photo</label>
+          <div class="col-sm-6">
+            <button class="btn" id="change-photo-btn">Change Photo</button>
+          </div>
+          <p class="help-block col-sm-offset-2 col-sm-6">Choosing an attractive
+          photo is important to entice customers to check out your deal.</p>
         </div>
       </div>
       <div class="form-area">
@@ -200,20 +209,22 @@
     </form>
   </script>
 
-  <script type="text/template" id="photos-collection-template">
-    <div class="modal fade">
+  <script type="text/template" id="photos-collection-modal-template">
+    <div class="modal fade" id="change-photo-modal">
       <div class="modal-dialog">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal"
-            aria-hidden="true">&times;</button>
-          <h4 class="modal-title">Choose Deal Photo</h4>
-        </div>
-        <div class="modal-body" id="photos-modal-content">
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default"
-            data-dismiss="modal">Cancel</button>
-          <button type="submit"  class="btn btn-primary disabled">Save Picture</button>
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"
+              aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Choose Deal Photo</h4>
+          </div>
+          <div class="modal-body" id="photos-modal-content">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default"
+              data-dismiss="modal">Cancel</button>
+            <button type="submit"  class="btn btn-primary disabled">Save Picture</button>
+          </div>
         </div>
       </div>
     </div>

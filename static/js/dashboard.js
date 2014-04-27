@@ -149,12 +149,20 @@ DashboardApp.PhotoView = Backbone.Marionette.ItemView.extend({
   template: '#photo-template',
 });
 
-DashboardApp.PhotosCollectionView = Backbone.Marionette.CompositeView.extend({
-  template: '#photos-collection-template',
+DashboardApp.PhotosCollectionModalView = Backbone.Marionette.CompositeView.extend({
+  template: '#photos-collection-modal-template',
   itemView: DashboardApp.PhotoView,
 
   collectionEvents: {
     'sync': 'render'
+  },
+
+  initialize: function() {
+    DashboardApp.events.on('changePhotoTrigger', this.showPhotoModal, this);
+  },
+
+  showPhotoModal: function(deal) {
+    this.$el.find('#change-photo-modal').modal('show');
   },
 
   appendHtml: function(collectionView, itemView) {
@@ -239,11 +247,6 @@ DashboardApp.DealCreateModalView = Backbone.Marionette.ItemView.extend({
 
 });
 
-DashboardApp.addInitializer(function(options) {
-  var modalControllerView = new DashboardApp.DealCreateModalView();
-  DashboardApp.modalRegion.show(modalControllerView);
-});
-
 /*
  * @author: Ayush
  * @desc: Defines the view that is associated with the form that allows vendors
@@ -252,6 +255,7 @@ DashboardApp.addInitializer(function(options) {
  */
 DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
   events: {
+    'click #change-photo-btn': 'changePhoto',
     'click #submit-btn': 'createDeal'
   },
   template: '#deal-create-form-template',
@@ -295,6 +299,10 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
       }
     );
     return this;
+  },
+
+  changePhoto: function(e) {
+    DashboardApp.events.trigger('changePhotoTrigger', {});
   },
 
   createDeal: function(e) {
@@ -389,7 +397,6 @@ DashboardApp.LeftNavView = Backbone.Marionette.ItemView.extend({
     'click #nav-revive': 'showRevive',
     'click #nav-review': 'showReview',
     'click #nav-active': 'showActive',
-    'click #nav-photos': 'showPhotos',
     'click #nav-profile': 'showProfile',
   },
 
@@ -421,13 +428,6 @@ DashboardApp.LeftNavView = Backbone.Marionette.ItemView.extend({
     DashboardApp.events.trigger('showActiveView');
   },
 
-  showPhotos: function(e) {
-    e.preventDefault();
-    var links = $("#left-navbar").find(".list-group-item").removeClass("selected");
-    $("#nav-photos").addClass("selected");
-    DashboardApp.events.trigger('showPhotosView');
-  },
-
   showProfile: function(e) {
     e.preventDefault();
     var links = $("#left-navbar").find(".list-group-item").removeClass("selected");
@@ -443,6 +443,33 @@ DashboardApp.LeftNavView = Backbone.Marionette.ItemView.extend({
 DashboardApp.addInitializer(function(options) {
   var leftNavView = new DashboardApp.LeftNavView();
   DashboardApp.leftNavbarRegion.show(leftNavView);
+});
+
+DashboardApp.ModalContent = Backbone.Marionette.Layout.extend({
+  template: '#modal-content-template',
+
+  regions: {
+    modal: '#modal'
+  },
+
+  initialize: function(options) {
+    DashboardApp.events.on('createDealConfirmTrigger', this.confirmCreate, this);
+    DashboardApp.events.on('changePhotoTrigger', this.changePhoto, this);
+
+    this.dealCreateModalView = new DashboardApp.DealCreateModalView();
+    this.photos = options.photos;
+    this.photosCollectionModalView = new DashboardApp.PhotosCollectionModalView({
+      collection: this.photos
+    });
+  },
+
+  confirmCreate: function() {
+    this.modal.show(this.dealCreateModalView);
+  },
+
+  changePhoto: function() {
+    this.modal.show(this.photosCollectionModalView);
+  }
 });
 
 /*
@@ -481,11 +508,6 @@ DashboardApp.MainContent = Backbone.Marionette.Layout.extend({
     });
     this.dealCreateForm = new DashboardApp.DealCreateFormView();
 
-    this.photos = options.photos;
-    this.photosCollectionView = new DashboardApp.PhotosCollectionView({
-      collection: this.photos
-    });
-
     this.vendors = options.vendors;
     this.profileEditForm = new DashboardApp.ProfileEditFormView({
       collection: this.vendors
@@ -509,10 +531,6 @@ DashboardApp.MainContent = Backbone.Marionette.Layout.extend({
     this.dashboard.show(this.activeDealsCollectionView);
   },
 
-  showPhotos: function() {
-    this.dashboard.show(this.photosCollectionView);
-  },
-
   showProfile: function() {
     this.dashboard.show(this.profileEditForm);
   },
@@ -524,19 +542,22 @@ DashboardApp.MainContent = Backbone.Marionette.Layout.extend({
 
 // Load the initializer
 DashboardApp.addInitializer(function(options) {
-  var opts = {};
+  var mainOpts = {};
+  mainOpts.deals = new DashboardApp.DealsCollection([], { 'vendorId': vendorId, 'listenForCreate': true });
+  mainOpts.deals.fetch({ reset: true });
 
-  opts.deals = new DashboardApp.DealsCollection([], { 'vendorId': vendorId, 'listenForCreate': true });
-  opts.deals.fetch({ reset: true });
+  mainOpts.vendors = new DashboardApp.VendorsCollection([], { });
+  mainOpts.vendors.fetch({ reset: true });
 
-  opts.vendors = new DashboardApp.VendorsCollection([], { });
-  opts.vendors.fetch({ reset: true });
-
-  opts.photos = new DashboardApp.PhotosCollection([], { 'vendorId': vendorId });
-  photos = opts.photos;
-
-  var mainContent = new DashboardApp.MainContent(opts);
+  var mainContent = new DashboardApp.MainContent(mainOpts);
   DashboardApp.dashboardRegion.show(mainContent);
+
+  var modalOpts = {};
+  modalOpts.photos = new DashboardApp.PhotosCollection([], { 'vendorId': vendorId });
+  modalOpts.photos.fetch({ reset: true });
+
+  var modalContent = new DashboardApp.ModalContent(modalOpts);
+  DashboardApp.modalRegion.show(modalContent);
 });
 
 $(document).ready(function() {
