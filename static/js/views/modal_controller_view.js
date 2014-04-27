@@ -8,7 +8,7 @@ define([
   'bootstrap'
 ], function(Marionette, vent, Bootstrap) {
   var ModalControllerView = Marionette.ItemView.extend({
-    template: '#modal-controller-template',
+    template: '#create-deal-modal-template',
 
     events: {
       'click #create-deal-modal #create-btn': 'createDeal',

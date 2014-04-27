@@ -8,8 +8,10 @@ define([
   'marionette',
   'vent',
   'views/deals_collection_view',
-  'views/deal_create_form_view'
-], function(Marionette, vent, DealsCollectionView, DealCreateFormView) {
+  'views/deal_create_form_view',
+  'views/revive_deals_collection_view'
+], function(Marionette, vent, DealsCollectionView, DealCreateFormView,
+            DealReviveView) {
   var MainContentLayout = Marionette.Layout.extend({
     template: "#main-content-template",
 
@@ -33,7 +35,7 @@ define([
       this.scheduledDealsCollectionView = new DealsCollectionView({
         collection: this.scheduledDeals
       });
-      this.expiredDealsCollectionView = new DealsCollectionView({
+      this.reviveDealsView = new DealReviveView({
         collection: this.expiredDeals
       });
       this.dealCreateForm = new DealCreateFormView();
@@ -45,7 +47,7 @@ define([
     },
 
     showRevive: function() {
-      this.dashboard.show(this.expiredDealsCollectionView);
+      this.dashboard.show(this.reviveDealsView);
     },
 
     showReview: function() {

@@ -6,14 +6,14 @@
 define([
   'jquery',
   'marionette',
-  'views/deal_view'
-], function($, Marionette, DealView) {
+  'views/deal_revive_view'
+], function($, Marionette, DealReviveView) {
   var DealsCollectionView = Marionette.CompositeView.extend({
     tagname: 'table',
     id: 'deals-list-view',
     className: 'table table-striped table-bordered',
-    template: '#deals-collection-template',
-    itemView: DealView,
+    template: '#revive-deals-collection-template',
+    itemView: DealReviveView,
 
     collectionEvents: {
       "sync": "render"

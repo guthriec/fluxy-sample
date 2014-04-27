@@ -48,6 +48,13 @@
     <td><%= time_start  %></td>
     <td><%= time_end  %></td>
   </script>
+  
+  <script type="text/template" id="revive-deal-template">
+    <td><%= title  %></td>
+    <td><%= desc  %></td>
+    <td><%= time_start %></td>
+    <td><button type="button" class="btn-lg btn-success">Revive</td>
+  </script>
 
   <script type="text/template" id="deals-collection-template">
     <thead>
@@ -62,6 +69,18 @@
     </tbody>
   </script>
 
+  <script type="text/template" id="revive-deals-collection-template">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Last launched</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </script>
   <script type="text/template" id="deal-create-form-template">
     <form action="#" method="GET" id="deal-form" class="form-horizontal" role="form">
       <div class="form-area">
@@ -189,7 +208,7 @@
     </form>
   </script>
 
-  <script type="text/template" id="modal-controller-template">
+  <script type="text/template" id="create-deal-modal-template">
     <div class="modal fade" id="create-deal-modal">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -215,6 +234,38 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-default" id="cancel-btn">Cancel</button>
             <button type="button" class="btn btn-primary" id="create-btn">Create Deal</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </script>
+  
+  <script type="text/template" id="revive-deal-modal-template">
+    <div class="modal fade" id="revive-deal-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Confirm your deal!</h4>
+          </div>
+          <div class="modal-body">
+            <table>
+              <tr id="title">
+                <td>Title:</td>
+                <td></td>
+              </tr>
+              <tr id="description">
+                <td>Description:</td>
+                <td></td>
+              </tr>
+              <tr id="duration">
+                <td>Duration:</td>
+                <td></td>
+              </tr>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" id="cancel-btn">Cancel</button>
+            <button type="button" class="btn btn-primary" id="create-btn">Reschedule Deal</button>
           </div>
         </div>
       </div>
