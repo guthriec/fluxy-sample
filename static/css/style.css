@@ -145,10 +145,10 @@ textarea:focus:-moz-placehoder { color:transparent; }
   background-color: white;
 }
 
-.btn-success,
-.btn-success:active,
-.btn-success:hover,
-.btn-success:focus {
+#content .btn-success,
+#content .btn-success:active,
+#content .btn-success:hover,
+#content .btn-success:focus {
   background-color: #1abc9c;
 }
 

@@ -148,6 +148,13 @@ DashboardApp.monthNames = [ "January", "February", "March", "April", "May", "Jun
 DashboardApp.dayNames = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
                            "Friday", "Saturday" ];
 
+/*
+ * @author: Chris
+ * @desc: Utility function to convert a Javascript date object into a string
+ *        suitable for presenting to a restaurant end-user.
+ * @param: date - a Javascript date object
+ * @returns: string formatted, e.g., Sunday April 27 2:30 PM
+ */
 DashboardApp.dateString = function(date) {
   var hours = date.getHours();
   var minutes = date.getMinutes();
