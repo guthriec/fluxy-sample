@@ -231,13 +231,15 @@ DashboardApp.addInitializer(function(options) {
 DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
   events: {
     'focusout #title-group' : 'validateTitleGroup',
-    'focusout #duration-group' : function() {
-      this.validateStart();
-      this.validateDuration();
-    },
+    'focusout #duration-group' : 'validateStartAndDuration',
     'focusout #start-time-group' : 'validateStart',
     'focusout #max-deals-group' : 'validateMaxDeals',
     'click #submit-btn': 'createDeal'
+  },
+
+  validateStartAndDuration: function() {
+    this.validateStart();
+    this.validateDuration();
   },
 
   template: '#deal-create-form-template',
@@ -255,6 +257,7 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
     var amPmInputEl = startTimeEl.find('select[name="start-am-pm"]');
     var timeStart = new Date();
     var startHours = Number(hoursInputEl.val());
+
     if(amPmInputEl.val() == 'pm') {
       startHours += 12;
     } else if(startHours == 12) {
@@ -289,11 +292,13 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
     var startTimeEl = timeArea.find('#start-time-group');
     var startGroups = timeArea.find('#start-day-group').add('#start-time-group');
     var startTime = this.computeStart(startDayEl, startTimeEl);
+
     if (0 < (startTime - Date.now())) {
       startGroups.removeClass('has-error');
       this.$el.find('#start-validation-error').remove();
     } else {
       startGroups.addClass('has-error');
+
       if (this.$el.find('#start-validation-error').length == 0) {
         startTimeEl.append('<p id="start-validation-error" class="help-block col-sm-offset-2 col-sm-6">Start time must be in the future!</p>');
       valid = false;
@@ -317,6 +322,7 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
     var titleEl = $('#title-group');
     var titleInputEl = titleEl.find('input:text[name="deal-title"]');
     var title = titleInputEl.val();
+
     if (title.length > 7) {
       titleEl.removeClass('has-error');
       this.$el.find('#title-validation-error').remove();
@@ -344,6 +350,7 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
     var valid = true;
     var durationEl = this.$el.find('#duration-group');
     var duration = this.computeDuration(durationEl);
+
     if (duration > 0) {
       durationEl.removeClass('has-error');
       durationEl.find('#duration-validation-error').remove();
@@ -375,6 +382,7 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
     var maxDeals = parseInt(maxDealsEl.find('#max-deals-number').val(), 10);
     var maxDealsRadio = this.$el.find('#max-deals-radio');
     var radioSelection = this.$el.find('#max-deals-radio input[type=radio]:checked');
+
     if (radioSelection.length == 0) {
       maxDealsRadio.addClass('has-error');
       if (this.$el.find('#max-deals-validation-error').length == 0) {
@@ -385,6 +393,7 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
       maxDealsRadio.removeClass('has-error');
       maxDealsRadio.find('#max-deals-validation-error').remove();
     }
+
     if (!this.$el.find('#unlimited').checked ||
         (!isNaN(maxDeals) && maxDeals > 0 && maxDeals <= 500)) {
       maxDealsEl.removeClass('has-error');
@@ -449,8 +458,10 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
   createDeal: function(e) {
     e.preventDefault();
     var buttonGroup = this.$el.find('#button-group');
+
     if (!this.validateAll(e)) {
       buttonGroup.addClass('has-error');
+
       if (this.$el.find('#submit-failure').length == 0) {
         buttonGroup.prepend('<p class="help-block col-sm-6" id="submit-failure">Deal form not completed! Go back over the form and submit again.</p>');
         window.scrollTo(0, document.body.scrollHeight);
@@ -482,6 +493,7 @@ DashboardApp.DealCreateFormView = Backbone.Marionette.ItemView.extend({
     newModel['time_end'] = timeEnd;
     var maxDeals = -1;
     var limitRadio = this.$el.find('input:radio[value="limited"]');
+
     if(limitRadio.is(':checked')) {
       maxDeals = Number(formValues['max-deals']);
     }
