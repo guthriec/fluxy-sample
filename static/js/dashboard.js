@@ -12,11 +12,6 @@ define([
   // Start the dashboard Marionette/Backbone app
   var DashboardApp = new Marionette.Application();
 
-  // Add the events initializer first
-  DashboardApp.addInitializer(function(options) {
-    DashboardApp.events = _.extend({}, Backbone.Events);
-  });
-
   // Register the main dashboard region
   DashboardApp.addRegions({
     dashboardRegion: '#dashboard-container',
@@ -37,7 +32,8 @@ define([
   // Load the initializer
   DashboardApp.addInitializer(function(options) {
     var opts = {};
-    opts.deals = new DealsCollection([], { 'vendorId': vendorId, 'listenForCreate': true });
+    opts.deals = new DealsCollection([], { 'vendorId': vendorId, 
+                                           'listenForCreate': true });
     opts.deals.fetch({ reset: true });
 
     var mainContent = new MainContentLayout(opts);

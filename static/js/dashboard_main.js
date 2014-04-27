@@ -3,6 +3,7 @@ require.config({
     backbone: 'lib/backbone-1.1.2.min',
     'backbone.wreqr': 'lib/backbone.wreqr.min',
     bootstrap: 'lib/bootstrap.min',
+    domReady: 'lib/domReady',
     jquery: 'lib/jquery-2.1.0.min',
     marionette: 'lib/backbone.marionette.min',
     underscore: 'lib/underscore-1.6.0.min',
@@ -28,7 +29,10 @@ require.config({
   }
 });
 
-require(['dashboard', 'analytics'], function(DashboardApp, Analytics) {
+require([
+  'dashboard',
+  'analytics',
+  'domReady!'], function(DashboardApp, Analytics) {
   Analytics.start();
   DashboardApp.start();
 });

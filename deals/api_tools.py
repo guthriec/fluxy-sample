@@ -73,3 +73,17 @@ def make_get_response(resp_list, known_error=None):
   else:
     json_out = json.dumps(resp_list)
     return HttpResponse(json_out, content_type="application/json", status=200)
+
+def make_put_response(single_obj_list, known_error=None):
+  response = { 'status': 200,
+               'error': None,
+               'detail': None,
+               'success': True,
+               'data': single_obj_list }
+  if known_error:
+    response['status'] = known_error['status']
+    response['error'] = known_error['error']
+    response['detail'] = known_error['detail']
+    response['success'] = False
+  return HttpResponse(json.dumps(response), content_type="application/json",
+                      status=response['status'])

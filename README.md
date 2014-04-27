@@ -57,7 +57,7 @@ For example, if you add a deal that should be inactive, in test_deals.py be sure
 
 API
 -----------
-* ``` /deal/{id} ```
+* ``` /deals/{id} ```
   * Accepts GET.
   * Returns a full deal object, serializing vendor information as an embedded object.
 
