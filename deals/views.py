@@ -114,7 +114,7 @@ def vendor(request, vendor_id=None):
       known_error = None
       vendor_form = None
       if request.method == 'POST':
-        vendor_form = VendorForm(data, instance=vendor)
+        vendor_form = VendorForm(data)
         vendor = vendor_form.save()
         vendor_id = str(vendor.id)
         vendor_list = list_from_qset([vendor])

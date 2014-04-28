@@ -215,6 +215,23 @@
             <h4 class="modal-title">Choose Deal Photo</h4>
           </div>
           <div class="modal-body" id="photos-modal-content">
+            <div class="container-fluid">
+              <div id="photos-container" class="row">
+                <div class="col-lg-3 col-md-4 col-xs-12 thumb">
+                  <form enctype="multipart/form-data"
+                    action="/api/v1/vendor/{{ vendor_id }}/photos/"
+                    id="upload-photo-form" method="post">
+                    {% csrf_token %}
+                    <label for="photo-input">
+                      <img class="img-responsive"
+                      src="http://placehold.it/400x300">
+                    </label>
+                    <input type="file" name="photo" id="photo-input"
+                    style="display: none" />
+                  </form>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default"
@@ -227,7 +244,9 @@
   </script>
 
   <script type="text/template" id="photo-template">
-    <img src="<%= photo %>" />
+    <div class="col-lg-3 col-md-4 col-xs-12 thumb">
+      <img class="img-responsive" src="<%= photo %>">
+    </div>
   </script>
 
   <script type="text/template" id="profile-photo-form-template">
