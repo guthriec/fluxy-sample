@@ -8,8 +8,8 @@ define([
   'bootstrap',
   'fluxy_time'
 ], function(Marionette, vent, Bootstrap, FluxyTime) {
-  var ModalControllerView = Marionette.ItemView.extend({
-    template: '#modal-controller-template',
+  var DealCreateModalView = Marionette.ItemView.extend({
+    template: '#deal-create-modal-template',
 
     events: {
       'click #create-deal-modal #create-btn': 'createDeal',
@@ -55,5 +55,5 @@ define([
     }
   });
 
-  return ModalControllerView;
+  return DealCreateModalView;
 });

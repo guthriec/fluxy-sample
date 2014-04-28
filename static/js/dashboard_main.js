@@ -35,7 +35,7 @@ require.config({
 });
 
 require([
-  'dashboard',
+  'dashboard_app',
   'analytics',
   'domReady!'], function(DashboardApp, Analytics) {
   Analytics.start();

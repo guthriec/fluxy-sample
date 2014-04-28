@@ -18,6 +18,7 @@ define([
       'focusout #duration-group' : 'validateStartAndDuration',
       'focusout #start-time-group' : 'validateStart',
       'focusout #max-deals-group' : 'validateMaxDeals',
+      'click #change-photo-btn': 'changePhoto',
       'click #submit-btn': 'createDeal'
     },
 
@@ -75,8 +76,8 @@ define([
         startGroups.addClass('has-error');
 
         if (this.$el.find('#start-validation-error').length == 0) {
-          startTimeEl.append('<p id="start-validation-error" ' + 
-                             'class="help-block col-sm-offset-2 col-sm-6">' + 
+          startTimeEl.append('<p id="start-validation-error" ' +
+                             'class="help-block col-sm-offset-2 col-sm-6">' +
                              'Start time must be in the future!</p>');
         valid = false;
         }
@@ -167,7 +168,7 @@ define([
       this.validateStart(e);
       this.validateDuration(e);
     },
-    
+
     /*
      * @author: Chris
      * @desc: Event handler to extract the input for maximum number of deals,
@@ -262,6 +263,16 @@ define([
         }
       );
       return this;
+    },
+
+    /*
+     * @author: Rahul
+     * @desc: Triggers an event on the dashboard that shows the photo picker
+     * modal.
+     */
+    changePhoto: function(e) {
+      e.preventDefault();
+      vent.trigger('changePhotoTrigger', { });
     },
 
     createDeal: function(e) {
