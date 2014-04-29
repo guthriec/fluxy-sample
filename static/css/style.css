@@ -210,6 +210,11 @@ textarea:focus:-moz-placehoder { color:transparent; }
   padding-bottom: 20px;
 }
 
+#modal .clickable-photo:hover {
+  cursor: pointer;
+  border: 1px solid #589AD6;
+}
+
 /** Login page CSS **/
 
 #login-page #form-container{
