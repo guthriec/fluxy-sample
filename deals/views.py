@@ -158,7 +158,7 @@ def vendor_photo(request, vendor_id, photo_id=None):
     except:
       return HttpResponse(json.dumps({ 'status': 400, 'error': 'Bad request.' }),
         content_type='application/json', status=400)
-    return HttpResponse(serializers.serialize('json', [vendor_photo]),
+    return HttpResponse(custom_serialize([vendor_photo]),
         content_type='application/json', status=201)
   else:
     vendor_photo = get_object_or_404(VendorPhoto, pk=photo_id)

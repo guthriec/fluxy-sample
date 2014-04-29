@@ -13,7 +13,8 @@ define([
     itemView: PhotoView,
 
     events: {
-      'change #photo-input': 'postPhoto'
+      'change #photo-input': 'postPhoto',
+      'click .photos-modal-photo': 'choosePhoto'
     },
 
     collectionEvents: {
@@ -29,12 +30,18 @@ define([
       $('#upload-photo-form').ajaxSubmit({
         'success': function(context) {
           return function(res, status) {
+            var photo = context.collection.add(res)[0];
+            vent.trigger('photoChangedTrigger', photo);
             context.$el.find('#change-photo-modal').modal('hide');
           };
         }(this),
         'error': function() {
         }
       });
+    },
+
+    choosePhoto: function(e) {
+      this.$el.find('#change-photo-modal').modal('hide');
     },
 
     showPhotoModal: function(deal) {

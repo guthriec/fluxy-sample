@@ -22,6 +22,10 @@ define([
       'click #submit-btn': 'createDeal'
     },
 
+    initialize: function() {
+      vent.on('photoChangedTrigger', this.photoChanged, this);
+    },
+
     /*
      * @author: Chris
      * @desc: Utility function to take the start-day-group and start-time-group
@@ -273,6 +277,14 @@ define([
     changePhoto: function(e) {
       e.preventDefault();
       vent.trigger('changePhotoTrigger', { });
+    },
+
+    /*
+     * @author: Rahul
+     * @desc: Change displayed photo.
+     */
+    photoChanged: function(photo) {
+      this.$el.find('#deal-photo').attr('src', photo.get('photo'));
     },
 
     createDeal: function(e) {

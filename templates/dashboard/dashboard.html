@@ -81,6 +81,7 @@
         <div class="form-group">
           <label for="title" class="col-sm-2 control-label">Photo</label>
           <div class="col-sm-6">
+            <img class="img-responsive" id="deal-photo">
             <button class="btn" id="change-photo-btn">
               Change Photo
             </button>
@@ -245,7 +246,7 @@
 
   <script type="text/template" id="photo-template">
     <div class="col-lg-3 col-md-4 col-xs-12 thumb">
-      <img class="img-responsive" src="<%= photo %>">
+      <img class="img-responsive photos-modal-photo" src="<%= photo %>">
     </div>
   </script>
 
