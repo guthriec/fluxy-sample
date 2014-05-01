@@ -32,10 +32,12 @@ define([
       } else {
         $modal.find('#create-max-deals-cell').html("Unlimited");
       }
+      var timeStart = new Date(deal.time_start);
+      var timeEnd = new Date(deal.time_end);
       $modal.find('#create-start-time-cell').html(FluxyTime.getDateString(
-                                                             deal.time_start));
+                                                            timeStart)) 
       $modal.find('#create-end-time-cell').html(FluxyTime.getDateString(
-                                                             deal.time_end));
+                                                             timeEnd));
       var d = Math.abs((new Date(deal.time_start)) - (new Date(deal.time_end)));
       var hours = parseInt(d / 3600000);
       var minutes = d % 3600000 / 60000;
