@@ -320,8 +320,7 @@ def user_deals(request, active_only=True):
   else:
     claimed_deals = request.user.claimeddeal_set.all()
     if active_only:
-      claimed_deals = claimed_deals.filter(deal__time_end__gte=now,
-                                           deal__time_start__lte=now)
+      claimed_deals = claimed_deals.filter(deal__time_end__gte=now)
     return HttpResponse(serializers.serialize('json', claimed_deals),
                         content_type="application/json")
 
