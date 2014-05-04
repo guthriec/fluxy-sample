@@ -299,8 +299,8 @@ define([
                                         this.$el.find('#start-time-group'));
       var minutes = this.computeDuration(this.$el.find('#duration-group'));
       timeEnd.setTime(timeStart.getTime() + minutes * 60000);
-      newModel['time_start'] = timeStart;
-      newModel['time_end'] = timeEnd;
+      newModel['time_start'] = timeStart.toISOString();
+      newModel['time_end'] = timeEnd.toISOString();
       var maxDeals = -1;
       var limitRadio = this.$el.find('input:radio[value="limited"]');
 
