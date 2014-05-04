@@ -2,6 +2,9 @@ import datetime
 from django.core import serializers
 from django.db import models
 from django.utils.timezone import utc
+from hashlib import sha1
+from PIL import Image
+from random import random
 
 class Vendor(models.Model):
   """
@@ -57,9 +60,6 @@ class VendorPhoto(models.Model):
     is_primary : A boolean indicating whether this photo is the primary photo
                  for its vendor
   """
-  photo = models.ImageField(upload_to='vendors')
-  vendor = models.ForeignKey(Vendor)
-
   def natural_key(self):
     return self.photo.url
 
@@ -67,8 +67,27 @@ class VendorPhoto(models.Model):
     return {
           'id': self.id,
           'photo': self.photo.url,
+          'thumb': self.photo.url.split('.')[0] + '_thumb_400_300.jpg',
           'vendor': self.vendor.id,
         }
+
+  def get_filename(instance, filename):
+    return 'vendors/%d/%s_%s.jpg' % (instance.vendor.id,
+        datetime.datetime.utcnow().strftime('%s'),
+        sha1(str(random())).hexdigest())
+
+  def create_thumb(self):
+    path = self.photo.url[1:]
+    thumb = Image.open(path)
+    thumb.thumbnail((400,300))
+    thumb.save(path.split('.')[0] + '_thumb_400_300.jpg', 'JPEG')
+
+  def save(self, *args, **kwargs):
+    super(VendorPhoto, self).save(*args, **kwargs)
+    self.create_thumb()
+
+  photo = models.ImageField(upload_to=get_filename)
+  vendor = models.ForeignKey(Vendor)
 
 
 class Deal(models.Model):
