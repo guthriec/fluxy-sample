@@ -33,7 +33,7 @@ define([
     var month = FluxyTime.monthNames[date.getMonth()];
     var day = date.getDate();
     var dayOfWeek = FluxyTime.dayNames[date.getDay()];
-    return dayOfWeek + " " + month + " " + day + " - " + hours +
+    return dayOfWeek + " " + month + " " + day + " " + hours +
              ":" + minutes + " " + amPm;
   };
   
