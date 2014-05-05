@@ -215,6 +215,18 @@ textarea:focus:-moz-placehoder { color:transparent; }
   border: 1px solid #589AD6;
 }
 
+#modal #upload-photo-form {
+  height: 0;
+}
+
+#modal #photos-modal-content {
+  padding-bottom: 0;
+}
+
+#modal #photos-modal-footer {
+  margin-top: 0;
+}
+
 /** Login page CSS **/
 
 #login-page #form-container{

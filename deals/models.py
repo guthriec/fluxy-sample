@@ -5,6 +5,7 @@ from django.utils.timezone import utc
 from hashlib import sha1
 from PIL import Image
 from random import random
+from sorl.thumbnail import get_thumbnail
 
 class Vendor(models.Model):
   """
@@ -63,11 +64,14 @@ class VendorPhoto(models.Model):
   def natural_key(self):
     return self.photo.url
 
+  def get_thumb(self):
+    return get_thumbnail(self.photo, '400x400', crop='center', quality=99).url
+
   def get_custom_serializable(self):
     return {
           'id': self.id,
           'photo': self.photo.url,
-          'thumb': self.photo.url.split('.')[0] + '_thumb_400_300.jpg',
+          'thumb': self.get_thumb(),
           'vendor': self.vendor.id,
         }
 
@@ -75,16 +79,6 @@ class VendorPhoto(models.Model):
     return 'vendors/%d/%s_%s.jpg' % (instance.vendor.id,
         datetime.datetime.utcnow().strftime('%s'),
         sha1(str(random())).hexdigest())
-
-  def create_thumb(self):
-    path = self.photo.url[1:]
-    thumb = Image.open(path)
-    thumb.thumbnail((400,300))
-    thumb.save(path.split('.')[0] + '_thumb_400_300.jpg', 'JPEG')
-
-  def save(self, *args, **kwargs):
-    super(VendorPhoto, self).save(*args, **kwargs)
-    self.create_thumb()
 
   photo = models.ImageField(upload_to=get_filename)
   vendor = models.ForeignKey(Vendor)
