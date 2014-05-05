@@ -285,6 +285,7 @@ define([
      */
     photoChanged: function(photo) {
       this.$el.find('#deal-photo').attr('src', photo.get('photo'));
+      this.$el.find('#deal-photo').css('display', 'block');
     },
 
     createDeal: function(e) {

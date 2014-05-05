@@ -210,13 +210,22 @@ textarea:focus:-moz-placehoder { color:transparent; }
   padding-bottom: 20px;
 }
 
+#content #deal-photo {
+  max-height: 400px;
+  margin-bottom: 20px;
+  display: none;
+}
+
 #modal .clickable-photo:hover {
   cursor: pointer;
   border: 1px solid #589AD6;
 }
 
-#modal #upload-photo-form {
+#modal #upload-photo-form,
+#modal .label {
+  margin: 0;
   height: 0;
+  line-height: 0;
 }
 
 #modal #photos-modal-content {
