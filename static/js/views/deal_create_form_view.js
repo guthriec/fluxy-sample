@@ -223,12 +223,29 @@ define([
       return valid;
     },
 
+    validatePhoto: function(e) {
+      photoEl = this.$el.find('#photo-group');
+      photoContainer = this.$el.find('#photo-container');
+      if (this.photo) {
+        photoEl.removeClass('has-error');
+        this.$el.find('#photo-validation-error').remove();
+        return true;
+      } else {
+        photoEl.addClass('has-error');
+        photoContainer.after('<p id="photo-validation-error" ' +
+                             'class="help-block col-sm-6 col-sm-offset-2">' +
+                             'Must choose a deal photo</p>');
+        return false;
+      }
+    },
+
     validateAll: function(e) {
       var startValid = this.validateStart(e);
       var titleValid = this.validateTitleGroup(e);
       var durationValid = this.validateDuration(e);
       var maxDealsValid = this.validateMaxDeals(e);
-      return (startValid && titleValid && durationValid && maxDealsValid);
+      var photoValid = this.validatePhoto(e);
+      return (startValid && titleValid && durationValid && maxDealsValid && photoValid);
     },
 
     render: function() {
@@ -284,6 +301,7 @@ define([
      * @desc: Change displayed photo.
      */
     photoChanged: function(photo) {
+      this.photo = photo;
       this.$el.find('#deal-photo').attr('src', photo.get('photo'));
       this.$el.find('#deal-photo').css('display', 'block');
     },
