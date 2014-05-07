@@ -235,6 +235,7 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
     deal_id = -1
     try:
       post_data = json.loads(request.body)
+      # TODO validate photo belongs to vendor
       photo = VendorPhoto.objects.get(pk=post_data['photo']);
       post_data['photo'] = photo
       deal = Deal(**post_data)

@@ -78,12 +78,12 @@ class VendorPhoto(models.Model):
           'vendor': self.vendor.id,
         }
 
-  def get_filename(instance, filename):
+  def generate_filename(instance, filename):
     return 'vendors/%d/%s_%s.jpg' % (instance.vendor.id,
         datetime.datetime.utcnow().strftime('%s'),
         sha1(str(random())).hexdigest())
 
-  photo = models.ImageField(upload_to=get_filename)
+  photo = models.ImageField(upload_to=generate_filename)
   vendor = models.ForeignKey(Vendor)
 
 
