@@ -17,28 +17,6 @@ from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect, render, get_object_or_404
 import json
 
-@login_required
-@require_http_methods(['GET'])
-def vendor_edit_page(request, vendor_id = None):
-  """
-  @author: Rahul
-  @desc: This renders a form that allows people to edit a specific vendor.
-
-  @param request: the request object
-  @param vendor_id: the id of the vendor to edit
-
-  @return: An HttpResponse that renders a vendor form.
-  """
-  vendor = get_object_or_404(Vendor, pk=vendor_id)
-  form = VendorForm(instance=vendor)
-  if vendor in request.user.vendors.all():
-    return render(request, 'deals/vendor_edit.html', { 'form': form,
-      'vendor_id': vendor_id, 'vendor': vendor })
-  return HttpResponse(json.dumps({ 'code': 403,
-                                   'message': 'Invalid permissions.'
-                                 }), content_type = 'application/json',
-                                 status = 403)
-
 @require_http_methods(["GET"])
 def deal(request, deal_id=None, active_only=True):
   """
