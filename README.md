@@ -77,7 +77,7 @@ API
 
 * ``` /user/auth ```
   * Accepts POST.
-  * Takes POST parameters 'email' and 'password', attempts to authenticate the user. If POST parameter is instead 'access_token', authenticates the user through Facebook. Returns a 200 on success, 401 on bad credentials, a 400 on a bad request, or a 403 if the user has only ever authenticated via Facebook and has not created a password. Has JSON, whose 'success' key indicates if the login credentials were valid or not. Authentication lasts until cookie is cleared (for now).
+  * Takes POST parameters 'email' and 'password', attempts to authenticate the user. If POST parameter is instead 'access_token', authenticates the user through Facebook. Returns a 200 on success, 401 on bad credentials, a 400 on a bad request, or a 403 if the user submits no authentication token but has only ever authenticated via Facebook. Has JSON, whose 'success' key indicates if the login credentials were valid or not. Authentication lasts until cookie is cleared (for now).
 
 * ``` /user/vendors ```
   * Accepts GET.
