@@ -1,6 +1,6 @@
 /*
- * @author: Ayush
- * @desc: Responsible for rendering and displaying any necessary modals.
+ * @author: Chris 
+ * @desc: Responsible for rendering and displaying revive deal modal.
  */
 define([
   'marionette',
@@ -17,12 +17,15 @@ define([
     },
 
     initialize: function() {
+      console.log('initialized');
       vent.on('reviveDealModalTrigger', this.showReviveModal, this);
     },
 
     showReviveModal: function(deal) {
+      console.log('reviveDealModalTrigger triggered');
       this.newDeal = deal;
       var $modal = this.$el.find('#revive-deal-modal');
+      $modal.modal('show');
     },
 
     confirmDealCreation: function(deal) {

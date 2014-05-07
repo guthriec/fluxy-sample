@@ -253,23 +253,88 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title">Confirm your deal!</h4>
+            <h4 class="modal-title">Choose a new start time and duration</h4>
           </div>
           <div class="modal-body">
-            <table>
-              <tr id="title">
-                <td>Title:</td>
-                <td></td>
-              </tr>
-              <tr id="description">
-                <td>Description:</td>
-                <td></td>
-              </tr>
-              <tr id="duration">
-                <td>Duration:</td>
-                <td></td>
-              </tr>
-            </table>
+            <form action="#" method="GET" id="deal-form" class="form-horizontal" role="form">
+              <div id="time-area" class="form-area">
+                <div id="start-day-group" class="form-group">
+                  <label for="start-day" class="col-sm-2 control-label">Start date</label>
+                  <div class="col-sm-3 controls form-inline">
+                    <select id="start-day" class="form-control" name="start-day">
+                    </select>
+                  </div>
+                </div>
+                <div id="start-time-group" class="form-group">
+                  <label for="start-hours" class="col-sm-2 control-label">Start time</label>
+                  <div class="controls form-inline col-sm-4">
+                    <select id="start-hours" class="form-control" name="start-hours">
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                      <option value="8">8</option>
+                      <option value="9">9</option>
+                      <option value="10">10</option>
+                      <option value="11">11</option>
+                      <option value="12">12</option>
+                    </select>:
+                    <select id="start-minutes" class="form-control" name="start-minutes">
+                      <option value="0">00</option>
+                      <option value="15">15</option>
+                      <option value="30">30</option>
+                      <option value="45">45</option>
+                    </select>
+                    <select id="start-am-pm" class="form-control" name="start-am-pm">
+                      <option value="pm">PM</option>
+                      <option value="am">AM</option>
+                    </select>
+                  </div>
+                </div>
+                <div id="duration-group" class="form-group">
+                  <label for="duration-hours" class="col-sm-2 control-label">Duration</label>
+                  <div class="col-sm-4 controls form-inline">
+                    <select id="duration-hours" class="form-control" name="duration-hours">
+                      <option>0</option>
+                      <option>1</option>
+                      <option>2</option>
+                      <option>3</option>
+                      <option>4</option>
+                      <option>5</option>
+                    </select> H
+                    <select id="duration-minutes" class="form-control" name="duration-minutes">
+                      <option>00</option>
+                      <option>15</option>
+                      <option>30</option>
+                      <option>45</option>
+                    </select> M
+                  </div>
+                  <p class="help-block col-sm-offset-2 col-sm-6">While this deal is active, it will be listed on our mobile app and users can claim it. Customers will be instructed to show the deal to your waitstaff or cashier to apply the deal.</p>
+                </div>
+              </div>
+              <div class="form-area">
+                <div class="form-group" id="max-deals-radio">
+                  <label class="col-sm-2 control-label">Do you want to limit the total number of deals that can be claimed?</label>
+                  <div id="max-deals" class="col-sm-3">
+                    <label class="radio-inline">
+                      <input type="radio" name="limit" value="limited"> Yes
+                    </label>
+                    <label class="radio-inline">
+                      <input type="radio" name="limit" value="unlimited" id="unlimited"> No
+                    </label>
+                  </div>
+                </div>
+                <div class="form-group" id="max-deals-group">
+                  <label for="max-deals-number" class="col-sm-2 control-label">Maximum number of deals</label>
+                  <div class="col-sm-2">
+                    <input id="max-deals-number" class="form-control" name="max-deals" type="text" size="3" placeholder="Unlimited" disabled>
+                  </div>
+                </div>
+              </div>
+            </form>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" id="cancel-btn">Cancel</button>
