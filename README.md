@@ -130,6 +130,15 @@ to set the request's CONTENT-TYPE header to the appropriate type.
   * Accepts GET.
   * Returns all claimed_deals objects associated with {id}. Returns 200 on success, 403 if logged in user doesn't have permissions for vendor of {id}, 404 if no vendor of {id} exists.
 
+* ``` /vendor/{id}/photos/ ```
+  * Accepts GET, POST, DELETE.
+  * GET returns a list of all photos for a vendor. POST expects a
+    multipart/form-data encoded request with the image stored under the key
+    'photo'. Returns a 201 on success. Returns a 403 if the user doesn't have
+    permissions for vendor with id {id}. DELETE returns a 200 if the user has
+    permissions and the photo exists. It deletes the database object and the
+    file itself from the server.
+
 =======
 APPENDIX A - Notes About Libraries
 ----------------------------------
