@@ -210,8 +210,8 @@ def user_auth(request):
     user = authenticate(username=username, password=password)
   else:
     response = { 'status': 400,
-                 'success': False, 
-                 'error': 'Request must include either email/password ' + 
+                 'success': False,
+                 'error': 'Request must include either email/password ' +
                           'or a Facebook access token.' }
     return HttpResponse(json.dumps(response), status = 400,
         content_type='application/json')
@@ -227,7 +227,6 @@ def user_register(request):
   Accepts either standard form or JSON formatted POSTs with the following keys:
       *email
       *password
-      *password_confirm
 
   @param request: the request object
 
@@ -240,24 +239,19 @@ def user_register(request):
     email = post_data['email'].lower()
     username = post_data['email'].lower()
     password = post_data['password']
-    if 'password_confirm' in post_data:
-      password_confirm = post_data['password_confirm']
   except Exception:
     return make_post_response(None, None, {'code': 400, 'message': 'Missing fields or malformed request.'})
   known_error = {'code': 400, 'message': 'Could not register'}
-  if 'password_confirm' in post_data and password != password_confirm:
-    known_error['message'] = "Passwords do not match"
-  else:
-    try:
-      FluxyUser.objects.get(username__exact=username)
-      known_error['message'] = "Username already registered"
-    except FluxyUser.DoesNotExist:
-      new_user = FluxyUser.objects.create_user(email=email, username=username, password=password, fb_only=False)
-      new_user.save()
-      logged_in_user = authenticate(username=username, password=password)
-      login(request, logged_in_user)
-      user_list = [logged_in_user.get_safe_user()]
-      return make_post_response(user_list, '/user/')
+  try:
+    FluxyUser.objects.get(username__exact=username)
+    known_error['message'] = "Username already registered"
+  except FluxyUser.DoesNotExist:
+    new_user = FluxyUser.objects.create_user(email=email, username=username, password=password, fb_only=False)
+    new_user.save()
+    logged_in_user = authenticate(username=username, password=password)
+    login(request, logged_in_user)
+    user_list = [logged_in_user.get_safe_user()]
+    return make_post_response(user_list, '/user/')
   return make_post_response(None, None, known_error)
 
 @require_http_methods(["GET"])
