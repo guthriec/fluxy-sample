@@ -40,6 +40,9 @@ class Vendor(models.Model):
     """
     For nested serialization.
     """
+    profile_photo = None
+    if self.profile_photo:
+      profile_photo = self.profile_photo.photo.url
     return {
         'id': self.id,
         'name': self.name,
@@ -49,7 +52,7 @@ class Vendor(models.Model):
         'web_url': self.web_url,
         'yelp_url': self.yelp_url,
         'phone': self.phone,
-        'profile_photo': self.profile_photo.url,
+        'profile_photo': profile_photo
     }
 
 

@@ -234,7 +234,10 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
     deal = None
     deal_id = -1
     try:
-      deal = Deal(**json.loads(request.body))
+      post_data = json.loads(request.body)
+      photo = VendorPhoto.objects.get(pk=post_data['photo']);
+      post_data['photo'] = photo
+      deal = Deal(**post_data)
       deal.vendor_id = vendor_id
       deal.time_start = parser.parse(deal.time_start)
       deal.time_end = parser.parse(deal.time_end)

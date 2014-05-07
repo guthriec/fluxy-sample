@@ -351,6 +351,9 @@ define([
       }
       newModel['max_deals'] = maxDeals;
       newModel['instructions'] = 'Show to waiter';
+
+      newModel['photo'] = this.photo.id;
+
       vent.trigger('createDealConfirmTrigger', newModel);
       this.$el.find('#submit-btn').blur();
     }
