@@ -189,14 +189,15 @@ def user_auth(request):
   if request.META['CONTENT_TYPE'] == 'application/json':
     post_data = json.loads(request.body)
   user = None
-  if 'email' in post_data and 'password' in post_data:
-    username = post_data['email'].lower()
-    password = post_data['password']
-    user = authenticate(username=username, password=password)
-  elif 'access_token' in post_data:
+
+  if 'access_token' in post_data:
     fb_login = True
     access_token = post_data['access_token']
     user = authenticate(access_token=access_token)
+  elif 'email' in post_data and 'password' in post_data:
+    username = post_data['email'].lower()
+    password = post_data['password']
+    user = authenticate(username=username, password=password)
   else:
     response = { 'code': 400, 'success': False, 'message': 'Request must include either email/password or a Facebook access token.' }
     return HttpResponse(json.dumps(response), status = 400,
