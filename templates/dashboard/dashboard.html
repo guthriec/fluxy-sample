@@ -270,7 +270,6 @@
           <form enctype="multipart/form-data" action="/api/v1/vendor/{{ vendor_id }}/photo/"
             method="post" id="photo-form" data-vendor-id="{{ vendor_id }}">
             <div class="modal-body">
-              {% csrf_token %}
               <img style="width:200px" src="" id="modal-photo" />
               <input type="file" name="photo" id="photo-src" />
             </div>

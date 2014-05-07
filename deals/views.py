@@ -127,6 +127,7 @@ def vendor(request, vendor_id=None):
       known_error = { 'status': 400, 'error': 'Bad request.' }
       return make_post_response(vendor, 'vendors/' + str(vendor_id), known_error)
 
+@csrf_exempt
 @require_http_methods(['GET', 'POST', 'DELETE'])
 @api_login_required(['GET', 'POST', 'DELETE'])
 @api_vendor_required(['GET', 'POST', 'DELETE'])
