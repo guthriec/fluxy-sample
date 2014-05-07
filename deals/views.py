@@ -125,7 +125,8 @@ def vendor_photo(request, vendor_id, photo_id=None):
   """
   vendor = get_object_or_404(Vendor, pk=vendor_id)
   if request.method == 'GET':
-    return HttpResponse(custom_serialize(vendor.vendorphoto_set.all()))
+    return HttpResponse(custom_serialize(vendor.vendorphoto_set.all()),
+        content_type='application/json')
   elif request.method == 'POST':
     try:
       vendor_photo = VendorPhoto(photo=request.FILES['photo'],
@@ -212,7 +213,7 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
     try:
       post_data = json.loads(request.body)
       # TODO validate photo belongs to vendor
-      photo = VendorPhoto.objects.get(pk=post_data['photo']);
+      photo = VendorPhoto.objects.get(pk=post_data['photo']['id']);
       post_data['photo'] = photo
       deal = Deal(**post_data)
       deal.vendor_id = vendor_id
