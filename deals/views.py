@@ -1,12 +1,20 @@
 from datetime import datetime
 from dateutil import parser
-from deals.api_tools import make_get_response, make_post_response, make_put_response, list_from_qset
+from deals.api_tools import make_get_response, make_post_response, \
+                            make_put_response, list_from_qset, \
+                            custom_serialize
 from deals.decorators import api_login_required, api_vendor_required
-from deals.models import ClaimedDeal, Deal, Vendor
+from deals.models import ClaimedDeal, Deal, Vendor, VendorPhoto
+from deals.forms import VendorForm
 from distance import in_radius
+from django.contrib.auth.decorators import login_required
+from django.core import serializers
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponse, HttpResponseRedirect
 from django.utils.timezone import utc
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+from django.shortcuts import redirect, render, get_object_or_404
 import json
 
 @require_http_methods(["GET"])
@@ -43,12 +51,12 @@ def deal(request, deal_id=None, active_only=True):
   return make_get_response(deal_list, known_error)
 
 @csrf_exempt
-@require_http_methods(["GET", "POST"])
-@api_login_required(["POST"])
+@require_http_methods(['GET', 'POST', 'PUT'])
+@api_login_required(['POST', 'PUT'])
+@api_vendor_required(['PUT'])
 def vendor(request, vendor_id=None):
   """
-  @TODO: Implement PUT
-  @author: Chris, Ayush
+  @author: Chris, Ayush, Rahul
   @desc: Routes request to appropriate handler based on request method. Returns
   JSON HttpResponse for GET, 201 redirect with JSON for POST (regardless of
   success). Returns/creates vendor objects
@@ -65,29 +73,77 @@ def vendor(request, vendor_id=None):
 
   @return: 201 with JSON for POST or 200 for GET
   """
-  if request. method == 'GET':
+  if request.method == 'GET':
     known_error = None
     vendor_list = None
     vendor_set = _get_vendor(vendor_id)
     if vendor_id and vendor_set.count() == 0:
-      known_error = { 'code': 404, 'message': 'Vendor not found' }
+      known_error = { 'status': 404, 'message': 'Vendor not found.' }
       return make_get_response(vendor_list, known_error)
 
     vendor_list = list_from_qset(vendor_set, include_nested=False, flatten=True)
     return make_get_response(vendor_list, known_error)
   else:
-    # POST request.
-    known_error = None
-    vendor_list = None
-    vendor_id = -1
     try:
-      vendor = Vendor(**json.loads(request.body))
-      vendor.save()
-      vendor_id = str(vendor.id)
-      vendor_list = list_from_qset([vendor])
-    except TypeError:
-      known_error = { 'code': 400, 'message': 'Bad post request' }
-    return make_post_response(vendor_list, 'vendors/' + str(vendor_id), known_error)
+      data = json.loads(request.body)
+      known_error = None
+      vendor_form = None
+      if request.method == 'POST':
+        vendor_form = VendorForm(data)
+        vendor = vendor_form.save()
+        vendor_id = str(vendor.id)
+        vendor_list = list_from_qset([vendor])
+        return make_post_response(vendor_list, 'vendors/' + str(vendor_id),
+            known_error)
+      else: # PUT
+        vendor = Vendor.objects.get_object_or_404(pk = vendor_id)
+        vendor_form = VendorForm(data, instance=vendor)
+        vendor = vendor_form.save()
+        vendor_id = str(vendor.id)
+        return HttpResponse(serializers.serialize('json', [vendor]),
+            content_type='application/json')
+    except (TypeError, ValueError), e:
+      known_error = { 'status': 400, 'error': 'Bad request.' }
+      return make_post_response(vendor, 'vendors/' + str(vendor_id), known_error)
+
+@csrf_exempt
+@require_http_methods(['GET', 'POST', 'DELETE'])
+@api_login_required(['GET', 'POST', 'DELETE'])
+@api_vendor_required(['GET', 'POST', 'DELETE'])
+def vendor_photo(request, vendor_id, photo_id=None):
+  """
+  @author: Rahul
+  @desc: Creates a new VendorPhoto object and associates it with the specified
+  vendor. Does NOT make the photo the vendor's primary photo. Requires the user
+  to be authenticated and have vendor permissions.
+
+  @param request: the request object
+  @param vendor_id: the id of the vendor to associate the photo with.
+
+  @return: a 201 response with the JSON encoded VendorPhoto object
+
+  TODO Validate POSTed filetype
+  """
+  vendor = get_object_or_404(Vendor, pk=vendor_id)
+  if request.method == 'GET':
+    return HttpResponse(custom_serialize(vendor.vendorphoto_set.all()),
+        content_type='application/json')
+  elif request.method == 'POST':
+    try:
+      vendor_photo = VendorPhoto(photo=request.FILES['photo'],
+          vendor=vendor)
+      vendor_photo.save()
+    except:
+      return HttpResponse(json.dumps({ 'status': 400, 'error': 'Bad request.' }),
+        content_type='application/json', status=400)
+    return HttpResponse(custom_serialize([vendor_photo]),
+        content_type='application/json', status=201)
+  else:
+    vendor_photo = get_object_or_404(VendorPhoto, pk=photo_id)
+    vendor_photo.photo.delete()
+    vendor_photo.delete()
+    return HttpResponse(json.dumps({'status': 200,
+        'message': 'Successfully deleted photo.'}))
 
 @csrf_exempt
 @require_http_methods(["GET", "POST", "PUT"])
@@ -125,7 +181,7 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
     deal_set = _get_deals(vendor_id=vendor_id, active_only=active_only)
     deal_list = list_from_qset(deal_set, include_nested=True)
     return make_get_response(deal_list, known_error)
-  
+
   elif request.method == 'PUT':
     # ---- PUT ----
     deal = None
@@ -141,22 +197,26 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
       try:
         getattr(deal, key)
       except AttributeError:
-        known_error = { 'status' : 400, 
-                        'error': 'Bad PUT request', 
-                        'detail': '''PUT request tried to update a 
+        known_error = { 'status' : 400,
+                        'error': 'Bad PUT request',
+                        'detail': '''PUT request tried to update a
                                    non-existent attribute''' }
         return make_put_response(None, known_error)
-      setattr(deal, key, val) 
+      setattr(deal, key, val)
     deal.save()
     single_deal_list = list_from_qset([deal], flatten=True, include_nested=False)
     return make_put_response(single_deal_list, known_error)
-  
+
   else:
     # ---- POST ----
     deal = None
     deal_id = -1
     try:
-      deal = Deal(**json.loads(request.body))
+      post_data = json.loads(request.body)
+      # TODO validate photo belongs to vendor
+      photo = VendorPhoto.objects.get(pk=post_data['photo']['id']);
+      post_data['photo'] = photo
+      deal = Deal(**post_data)
       deal.vendor_id = vendor_id
       deal.time_start = parser.parse(deal.time_start)
       deal.time_end = parser.parse(deal.time_end)

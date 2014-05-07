@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.core import serializers
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect
 from django.utils.timezone import utc
 from django.views.decorators.http import require_http_methods
@@ -132,6 +132,14 @@ def logout_page(request):
   if request.user.is_authenticated():
     user_logout(request)
   return redirect(reverse('fluxy.views.login_page'))
+
+def vendor_page(request, vendor_id):
+  """
+  @author: Rahul
+  @desc: The profile page for a specific vendor. Allows editing of vendor
+  details.
+  """
+  raise Http404
 
 @csrf_exempt
 @require_http_methods(["POST"])

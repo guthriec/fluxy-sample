@@ -49,6 +49,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'sorl.thumbnail',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -72,6 +73,19 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
+
+# Caching
+# https://docs.djangoproject.com/en/dev/topics/cache/
+# using python-memcached
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': [
+          '127.0.0.1:11211'
+        ]
     }
 }
 
@@ -105,6 +119,9 @@ LOGIN_REDIRECT_URL = '/'
 # Replacing django user model
 
 AUTH_USER_MODEL = 'fluxy.FluxyUser'
+
+# Auth redirect
+LOGIN_URL = '/login/'
 
 # Media files (Images, etc.)
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')

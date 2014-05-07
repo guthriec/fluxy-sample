@@ -42,6 +42,10 @@
     <div id="dashboard"></div>
   </script>
 
+  <script type="text/template" id="modal-content-template">
+    <div id="modal"></div>
+  </script>
+
   <script type="text/template" id="deal-template">
     <td><%= title  %></td>
     <td><%= desc  %></td>
@@ -71,6 +75,19 @@
             <input name="deal-title" id="deal-title" type="text" class="form-control" placeholder="40% off all non-alcoholic drinks">
           </div>
           <p class="help-block col-sm-offset-2 col-sm-6">A short, to-the-point description of the deal. This will be displayed as-is to users, so pay attention to capitalization, punctuation, etc.</p>
+        </div>
+      </div>
+      <div class="form-area">
+        <div id="photo-group" class="form-group">
+          <label for="title" class="col-sm-2 control-label">Photo</label>
+          <div id="photo-container" class="col-sm-6">
+            <img class="img-responsive" id="deal-photo">
+            <button class="btn" class="col-sm-offset-2 col-sm-6" id="change-photo-btn">
+              Change Photo
+            </button>
+          </div>
+          <p class="help-block col-sm-offset-2 col-sm-6">Choosing an attractive
+          photo is important to entice customers to check out your deal.</p>
         </div>
       </div>
       <div id="time-area" class="form-area">
@@ -189,7 +206,50 @@
     </form>
   </script>
 
-  <script type="text/template" id="modal-controller-template">
+  <script type="text/template" id="photos-collection-modal-template">
+    <div class="modal fade" id="change-photo-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"
+              aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Choose Deal Photo</h4>
+          </div>
+          <div class="modal-body" id="photos-modal-content">
+            <div class="container-fluid">
+              <div id="photos-container" class="row">
+                <div class="col-lg-4 col-md-4 col-xs-12 thumb">
+                  <form enctype="multipart/form-data"
+                    action="/api/v1/vendor/{{ vendor_id }}/photos/"
+                    id="upload-photo-form" method="post">
+                    <label for="photo-input">
+                      <img class="img-responsive clickable-photo thumbnail"
+                      src="/static/img/UploadPlaceholder.jpg">
+                    </label>
+                    <input type="file" name="photo" id="photo-input"
+                    style="display: none" />
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer" id="photos-modal-footer">
+            <button type="button" class="btn btn-primary"
+              data-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </script>
+
+  <script type="text/template" id="photo-template">
+    <div class="col-lg-4 col-md-4 col-xs-12 thumb">
+      <img class="img-responsive photos-modal-photo clickable-photo thumbnail"
+        src="<%= thumb %>">
+    </div>
+  </script>
+
+  <script type="text/template" id="deal-create-modal-template">
     <div class="modal fade" id="create-deal-modal">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -199,23 +259,27 @@
           <div class="modal-body">
             <table>
               <tr id="create-title">
-                <td>Title:</td>
+                <td>Title: </td>
                 <td id="create-title-cell"></td>
               </tr>
+              <tr id="photo">
+                <td>Photo: </td>
+                <td><img id="create-photo-cell" src="" ></td>
+              </tr>
               <tr id="create-start-time">
-                <td>Starts:</td>
+                <td>Starts: </td>
                 <td id="create-start-time-cell"></td>
               </tr>
               <tr id="create-end-time">
-                <td>Ends:</td>
+                <td>Ends: </td>
                 <td id="create-end-time-cell"></td>
               </tr>
               <tr id="create-max-deals">
-                <td>Maximum number of deals:</td>
+                <td>Maximum number of deals: </td>
                 <td id="create-max-deals-cell"></td>
               </tr>
               <tr id="create-extra-info">
-                <td>Extra information:</td>
+                <td>Extra information: </td>
                 <td id="create-extra-info-cell"></td>
               </tr>
             </table>

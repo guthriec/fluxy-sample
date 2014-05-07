@@ -1,6 +1,11 @@
 import datetime
+from django.core import serializers
 from django.db import models
 from django.utils.timezone import utc
+from hashlib import sha1
+from PIL import Image
+from random import random
+from sorl.thumbnail import get_thumbnail
 
 class Vendor(models.Model):
   """
@@ -10,8 +15,8 @@ class Vendor(models.Model):
     latitude, longitude - vendor coordinates
     web_url - URL of vendor's website
     yelp_url - URL of vendor's Yelp page
-    image - Link to vendor image
     phone - Phone number
+    profile_photo - primary photo for vendor
   """
   name = models.CharField(max_length=100)
   address = models.CharField(max_length=100)
@@ -19,8 +24,11 @@ class Vendor(models.Model):
   longitude = models.FloatField()
   web_url = models.URLField()
   yelp_url = models.URLField()
-  image = models.ImageField(upload_to='vendors', default='defaults/pizza.jpeg')
   phone = models.CharField(max_length=20)
+  profile_photo = models.ForeignKey('VendorPhoto', related_name='+',
+      blank=True, null=True)
+
+  # TODO Validate photo belongs to vendor
 
   def __unicode__(self):
     """
@@ -32,6 +40,9 @@ class Vendor(models.Model):
     """
     For nested serialization.
     """
+    profile_photo = None
+    if self.profile_photo:
+      profile_photo = self.profile_photo.photo.url
     return {
         'id': self.id,
         'name': self.name,
@@ -40,9 +51,53 @@ class Vendor(models.Model):
         'longitude': self.longitude,
         'web_url': self.web_url,
         'yelp_url': self.yelp_url,
-        'image': self.image.url,
         'phone': self.phone,
+        'profile_photo': profile_photo
     }
+
+
+class VendorPhoto(models.Model):
+  """
+  VendorPhoto model. Schema as follows:
+    photo      : The URL of the photo file for this object
+    vendor     : The vendor this photo is associated with
+    is_primary : A boolean indicating whether this photo is the primary photo
+                 for its vendor
+  """
+  # This creates or returns an extant thumbnail
+  def get_thumb(self, dimension_string=None):
+    if not dimension_string:
+      dimension_string = '400x400'
+    return get_thumbnail(self.photo, dimension_string, crop='center',
+        quality=99).url
+
+  def natural_key(self):
+    return {
+        'thumb': self.get_thumb(),
+        'deal_thumb': self.get_thumb('320x190'),
+        'main_thumb': self.get_thumb('292x150'),
+        'claimed_thumb': self.get_thumb('74x74'),
+        'photo': self.photo.url
+      }
+
+  def get_custom_serializable(self):
+    return {
+          'id': self.id,
+          'photo': self.photo.url,
+          'thumb': self.get_thumb(),
+          'deal_thumb': self.get_thumb('320x190'),
+          'main_thumb': self.get_thumb('292x150'),
+          'claimed_thumb': self.get_thumb('74x74'),
+          'vendor': self.vendor.id,
+        }
+
+  def generate_filename(instance, filename):
+    return 'vendors/%d/%s_%s.jpg' % (instance.vendor.id,
+        datetime.datetime.utcnow().strftime('%s'),
+        sha1(str(random())).hexdigest())
+
+  photo = models.ImageField(upload_to=generate_filename)
+  vendor = models.ForeignKey(Vendor)
 
 
 class Deal(models.Model):
@@ -54,6 +109,7 @@ class Deal(models.Model):
     time_start, time_end - Duration of the deal
     max_deals - Cap on number of deals available
     instructions - Instructions for users to claim deal at point of sale
+    photo - deal specific photo
   """
   vendor = models.ForeignKey(Vendor)
   title = models.CharField(max_length=40)
@@ -62,6 +118,7 @@ class Deal(models.Model):
   time_end = models.DateTimeField()
   max_deals = models.PositiveIntegerField(default=100)
   instructions = models.CharField(max_length=1000, default="Show to waiter.")
+  photo = models.ForeignKey(VendorPhoto)
 
   def __unicode__(self):
     """
@@ -79,6 +136,7 @@ class Deal(models.Model):
       'time_end': self.time_end,
       'instructions': self.instructions,
     }
+
 
 class ClaimedDeal(models.Model):
   """
