@@ -312,8 +312,7 @@ def user_deals(request, active_only=True):
     try:
       if request.META['CONTENT_TYPE'] == 'application/json':
         post_data = json.loads(request.body)
-      deal = Deal.objects.get(pk=post_data['deal_id'], time_start__lte=now,
-                              time_end__gte=now)
+      deal = Deal.objects.get(pk=post_data['deal_id'], time_end__gte=now)
       latitude = post_data.get('latitude', None)
       longitude = post_data.get('longitude', None)
       claimed_deal = ClaimedDeal.objects.create(user=request.user, deal=deal,
@@ -328,8 +327,7 @@ def user_deals(request, active_only=True):
   else:
     claimed_deals = request.user.claimeddeal_set.all()
     if active_only:
-      claimed_deals = claimed_deals.filter(deal__time_end__gte=now,
-                                           deal__time_start__lte=now)
+      claimed_deals = claimed_deals.filter(deal__time_end__gte=now)
     return HttpResponse(serializers.serialize('json', claimed_deals),
                         content_type="application/json")
 
