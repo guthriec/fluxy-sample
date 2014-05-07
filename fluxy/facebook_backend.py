@@ -27,10 +27,13 @@ class FacebookBackend(object):
         user = FluxyUser.objects.get(pk=fb_user.user_id)
       except FacebookUser.DoesNotExist:
         fb_email = fb_profile['email']
-        new_user = FluxyUser.objects.create_user(email=fb_email, username=fb_email, password="unsafeunsaferedalert", fb_only=True)
-        new_user.save()
-        new_fb_user = FacebookUser.objects.create(user_id=new_user.id, facebook_id=fb_id, access_token=access_token)
-        user = FluxyUser.objects.get(pk=new_fb_user.user_id)
+        try:
+          user = FluxyUser.objects.get(email=fb_email)
+        except FluxyUser.DoesNotExist:
+          new_user = FluxyUser.objects.create_user(email=fb_email, username=fb_email, password="", fb_only=True)
+          new_user.save()
+          new_fb_user = FacebookUser.objects.create(user_id=new_user.id, facebook_id=fb_id, access_token=access_token)
+          user = FluxyUser.objects.get(pk=new_fb_user.user_id)
       return user
     else:
       return None
