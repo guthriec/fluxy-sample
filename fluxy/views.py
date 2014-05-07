@@ -144,25 +144,27 @@ def _login_user_and_respond(request, fluxy_user, fb_login):
   if fluxy_user is not None:
     if not fb_login and fluxy_user.fb_only:
       response = {
-        "code": 403,
-        "message": "This email is associated with a Facebook account - login with Facebook or create a new account",
+        "status": 403,
+        "error": "This email is associated with a Facebook account - login with Facebook or create a new account",
         "success": False
       }
     else:
       login(request, fluxy_user)
       response = {
-        "code": 200,
-        "message": "Valid username and password",
+        "status": 200,
+        "error": "Valid username and password",
         "success": True,
-        "response": fluxy_user.get_safe_user()
+        "data": fluxy_user.get_safe_user()
       }
   else:
     response = {
-      "code": 401,
-      "message": "Invalid username/password - try again or login with Facebook",
+      "status": 401,
+      "error": "Invalid username/password - try again or login with Facebook",
       "success": False
     }
-  return HttpResponse(json.dumps(response), content_type="application/json", status = response['code'])
+  return HttpResponse(json.dumps(response),
+                      content_type="application/json",
+                      status = response['status'])
 
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -199,7 +201,10 @@ def user_auth(request):
     password = post_data['password']
     user = authenticate(username=username, password=password)
   else:
-    response = { 'code': 400, 'success': False, 'message': 'Request must include either email/password or a Facebook access token.' }
+    response = { 'status': 400,
+                 'success': False, 
+                 'error': 'Request must include either email/password ' + 
+                          'or a Facebook access token.' }
     return HttpResponse(json.dumps(response), status = 400,
         content_type='application/json')
   return _login_user_and_respond(request, user, fb_login)
