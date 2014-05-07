@@ -18,7 +18,12 @@ define([
       'focusout #duration-group' : 'validateStartAndDuration',
       'focusout #start-time-group' : 'validateStart',
       'focusout #max-deals-group' : 'validateMaxDeals',
+      'click #change-photo-btn': 'changePhoto',
       'click #submit-btn': 'createDeal'
+    },
+
+    initialize: function() {
+      vent.on('photoChangedTrigger', this.photoChanged, this);
     },
 
     /*
@@ -75,8 +80,8 @@ define([
         startGroups.addClass('has-error');
 
         if (this.$el.find('#start-validation-error').length == 0) {
-          startTimeEl.append('<p id="start-validation-error" ' + 
-                             'class="help-block col-sm-offset-2 col-sm-6">' + 
+          startTimeEl.append('<p id="start-validation-error" ' +
+                             'class="help-block col-sm-offset-2 col-sm-6">' +
                              'Start time must be in the future!</p>');
         valid = false;
         }
@@ -167,7 +172,7 @@ define([
       this.validateStart(e);
       this.validateDuration(e);
     },
-    
+
     /*
      * @author: Chris
      * @desc: Event handler to extract the input for maximum number of deals,
@@ -218,12 +223,29 @@ define([
       return valid;
     },
 
+    validatePhoto: function(e) {
+      photoEl = this.$el.find('#photo-group');
+      photoContainer = this.$el.find('#photo-container');
+      if (this.photo) {
+        photoEl.removeClass('has-error');
+        this.$el.find('#photo-validation-error').remove();
+        return true;
+      } else {
+        photoEl.addClass('has-error');
+        photoContainer.after('<p id="photo-validation-error" ' +
+                             'class="help-block col-sm-6 col-sm-offset-2">' +
+                             'Must choose a deal photo</p>');
+        return false;
+      }
+    },
+
     validateAll: function(e) {
       var startValid = this.validateStart(e);
       var titleValid = this.validateTitleGroup(e);
       var durationValid = this.validateDuration(e);
       var maxDealsValid = this.validateMaxDeals(e);
-      return (startValid && titleValid && durationValid && maxDealsValid);
+      var photoValid = this.validatePhoto(e);
+      return (startValid && titleValid && durationValid && maxDealsValid && photoValid);
     },
 
     render: function() {
@@ -262,6 +284,26 @@ define([
         }
       );
       return this;
+    },
+
+    /*
+     * @author: Rahul
+     * @desc: Triggers an event on the dashboard that shows the photo picker
+     * modal.
+     */
+    changePhoto: function(e) {
+      e.preventDefault();
+      vent.trigger('changePhotoTrigger', { });
+    },
+
+    /*
+     * @author: Rahul
+     * @desc: Change displayed photo.
+     */
+    photoChanged: function(photo) {
+      this.photo = photo;
+      this.$el.find('#deal-photo').attr('src', photo.get('photo'));
+      this.$el.find('#deal-photo').css('display', 'block');
     },
 
     createDeal: function(e) {
@@ -309,6 +351,9 @@ define([
       }
       newModel['max_deals'] = maxDeals;
       newModel['instructions'] = 'Show to waiter';
+
+      newModel['photo'] = this.photo;
+
       vent.trigger('createDealConfirmTrigger', newModel);
       this.$el.find('#submit-btn').blur();
     }

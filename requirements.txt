@@ -4,3 +4,5 @@ mailchimp==2.0.7
 python-dateutil==2.2
 Pillow==2.3.0
 django-debug-toolbar==1.0.1
+python-memcached==1.53
+sorl-thumbnail==11.12

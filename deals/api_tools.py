@@ -87,3 +87,16 @@ def make_put_response(single_obj_list, known_error=None):
     response['success'] = False
   return HttpResponse(json.dumps(response), content_type="application/json",
                       status=response['status'])
+
+def custom_serialize(qset):
+  """
+  @author: Rahul
+  @desc: Helper function to JSON serialize models in a non-standard manner.
+  Expects the model that makes up the passed-in qlist to have a method
+  get_custom_serializable which returns an object with the desired properties.
+
+  @param qset: A query-set containing the objects to be serialized
+
+  @returns: A JSON encoded array of the customized models.
+  """
+  return json.dumps(map(lambda obj: obj.get_custom_serializable(), qset))

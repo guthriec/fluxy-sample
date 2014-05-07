@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.core import serializers
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect
 from django.utils.timezone import utc
 from django.views.decorators.http import require_http_methods
@@ -165,6 +165,14 @@ def _login_user_and_respond(request, fluxy_user, fb_login):
   return HttpResponse(json.dumps(response),
                       content_type="application/json",
                       status = response['status'])
+
+def vendor_page(request, vendor_id):
+  """
+  @author: Rahul
+  @desc: The profile page for a specific vendor. Allows editing of vendor
+  details.
+  """
+  raise Http404
 
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -334,8 +342,7 @@ def user_deals(request, active_only=True):
     try:
       if request.META['CONTENT_TYPE'] == 'application/json':
         post_data = json.loads(request.body)
-      deal = Deal.objects.get(pk=post_data['deal_id'], time_start__lte=now,
-                              time_end__gte=now)
+      deal = Deal.objects.get(pk=post_data['deal_id'], time_end__gte=now)
       latitude = post_data.get('latitude', None)
       longitude = post_data.get('longitude', None)
       claimed_deal = ClaimedDeal.objects.create(user=request.user, deal=deal,
