@@ -10,7 +10,7 @@ from distance import in_radius
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseRedirect
 from django.utils.timezone import utc
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
@@ -98,9 +98,6 @@ def vendor(request, vendor_id=None):
   if request.method == 'GET':
     known_error = None
     vendor_list = None
-    #vendor = Vendor.objects.get(pk = vendor_id)
-    #return HttpResponse(serializers.serialize('json', [vendor],
-    #    use_natural_keys=True))
     vendor_set = _get_vendor(vendor_id)
     if vendor_id and vendor_set.count() == 0:
       known_error = { 'status': 404, 'message': 'Vendor not found.' }

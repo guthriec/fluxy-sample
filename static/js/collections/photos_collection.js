@@ -6,9 +6,11 @@
 define([
   'backbone',
   'models/photo_model',
-  'vent'
-], function(Backbone, PhotoModel, vent) {
+], function(Backbone, PhotoModel) {
   var PhotosCollection = Backbone.Collection.extend({
+
+    model: PhotoModel,
+
     initialize: function(models, options) {
       this.vendorId = options.vendorId;
       this.url = '/api/v1/vendor/' + options.vendorId + '/photos/';

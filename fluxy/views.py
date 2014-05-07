@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.core import serializers
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect
 from django.utils.timezone import utc
 from django.views.decorators.http import require_http_methods
@@ -139,7 +139,7 @@ def vendor_page(request, vendor_id):
   @desc: The profile page for a specific vendor. Allows editing of vendor
   details.
   """
-  return HttpResponse("Hello world")
+  raise Http404
 
 @csrf_exempt
 @require_http_methods(["POST"])
