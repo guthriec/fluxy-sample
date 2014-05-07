@@ -100,7 +100,8 @@ def vendor(request, vendor_id=None):
         vendor_form = VendorForm(data, instance=vendor)
         vendor = vendor_form.save()
         vendor_id = str(vendor.id)
-        return HttpResponse(serializers.serialize('json', [vendor]))
+        return HttpResponse(serializers.serialize('json', [vendor]),
+            content_type='application/json')
     except (TypeError, ValueError), e:
       known_error = { 'status': 400, 'error': 'Bad request.' }
       return make_post_response(vendor, 'vendors/' + str(vendor_id), known_error)
