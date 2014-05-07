@@ -64,17 +64,30 @@ class VendorPhoto(models.Model):
     is_primary : A boolean indicating whether this photo is the primary photo
                  for its vendor
   """
-  def natural_key(self):
-    return self.photo.url
+  # This creates or returns an extant thumbnail
+  def get_thumb(self, dimension_string=None):
+    if not dimension_string:
+      dimension_string = '400x400'
+    return get_thumbnail(self.photo, dimension_string, crop='center',
+        quality=99).url
 
-  def get_thumb(self):
-    return get_thumbnail(self.photo, '400x400', crop='center', quality=99).url
+  def natural_key(self):
+    return {
+        'thumb': self.get_thumb(),
+        'deal_thumb': self.get_thumb('320x190'),
+        'main_thumb': self.get_thumb('292x150'),
+        'claimed_thumb': self.get_thumb('74x74'),
+        'photo': self.photo.url
+      }
 
   def get_custom_serializable(self):
     return {
           'id': self.id,
           'photo': self.photo.url,
           'thumb': self.get_thumb(),
+          'deal_thumb': self.get_thumb('320x190'),
+          'main_thumb': self.get_thumb('292x150'),
+          'claimed_thumb': self.get_thumb('74x74'),
           'vendor': self.vendor.id,
         }
 
