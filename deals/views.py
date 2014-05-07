@@ -1,6 +1,6 @@
 from datetime import datetime
 from dateutil import parser
-from deals.api_tools import make_get_response, make_post_response, list_from_qset
+from deals.api_tools import make_get_response, make_post_response, make_put_response, list_from_qset
 from deals.decorators import api_login_required, api_vendor_required
 from deals.models import ClaimedDeal, Deal, Vendor
 from distance import in_radius
@@ -90,25 +90,26 @@ def vendor(request, vendor_id=None):
     return make_post_response(vendor_list, 'vendors/' + str(vendor_id), known_error)
 
 @csrf_exempt
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["GET", "POST", "PUT"])
 @api_vendor_required(["POST"])
 def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
   """
   @author: Chris, Ayush
-  @desc: Returns/creates a deal for a given vendor
+  @desc: Returns/creates/edits a deal or set of deals for a given vendor
   Assumes the POST request has the following keys, corresponding to field names:
       *vendor (this should be the vendor id)
       *title
       *desc
-      *radius
       *time_start
       *time_end
 
   @param request: a request object
   @param vendor_id: the id of the vendor for which we are querying or creating
   a deal for
+  @param deal_id: the deal_id of the deal (for PUT)
+  @param active_only: boolean to filter GET results to active deals
 
-  @return: 201 with JSON for POST or 200 for GET
+  @return: 201 with JSON for POST or 200 with JSON for GET/PUT
   """
   known_error = None
   deal_list = None
@@ -120,11 +121,39 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
     return make_get_response(deal_list, known_error)
 
   if request.method == 'GET':
+    # ---- GET ----
     deal_set = _get_deals(vendor_id=vendor_id, active_only=active_only)
-    deal_list = list_from_qset(deal_set, include_nested=False)
+    deal_list = list_from_qset(deal_set, include_nested=True)
     return make_get_response(deal_list, known_error)
+  
+  elif request.method == 'PUT':
+    # ---- PUT ----
+    deal = None
+    try:
+      deal = Deal.objects.get(pk=deal_id)
+    except Deal.DoesNotExist:
+      known_error = { 'status': 404,
+                      'error': 'Resource not found',
+                      'detail': 'No deal of specified id exists' }
+      return make_put_response(None, known_error)
+    updates = json.loads(request.body)
+    for key, val in updates.iteritems():
+      try:
+        getattr(deal, key)
+      except AttributeError:
+        known_error = { 'status' : 400, 
+                        'error': 'Bad PUT request', 
+                        'detail': '''PUT request tried to update a 
+                                   non-existent attribute''' }
+        return make_put_response(None, known_error)
+      setattr(deal, key, val) 
+    deal.save()
+    single_deal_list = list_from_qset([deal], flatten=True, include_nested=False)
+    return make_put_response(single_deal_list, known_error)
+  
   else:
-    deal_list = None
+    # ---- POST ----
+    deal = None
     deal_id = -1
     try:
       deal = Deal(**json.loads(request.body))
