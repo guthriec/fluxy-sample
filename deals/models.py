@@ -123,7 +123,7 @@ class Deal(models.Model):
   instructions = models.CharField(max_length=1000, default="Show to waiter.")
   photo = models.ForeignKey(VendorPhoto)
 
-  def get_state(self):
+  def get_stage(self):
     tz = self.time_start.tzinfo
     now = datetime.datetime.now(tz)
     if self.time_end < now:
@@ -157,7 +157,7 @@ class Deal(models.Model):
         'desc': self.desc,
         'time_start': encoder.default(self.time_start),
         'time_end': encoder.default(self.time_end),
-        'state': self.get_state(),
+        'stage': self.get_stage(),
         'max_deals': self.max_deals,
         'instructions': self.instructions,
         'photo': self.photo.natural_key(),
@@ -173,7 +173,7 @@ class Deal(models.Model):
       'time_start': self.time_start,
       'time_end': self.time_end,
       'instructions': self.instructions,
-      'state': self.get_state(),
+      'stage': self.get_stage(),
     }
 
 
