@@ -133,6 +133,39 @@ def logout_page(request):
     user_logout(request)
   return redirect(reverse('fluxy.views.login_page'))
 
+def _login_user_and_respond(request, fluxy_user, fb_login):
+  """
+  @author: Chris
+  @desc: takes a fluxy_user object, logs in the appropriate user
+         (making sure that the user isn't a fb_only user) and
+         returns an appropriate error message.
+  """
+  response = {}
+  if fluxy_user is not None:
+    if not fb_login and fluxy_user.fb_only:
+      response = {
+        "status": 403,
+        "error": "This email is associated with a Facebook account - login with Facebook or create a new account",
+        "success": False
+      }
+    else:
+      login(request, fluxy_user)
+      response = {
+        "status": 200,
+        "error": "Valid username and password",
+        "success": True,
+        "data": fluxy_user.get_safe_user()
+      }
+  else:
+    response = {
+      "status": 401,
+      "error": "Invalid username/password - try again or login with Facebook",
+      "success": False
+    }
+  return HttpResponse(json.dumps(response),
+                      content_type="application/json",
+                      status = response['status'])
+
 def vendor_page(request, vendor_id):
   """
   @author: Rahul
@@ -158,35 +191,31 @@ def user_auth(request):
   @return: 200 on valid request, 400 otherwise. Valid post's reponse is JSON
   with key "success" indicating the success of the login.
   """
+  username = None
+  password = None
+  access_token = None
   post_data = request.POST
-  try:
-    if request.META['CONTENT_TYPE'] == 'application/json':
-      post_data = json.loads(request.body)
+  fb_login = False
+  if request.META['CONTENT_TYPE'] == 'application/json':
+    post_data = json.loads(request.body)
+  user = None
+
+  if 'access_token' in post_data:
+    fb_login = True
+    access_token = post_data['access_token']
+    user = authenticate(access_token=access_token)
+  elif 'email' in post_data and 'password' in post_data:
     username = post_data['email'].lower()
     password = post_data['password']
-  except Exception:
-    response = { 'code': 400, 'message': 'Bad request' }
+    user = authenticate(username=username, password=password)
+  else:
+    response = { 'status': 400,
+                 'success': False,
+                 'error': 'Request must include either email/password ' +
+                          'or a Facebook access token.' }
     return HttpResponse(json.dumps(response), status = 400,
         content_type='application/json')
-
-  user = authenticate(username=username, password=password)
-  response = {}
-  if user is not None:
-    login(request, user)
-    response = {
-      "code": 200,
-      "message": "Valid username and password",
-      "success": True,
-      "response": user.get_safe_user()
-    }
-    return HttpResponse(json.dumps(response), content_type="application/json", status = 200)
-  else:
-    response = {
-      "code": 401,
-      "message": "Invalid username/password",
-      "success": False
-    }
-    return HttpResponse(json.dumps(response), content_type="application/json", status = 401)
+  return _login_user_and_respond(request, user, fb_login)
 
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -198,7 +227,6 @@ def user_register(request):
   Accepts either standard form or JSON formatted POSTs with the following keys:
       *email
       *password
-      *password_confirm
 
   @param request: the request object
 
@@ -211,23 +239,19 @@ def user_register(request):
     email = post_data['email'].lower()
     username = post_data['email'].lower()
     password = post_data['password']
-    password_confirm = post_data['password_confirm']
   except Exception:
     return make_post_response(None, None, {'code': 400, 'message': 'Missing fields or malformed request.'})
   known_error = {'code': 400, 'message': 'Could not register'}
-  if password != password_confirm:
-    known_error['message'] = "Passwords do not match"
-  else:
-    try:
-      FluxyUser.objects.get(username__exact=username)
-      known_error['message'] = "Username already registered"
-    except FluxyUser.DoesNotExist:
-      new_user = FluxyUser.objects.create_user(email=email, username=username, password=password)
-      new_user.save()
-      logged_in_user = authenticate(username=username, password=password)
-      login(request, logged_in_user)
-      user_list = [logged_in_user.get_safe_user()]
-      return make_post_response(user_list, '/user/')
+  try:
+    FluxyUser.objects.get(username__exact=username)
+    known_error['message'] = "Username already registered"
+  except FluxyUser.DoesNotExist:
+    new_user = FluxyUser.objects.create_user(email=email, username=username, password=password, fb_only=False)
+    new_user.save()
+    logged_in_user = authenticate(username=username, password=password)
+    login(request, logged_in_user)
+    user_list = [logged_in_user.get_safe_user()]
+    return make_post_response(user_list, '/user/')
   return make_post_response(None, None, known_error)
 
 @require_http_methods(["GET"])

@@ -19,6 +19,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '36b2glm^*w=wz8+y&fn^s6^huvgibiaz$7++!rayba8fi)%0pd'
 
+# Facebook ID information
+FACEBOOK_APP_ID = '479319495527729';
+FACEBOOK_APP_SECRET = 'dce0bf6c3d4c0735465104def5f0b67e';
+FACEBOOK_SCOPE = ['basic_info', 'email'];
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = TEMPLATE_DEBUG = False
 
@@ -59,6 +64,13 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+)
+
+# Look to the default backend first, if authentication fails on that
+# fall back to the Facebook backend.
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'fluxy.facebook_backend.FacebookBackend',
 )
 
 ROOT_URLCONF = 'fluxy.urls'

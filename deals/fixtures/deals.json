@@ -154,7 +154,8 @@
      "username": "kingofpaloalto",
      "password": "pbkdf2_sha256$12000$NrhLLCqHVQa7$TTZiDuWBGNH5kj6UYLBlFFL7788eoCne8MJ/hyULZqs=",
      "email": "alh@alh.com",
-     "vendors":["1","2"]
+     "vendors":["1","2"],
+     "fb_only": false
    }
  },
  {
@@ -166,7 +167,8 @@
      "username": "mrhappy",
      "password": "pbkdf2_sha256$12000$NrhLLCqHVQa7$TTZiDuWBGNH5kj6UYLBlFFL7788eoCne8MJ/hyULZqs=",
      "email": "bob@happydonuts.com",
-     "vendors":["1"]
+     "vendors":["1"],
+     "fb_only": false
    }
  },
  {
@@ -178,7 +180,8 @@
      "username": "pizzaguy",
      "password": "pbkdf2_sha256$12000$NrhLLCqHVQa7$TTZiDuWBGNH5kj6UYLBlFFL7788eoCne8MJ/hyULZqs=",
      "email": "chris@pmh.com",
-     "vendors":["3"]
+     "vendors":["3"],
+     "fb_only": false
    }
  },
  {
@@ -190,7 +193,8 @@
      "username": "idontownrestaurants",
      "password": "pbkdf2_sha256$12000$NrhLLCqHVQa7$TTZiDuWBGNH5kj6UYLBlFFL7788eoCne8MJ/hyULZqs=",
      "email": "don@hotmail.com",
-     "vendors":[]
+     "vendors":[],
+     "fb_only": false
    }
  },
  {
