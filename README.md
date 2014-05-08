@@ -74,6 +74,9 @@ Deals have 4 stages:
   * Accepts GET.
   * Returns all active deals, including those that are maxed out.
   * If all of the following GET parameters are set: "lat", "long", and "radius," the returned set is limited to deals within 'radius' of the given coordinates. Radius <= 0 is taken as an unlimited radius.
+  * If the "lat" and "long" parameters are set: the returned set will include a
+    "distance" attribute for each deal which indicates the number of miles to
+    the vendor who posted the deal
 
 * ``` /deals/all ```
   * Accepts GET.
