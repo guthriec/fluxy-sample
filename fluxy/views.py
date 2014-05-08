@@ -348,11 +348,12 @@ def user_deals(request, active_only=True):
     except Exception:
       pass
     return HttpResponse("Bad request.", status=400)
-  else:
+  else: # GET
     claimed_deals = request.user.claimeddeal_set.all()
     if active_only:
       claimed_deals = claimed_deals.filter(deal__time_end__gte=now)
-    return HttpResponse(serializers.serialize('json', claimed_deals),
+    return HttpResponse(serializers.serialize('json', claimed_deals,
+                        use_natural_keys=True),
                         content_type="application/json")
 
 @csrf_exempt
