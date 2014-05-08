@@ -29,6 +29,9 @@ urlpatterns = patterns('',
   url(r'^subscribe/$', views.subscribe),
   url(r'^success/$', views.success),
 
+  # Route feedback endpoint
+  url(r'^api/v1/feedback/$', views.feedback),
+
   # Route /admin resources
   url(r'^admin/', include(admin.site.urls)),
 

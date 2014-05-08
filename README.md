@@ -148,6 +148,11 @@ Deals have 4 stages:
     permissions and the photo exists. It deletes the database object and the
     file itself from the server.
 
+* ``` /feedback/ ```
+  * Accepts POST.
+  * POST requests requires a single key, 'message', which is stored along with
+    the user as a Feedback object. Returns a 201.
+
 =======
 APPENDIX A - Notes About Libraries
 ----------------------------------

@@ -35,3 +35,7 @@ class FacebookUser(models.Model):
   user = models.ForeignKey(FluxyUser)
   facebook_id = models.BigIntegerField()
   access_token = models.CharField(max_length=150)
+
+class Feedback(models.Model):
+  user = models.ForeignKey(FluxyUser)
+  message = models.TextField()
