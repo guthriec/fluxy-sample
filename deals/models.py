@@ -124,7 +124,8 @@ class Deal(models.Model):
   photo = models.ForeignKey(VendorPhoto)
 
   def get_state(self):
-    now = datetime.datetime.utcnow()
+    tz = self.time_start.tzinfo
+    now = datetime.datetime.now(tz)
     if self.time_end < now:
       return 3 # expired
     if self.time_start < now:
@@ -144,6 +145,8 @@ class Deal(models.Model):
     Note that this uses a class directly from the Django serializer class to serialize
     dates. I got tired of trying to figure out what the default serializer was
     doing and just used parts of the serializer itself.
+    Source for DjangoJSONEncoder at:
+    https://github.com/django/django/blob/master/django/core/serializers/json.py
     """
     encoder = DjangoJSONEncoder()
     return {
@@ -154,6 +157,7 @@ class Deal(models.Model):
         'desc': self.desc,
         'time_start': encoder.default(self.time_start),
         'time_end': encoder.default(self.time_end),
+        'state': self.get_state(),
         'max_deals': self.max_deals,
         'instructions': self.instructions,
         'photo': self.photo.natural_key(),
