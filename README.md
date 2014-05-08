@@ -74,6 +74,9 @@ Deals have 4 stages:
   * Accepts GET.
   * Returns all active deals, including those that are maxed out.
   * If all of the following GET parameters are set: "lat", "long", and "radius," the returned set is limited to deals within 'radius' of the given coordinates. Radius <= 0 is taken as an unlimited radius.
+  * If the "lat" and "long" parameters are set: the returned set will include a
+    "distance" attribute for each deal which indicates the number of miles to
+    the vendor who posted the deal
 
 * ``` /deals/all ```
   * Accepts GET.
@@ -144,6 +147,11 @@ Deals have 4 stages:
     permissions for vendor with id {id}. DELETE returns a 200 if the user has
     permissions and the photo exists. It deletes the database object and the
     file itself from the server.
+
+* ``` /feedback/ ```
+  * Accepts POST.
+  * POST requests requires a single key, 'message', which is stored along with
+    the user as a Feedback object. Returns a 201.
 
 =======
 APPENDIX A - Notes About Libraries

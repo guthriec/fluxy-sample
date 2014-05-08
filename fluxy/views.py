@@ -12,7 +12,7 @@ from django.shortcuts import render, redirect
 from django.utils.timezone import utc
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
-from fluxy.models import FluxyUser
+from fluxy.models import FluxyUser, Feedback
 import datetime
 import json
 import mailchimp
@@ -355,4 +355,28 @@ def user_deals(request, active_only=True):
     return HttpResponse(serializers.serialize('json', claimed_deals),
                         content_type="application/json")
 
+@csrf_exempt
+@require_http_methods(['POST'])
+def feedback(request):
+  """
+  @author: Rahul Gupta-Iwasaki
+  @desc: Receives user feedback as a JSON encoded post request and stores it in
+  the database.
 
+  If POST, use the following keys:
+      *message
+
+  @param request: the request object
+
+  @returns: a standard POST response JSON encoded object
+  """
+  known_error = None
+  feedback = None
+  try:
+    post_data = json.loads(request.body)
+    feedback = Feedback.objects.create(user=request.user,
+        message=post_data['message'])
+  except Exception, e:
+    known_error = {'status': 400, 'detail': e}
+  return make_post_response({'Response': 'Thank you for your feedback.'},
+    None, known_error)

@@ -11,7 +11,7 @@ def api_login_required(methods):
     def inner_decorator(request, *args, **kwargs):
       if request.method in methods:
         if not request.user.is_authenticated():
-          known_error = { 'code': 401, 'message': 'No logged in user' }
+          known_error = { 'status': 401, 'detail': 'No logged in user' }
           return make_get_response(None, known_error)
       return func(request, *args, **kwargs)
 
@@ -32,10 +32,10 @@ def api_vendor_required(methods):
       if request.method in methods:
         vendor_id = kwargs['vendor_id']
         if not request.user.is_authenticated():
-          known_error = { 'code': 401, 'message': 'No logged in user' }
+          known_error = { 'status': 401, 'detail': 'No logged in user' }
           return make_get_response(None, known_error)
         elif int(vendor_id) not in [vendor.id for vendor in request.user.vendors.all()]:
-          known_error = { 'code': 403, 'message': 'User does not own vendor' }
+          known_error = { 'status': 403, 'detail': 'User does not own vendor' }
           return make_get_response(None, known_error)
       return func(request, *args, **kwargs)
 

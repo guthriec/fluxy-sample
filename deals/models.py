@@ -1,4 +1,5 @@
 import datetime
+from deals.distance import distance
 from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
@@ -81,7 +82,7 @@ class VendorPhoto(models.Model):
         'photo': self.photo.url
       }
 
-  def get_custom_serializable(self):
+  def get_custom_serializable(self, options):
     return {
           'id': self.id,
           'photo': self.photo.url,
@@ -113,6 +114,13 @@ class Deal(models.Model):
     instructions - Instructions for users to claim deal at point of sale
     photo - deal specific photo
   """
+  class Meta:
+    ordering = ['time_start']
+
+  # Non-field attributes
+  timedelta_prior_to_start_for_active = datetime.timedelta(0,0,0,0,0,6)
+  # End
+
   vendor = models.ForeignKey(Vendor)
   title = models.CharField(max_length=15)
   subtitle = models.CharField(max_length=40)
@@ -130,7 +138,7 @@ class Deal(models.Model):
       return 3 # expired
     if self.time_start < now:
       return 2 # live
-    if (now - self.time_start).total_seconds() < (6 * 60 * 60): # 6 hours
+    if (self.time_start - now) < self.timedelta_prior_to_start_for_active:
       return 1 # active
     return 0 # scheduled
 
@@ -140,7 +148,7 @@ class Deal(models.Model):
     """
     return "{0} by vendor: {1}".format(self.title, self.vendor)
 
-  def get_custom_serializable(self):
+  def get_custom_serializable(self, options):
     """
     Note that this uses a class directly from the Django serializer class to serialize
     dates. I got tired of trying to figure out what the default serializer was
@@ -149,9 +157,16 @@ class Deal(models.Model):
     https://github.com/django/django/blob/master/django/core/serializers/json.py
     """
     encoder = DjangoJSONEncoder()
+
+    dist = None
+    if options and options['latitude'] and options['longitude']:
+      dist = distance(options['latitude'], options['longitude'],
+          self.vendor.latitude, self.vendor.longitude)
+
     return {
         'id': self.id,
         'vendor': self.vendor.natural_key(),
+        'distance': dist,
         'title': self.title,
         'subtitle': self.subtitle,
         'desc': self.desc,
@@ -159,6 +174,7 @@ class Deal(models.Model):
         'time_end': encoder.default(self.time_end),
         'stage': self.get_stage(),
         'max_deals': self.max_deals,
+        'claimed_count': self.claimeddeal_set.count(),
         'instructions': self.instructions,
         'photo': self.photo.natural_key(),
       }
@@ -166,14 +182,16 @@ class Deal(models.Model):
   def natural_key(self):
     """ For nested serialization. """
     return {
-      'id': self.id,
-      'title': self.title,
-      'subtitle': self.subtitle,
-      'desc': self.desc,
-      'time_start': self.time_start,
-      'time_end': self.time_end,
-      'instructions': self.instructions,
-      'stage': self.get_stage(),
+        'id': self.id,
+        'title': self.title,
+        'subtitle': self.subtitle,
+        'desc': self.desc,
+        'time_start': self.time_start,
+        'time_end': self.time_end,
+        'stage': self.get_stage(),
+        'max_deals': self.max_deals,
+        'claimed_count': self.claimeddeal_set.count(),
+        'instructions': self.instructions,
     }
 
 
@@ -188,6 +206,9 @@ class ClaimedDeal(models.Model):
     time_completed - When was the deal completed?
     completed_latitude/longitude - Location where the deal was completed
   """
+  class Meta:
+    ordering = ['deal__time_start']
+
   user = models.ForeignKey('fluxy.FluxyUser')
   deal = models.ForeignKey(Deal)
   time_claimed = models.DateTimeField(default=datetime.datetime.

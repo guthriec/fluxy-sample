@@ -93,7 +93,7 @@ def make_put_response(single_obj_list, known_error=None):
   return HttpResponse(json.dumps(response), content_type="application/json",
                       status=response['status'])
 
-def custom_serialize(qset):
+def custom_serialize(qset, options = None):
   """
   @author: Rahul
   @desc: Helper function to serialize models in a non-standard manner.
@@ -104,4 +104,4 @@ def custom_serialize(qset):
 
   @returns: An array of the customized models.
   """
-  return map(lambda obj: obj.get_custom_serializable(), qset)
+  return map(lambda obj: obj.get_custom_serializable(options), qset)

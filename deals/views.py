@@ -45,7 +45,10 @@ def deal(request, deal_id=None, active_only=True):
     lon = None
     radius = -1.0
 
-  deal_list = custom_serialize(deal_set)
+  deal_list = custom_serialize(deal_set, {
+      'latitude': lat,
+      'longitude': lon
+    })
   deal_list = _limit_result_distance(deal_list, radius, (lat, lon))
 
   return make_get_response(deal_list, known_error)
@@ -266,9 +269,9 @@ def _get_claimed_deals(claimed_deal_id=None, vendor_id=None, active_only=True):
   if claimed_deal_id:
     claimed_deal_set = claimed_deal_set.filter(pk=claimed_deal_id)
   if active_only:
-    now = datetime.utcnow().replace(tzinfo=utc)
-    claimed_deal_set = claimed_deal_set.filter(deal__time_start__lte=now,
-                                               deal__time_end__gte=now)
+    now = datetime.now(utc)
+    claimed_deal_set = claimed_deal_set.filter(deal__time_start__lte=now +
+        Deal.timedelta_prior_to_start_for_active, deal__time_end__gte=now)
   return claimed_deal_set
 
 def _get_deals(deal_id=None, vendor_id=None, active_only=True):
@@ -292,8 +295,9 @@ def _get_deals(deal_id=None, vendor_id=None, active_only=True):
   if vendor_id:
     deal_set = deal_set.filter(vendor_id=vendor_id)
   if active_only:
-    now = datetime.utcnow().replace(tzinfo=utc)
-    deal_set = deal_set.filter(time_start__lte=now, time_end__gte=now)
+    now = datetime.now(utc)
+    deal_set = deal_set.filter(time_start__lte=now +
+        Deal.timedelta_prior_to_start_for_active, time_end__gte=now)
   return deal_set
 
 def _limit_result_distance(results, max_radius, loc):
