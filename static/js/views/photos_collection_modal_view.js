@@ -30,7 +30,7 @@ define([
       $('#upload-photo-form').ajaxSubmit({
         'success': function(context) {
           return function(res, status) {
-            var photo = context.collection.add(res)[0];
+            var photo = context.collection.add(res.data)[0];
             vent.trigger('photoChangedTrigger', photo);
             context.$el.find('#change-photo-modal').modal('hide');
           };

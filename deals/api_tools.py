@@ -45,7 +45,7 @@ def make_post_response(obj_list, redirect_addr=None, known_error=None):
                'data': None,
                'success': True }
   if known_error:
-    response['code'] = known_error['code']
+    response['status'] = known_error['status']
     response['detail'] = known_error['detail']
     response['success'] = False
   response['data'] = obj_list
@@ -72,7 +72,7 @@ def make_get_response(resp_list, known_error=None):
             JSON HttpResponse with appropriate error code if known_error
   """
   if known_error:
-    code = known_error['code']
+    code = known_error['status']
     return HttpResponse(json.dumps(known_error),\
                         content_type="application/json", status=code)
   else:
