@@ -155,6 +155,9 @@ class ClaimedDeal(models.Model):
     time_completed - When was the deal completed?
     completed_latitude/longitude - Location where the deal was completed
   """
+  class Meta:
+    ordering = ['deal__time_start']
+
   user = models.ForeignKey('fluxy.FluxyUser')
   deal = models.ForeignKey(Deal)
   time_claimed = models.DateTimeField(default=datetime.datetime.
