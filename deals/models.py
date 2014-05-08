@@ -1,4 +1,5 @@
 import datetime
+from deals.distance import distance
 from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
@@ -81,7 +82,7 @@ class VendorPhoto(models.Model):
         'photo': self.photo.url
       }
 
-  def get_custom_serializable(self):
+  def get_custom_serializable(self, options):
     return {
           'id': self.id,
           'photo': self.photo.url,
@@ -147,7 +148,7 @@ class Deal(models.Model):
     """
     return "{0} by vendor: {1}".format(self.title, self.vendor)
 
-  def get_custom_serializable(self):
+  def get_custom_serializable(self, options):
     """
     Note that this uses a class directly from the Django serializer class to serialize
     dates. I got tired of trying to figure out what the default serializer was
@@ -156,9 +157,18 @@ class Deal(models.Model):
     https://github.com/django/django/blob/master/django/core/serializers/json.py
     """
     encoder = DjangoJSONEncoder()
+
+    dist = None
+    if options and options['latitude'] and options['longitude']:
+      dist = distance(options['latitude'], options['longitude'],
+          self.vendor.latitude, self.vendor.longitude)
+
+    print options
+
     return {
         'id': self.id,
         'vendor': self.vendor.natural_key(),
+        'distance': dist,
         'title': self.title,
         'subtitle': self.subtitle,
         'desc': self.desc,

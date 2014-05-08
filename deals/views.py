@@ -45,7 +45,10 @@ def deal(request, deal_id=None, active_only=True):
     lon = None
     radius = -1.0
 
-  deal_list = custom_serialize(deal_set)
+  deal_list = custom_serialize(deal_set, {
+      'latitude': lat,
+      'longitude': lon
+    })
   deal_list = _limit_result_distance(deal_list, radius, (lat, lon))
 
   return make_get_response(deal_list, known_error)
