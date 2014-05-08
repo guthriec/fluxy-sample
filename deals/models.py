@@ -112,6 +112,9 @@ class Deal(models.Model):
     instructions - Instructions for users to claim deal at point of sale
     photo - deal specific photo
   """
+  class Meta:
+    ordering = ['time_start']
+
   vendor = models.ForeignKey(Vendor)
   title = models.CharField(max_length=15)
   subtitle = models.CharField(max_length=40)
