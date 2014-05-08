@@ -105,6 +105,7 @@ class Deal(models.Model):
   Deal model. Here's the schema:
     vendor - Primary 'Vendor' key for the creator of the deal
     title - Short title for the deal
+    subtitle - Longer (40 char) subtitle for the deal
     desc - Longer (500 char) description of the deal
     time_start, time_end - Duration of the deal
     max_deals - Cap on number of deals available
