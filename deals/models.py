@@ -116,6 +116,10 @@ class Deal(models.Model):
   class Meta:
     ordering = ['time_start']
 
+  # Non-field attributes
+  timedelta_prior_to_start_for_active = datetime.timedelta(0,0,0,0,0,6)
+  # End
+
   vendor = models.ForeignKey(Vendor)
   title = models.CharField(max_length=15)
   subtitle = models.CharField(max_length=40)
@@ -133,7 +137,7 @@ class Deal(models.Model):
       return 3 # expired
     if self.time_start < now:
       return 2 # live
-    if (now - self.time_start).total_seconds() < (6 * 60 * 60): # 6 hours
+    if (self.time_start - now) < self.timedelta_prior_to_start_for_active:
       return 1 # active
     return 0 # scheduled
 
