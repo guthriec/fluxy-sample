@@ -369,6 +369,7 @@ define([
         formValues[this.name] = this.value;
       });
       newModel['title'] = formValues['deal-title'];
+      newModel['subtitle'] = formValues['deal-subtitle'];
       newModel['desc'] = formValues['desc'];
       var timeEnd = new Date();
       var timeStart = this.computeStart(this.$el.find('#start-day-group'),
