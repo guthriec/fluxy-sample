@@ -107,7 +107,7 @@ define([
       var titleEl = $('#title-group');
       var titleInputEl = titleEl.find('input:text[name="deal-title"]');
       var title = titleInputEl.val();
-      if (title.length > 7) {
+      if (title.length > 7 && title.length < 16) {
         titleEl.removeClass('has-error');
         this.$el.find('#title-validation-error').remove();
       } else {
@@ -117,8 +117,8 @@ define([
           this.$el.find('#deal-title-container').after(
                                              '<p id="title-validation-error" ' +
                                              'class="help-block col-sm-offset-2' +
-                                             ' col-sm-6">Deal title must be at ' +
-                                             'least 8 characters long.</p>');
+                                             ' col-sm-6">Deal title must be ' +
+                                             'between 8 and 15 characters in length.</p>');
         }
         valid = false;
       }
@@ -126,6 +126,35 @@ define([
       // feedback while editing the form
       this.events['keyup #title-group'] = 'validateTitleGroup';
       delete this.events['focusout #title-group'];
+      // Register changes made to events
+      this.delegateEvents();
+      return valid;
+    },
+
+    validateSubtitleGroup: function(e) {
+      var valid = true;
+      var subtitleEl = $('#subtitle-group');
+      var subtitleInputEl = subtitleEl.find('input:text[name="deal-subtitle"]');
+      var subtitle = subtitleInputEl.val();
+      if (subtitle.length < 41) {
+        subtitleEl.removeClass('has-error');
+        this.$el.find('#subtitle-validation-error').remove();
+      } else {
+        subtitleEl.addClass('has-error');
+        var errorEl = this.$el.find('#subtitle-validation-error');
+        if (errorEl.length == 0) {
+          this.$el.find('#deal-subtitle-container').after(
+                                             '<p id="subtitle-validation-error" ' +
+                                             'class="help-block col-sm-offset-2' +
+                                             ' col-sm-6">Subtitle must be less ' +
+                                             'than 40 characters in length.</p>');
+        }
+        valid = false;
+      }
+      // Attach event handlers to validate on any change, giving user immediate
+      // feedback while editing the form
+      this.events['keyup #subtitle-group'] = 'validateSubtitleGroup';
+      delete this.events['focusout #subtitle-group'];
       // Register changes made to events
       this.delegateEvents();
       return valid;
@@ -242,10 +271,12 @@ define([
     validateAll: function(e) {
       var startValid = this.validateStart(e);
       var titleValid = this.validateTitleGroup(e);
+      var subtitleValid = this.validateSubtitleGroup(e);
       var durationValid = this.validateDuration(e);
       var maxDealsValid = this.validateMaxDeals(e);
       var photoValid = this.validatePhoto(e);
-      return (startValid && titleValid && durationValid && maxDealsValid && photoValid);
+      return (startValid && titleValid && subtitleValid && durationValid
+          && maxDealsValid && photoValid);
     },
 
     render: function() {

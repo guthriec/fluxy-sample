@@ -112,7 +112,8 @@ class Deal(models.Model):
     photo - deal specific photo
   """
   vendor = models.ForeignKey(Vendor)
-  title = models.CharField(max_length=40)
+  title = models.CharField(max_length=15)
+  subtitle = models.CharField(max_length=40)
   desc = models.CharField(max_length=500)
   time_start = models.DateTimeField()
   time_end = models.DateTimeField()
@@ -131,6 +132,7 @@ class Deal(models.Model):
     return {
       'id': self.id,
       'title': self.title,
+      'subtitle': self.subtitle,
       'desc': self.desc,
       'time_start': self.time_start,
       'time_end': self.time_end,
