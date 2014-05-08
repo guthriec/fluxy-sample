@@ -19,11 +19,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '36b2glm^*w=wz8+y&fn^s6^huvgibiaz$7++!rayba8fi)%0pd'
 
-# Facebook details associated with an account I made - we should associate
-# them with the official Fluxy FB account
-FACEBOOK_APP_ID = 1483227115223585;
-FACEBOOK_APP_SECRET = '1351b83601aad14e7c93adf2e9d29caf';
-FACEBOOK_SCOPE = ['email'];
+# Facebook ID information
+FACEBOOK_APP_ID = '479319495527729';
+FACEBOOK_APP_SECRET = 'dce0bf6c3d4c0735465104def5f0b67e';
+FACEBOOK_SCOPE = ['basic_info', 'email'];
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = TEMPLATE_DEBUG = False
