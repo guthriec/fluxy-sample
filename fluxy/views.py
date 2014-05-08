@@ -107,10 +107,10 @@ def login_page(request):
     api_resp = user_auth(request)
     api_content = json.loads(api_resp.content)
     if api_resp.status_code != 200 or not api_content['success']:
-      error_message = api_content['message']
+      error_message = api_content['error']
     else:
       try:
-        vendor_id = api_content['response']['vendors'][0]
+        vendor_id = api_content['data']['vendors'][0]
         request.session['vendor_id'] = vendor_id
       # If no associated vendor, just don't set the vendor_id session attribute
       except IndexError:

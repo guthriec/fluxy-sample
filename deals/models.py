@@ -1,5 +1,6 @@
 import datetime
 from django.core import serializers
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.utils.timezone import utc
 from hashlib import sha1
@@ -122,11 +123,45 @@ class Deal(models.Model):
   instructions = models.CharField(max_length=1000, default="Show to waiter.")
   photo = models.ForeignKey(VendorPhoto)
 
+  def get_stage(self):
+    tz = self.time_start.tzinfo
+    now = datetime.datetime.now(tz)
+    if self.time_end < now:
+      return 3 # expired
+    if self.time_start < now:
+      return 2 # live
+    if (now - self.time_start).total_seconds() < (6 * 60 * 60): # 6 hours
+      return 1 # active
+    return 0 # scheduled
+
   def __unicode__(self):
     """
     Human readable way to print a Deal instance. e.g. 50% drinks by vendor: Thaiphoon
     """
     return "{0} by vendor: {1}".format(self.title, self.vendor)
+
+  def get_custom_serializable(self):
+    """
+    Note that this uses a class directly from the Django serializer class to serialize
+    dates. I got tired of trying to figure out what the default serializer was
+    doing and just used parts of the serializer itself.
+    Source for DjangoJSONEncoder at:
+    https://github.com/django/django/blob/master/django/core/serializers/json.py
+    """
+    encoder = DjangoJSONEncoder()
+    return {
+        'id': self.id,
+        'vendor': self.vendor.natural_key(),
+        'title': self.title,
+        'subtitle': self.subtitle,
+        'desc': self.desc,
+        'time_start': encoder.default(self.time_start),
+        'time_end': encoder.default(self.time_end),
+        'stage': self.get_stage(),
+        'max_deals': self.max_deals,
+        'instructions': self.instructions,
+        'photo': self.photo.natural_key(),
+      }
 
   def natural_key(self):
     """ For nested serialization. """
@@ -138,6 +173,7 @@ class Deal(models.Model):
       'time_start': self.time_start,
       'time_end': self.time_end,
       'instructions': self.instructions,
+      'stage': self.get_stage(),
     }
 
 

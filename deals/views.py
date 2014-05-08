@@ -35,7 +35,7 @@ def deal(request, deal_id=None, active_only=True):
     active_only = False
   deal_set = _get_deals(deal_id, active_only=active_only)
   if deal_id and deal_set.count() == 0:
-    known_error = { 'code': 404, 'message': 'Deal not found' }
+    known_error = { 'status': 404, 'detail': 'Deal not found' }
   try:
     lat = float(request.GET.get('latitude', None))
     lon = float(request.GET.get('longitude', None))
@@ -45,7 +45,7 @@ def deal(request, deal_id=None, active_only=True):
     lon = None
     radius = -1.0
 
-  deal_list = list_from_qset(deal_set, include_nested=True)
+  deal_list = custom_serialize(deal_set)
   deal_list = _limit_result_distance(deal_list, radius, (lat, lon))
 
   return make_get_response(deal_list, known_error)
@@ -78,7 +78,7 @@ def vendor(request, vendor_id=None):
     vendor_list = None
     vendor_set = _get_vendor(vendor_id)
     if vendor_id and vendor_set.count() == 0:
-      known_error = { 'status': 404, 'message': 'Vendor not found.' }
+      known_error = { 'status': 404, 'detail': 'Vendor not found.' }
       return make_get_response(vendor_list, known_error)
 
     vendor_list = list_from_qset(vendor_set, include_nested=False, flatten=True)
@@ -126,8 +126,7 @@ def vendor_photo(request, vendor_id, photo_id=None):
   """
   vendor = get_object_or_404(Vendor, pk=vendor_id)
   if request.method == 'GET':
-    return HttpResponse(custom_serialize(vendor.vendorphoto_set.all()),
-        content_type='application/json')
+    return make_get_response(custom_serialize(vendor.vendorphoto_set.all()))
   elif request.method == 'POST':
     try:
       vendor_photo = VendorPhoto(photo=request.FILES['photo'],
@@ -136,14 +135,13 @@ def vendor_photo(request, vendor_id, photo_id=None):
     except:
       return HttpResponse(json.dumps({ 'status': 400, 'error': 'Bad request.' }),
         content_type='application/json', status=400)
-    return HttpResponse(custom_serialize([vendor_photo]),
-        content_type='application/json', status=201)
+    return make_post_response(custom_serialize([vendor_photo]))
   else:
     vendor_photo = get_object_or_404(VendorPhoto, pk=photo_id)
     vendor_photo.photo.delete()
     vendor_photo.delete()
     return HttpResponse(json.dumps({'status': 200,
-        'message': 'Successfully deleted photo.'}))
+        'detail': 'Successfully deleted photo.'}))
 
 @csrf_exempt
 @require_http_methods(["GET", "POST", "PUT"])
@@ -173,13 +171,13 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
   # Check vendor exists
   vendor_qset = Vendor.objects.filter(pk=vendor_id)
   if vendor_qset.count() == 0:
-    known_error = { 'code': 404, 'message': 'Vendor not found' }
+    known_error = { 'status': 404, 'detail': 'Vendor not found' }
     return make_get_response(deal_list, known_error)
 
   if request.method == 'GET':
     # ---- GET ----
     deal_set = _get_deals(vendor_id=vendor_id, active_only=active_only)
-    deal_list = list_from_qset(deal_set, include_nested=True)
+    deal_list = custom_serialize(deal_set)
     return make_get_response(deal_list, known_error)
 
   elif request.method == 'PUT':
@@ -204,7 +202,7 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
         return make_put_response(None, known_error)
       setattr(deal, key, val)
     deal.save()
-    single_deal_list = list_from_qset([deal], flatten=True, include_nested=False)
+    single_deal_list = custom_serialize([deal])
     return make_put_response(single_deal_list, known_error)
 
   else:
@@ -222,9 +220,9 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
       deal.time_end = parser.parse(deal.time_end)
       deal.save()
       deal_id = deal.id
-      deal_list = list_from_qset([deal])
+      deal_list = custom_serialize([deal])
     except Exception:
-      known_error={ 'code': 400, 'message': 'Bad deal POST' }
+      known_error={ 'status': 400, 'detail': 'Bad deal POST' }
     return make_post_response(deal_list, 'deals/' + str(deal_id), known_error)
 
 @require_http_methods(['GET'])
@@ -242,7 +240,7 @@ def vendor_claimed_deals(request, vendor_id, active_only=True):
 
   vendor_set = Vendor.objects.filter(pk=vendor_id)
   if vendor_set.count() == 0:
-    known_error = { 'code': 404, 'message': 'Vendor not found' }
+    known_error = { 'status': 404, 'detail': 'Vendor not found' }
     return make_get_response(claimed_deal_list, known_error)
   claimed_deal_set = _get_claimed_deals(vendor_id=vendor_id, active_only=active_only)
   claimed_deal_list = list_from_qset(claimed_deal_set, include_nested=False, flatten=True)
