@@ -1,5 +1,6 @@
 import datetime
 from django.core import serializers
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.utils.timezone import utc
 from hashlib import sha1
@@ -137,6 +138,26 @@ class Deal(models.Model):
     Human readable way to print a Deal instance. e.g. 50% drinks by vendor: Thaiphoon
     """
     return "{0} by vendor: {1}".format(self.title, self.vendor)
+
+  def get_custom_serializable(self):
+    """
+    Note that this uses a class directly from the Django serializer class to serialize
+    dates. I got tired of trying to figure out what the default serializer was
+    doing and just used parts of the serializer itself.
+    """
+    encoder = DjangoJSONEncoder()
+    return {
+        'id': self.id,
+        'vendor': self.vendor.natural_key(),
+        'title': self.title,
+        'subtitle': self.subtitle,
+        'desc': self.desc,
+        'time_start': encoder.default(self.time_start),
+        'time_end': encoder.default(self.time_end),
+        'max_deals': self.max_deals,
+        'instructions': self.instructions,
+        'photo': self.photo.natural_key(),
+      }
 
   def natural_key(self):
     """ For nested serialization. """
