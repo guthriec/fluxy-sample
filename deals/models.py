@@ -163,8 +163,6 @@ class Deal(models.Model):
       dist = distance(options['latitude'], options['longitude'],
           self.vendor.latitude, self.vendor.longitude)
 
-    print options
-
     return {
         'id': self.id,
         'vendor': self.vendor.natural_key(),
@@ -176,6 +174,7 @@ class Deal(models.Model):
         'time_end': encoder.default(self.time_end),
         'stage': self.get_stage(),
         'max_deals': self.max_deals,
+        'claimed_count': self.claimeddeal_set.count(),
         'instructions': self.instructions,
         'photo': self.photo.natural_key(),
       }
@@ -183,14 +182,16 @@ class Deal(models.Model):
   def natural_key(self):
     """ For nested serialization. """
     return {
-      'id': self.id,
-      'title': self.title,
-      'subtitle': self.subtitle,
-      'desc': self.desc,
-      'time_start': self.time_start,
-      'time_end': self.time_end,
-      'instructions': self.instructions,
-      'stage': self.get_stage(),
+        'id': self.id,
+        'title': self.title,
+        'subtitle': self.subtitle,
+        'desc': self.desc,
+        'time_start': self.time_start,
+        'time_end': self.time_end,
+        'stage': self.get_stage(),
+        'max_deals': self.max_deals,
+        'claimed_count': self.claimeddeal_set.count(),
+        'instructions': self.instructions,
     }
 
 
