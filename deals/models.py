@@ -120,6 +120,16 @@ class Deal(models.Model):
   instructions = models.CharField(max_length=1000, default="Show to waiter.")
   photo = models.ForeignKey(VendorPhoto)
 
+  def get_state(self):
+    now = datetime.datetime.utcnow()
+    if self.time_end < now:
+      return 3 # expired
+    if self.time_start < now:
+      return 2 # live
+    if (now - self.time_start).total_seconds() < (6 * 60 * 60): # 6 hours
+      return 1 # active
+    return 0 # scheduled
+
   def __unicode__(self):
     """
     Human readable way to print a Deal instance. e.g. 50% drinks by vendor: Thaiphoon
@@ -135,6 +145,7 @@ class Deal(models.Model):
       'time_start': self.time_start,
       'time_end': self.time_end,
       'instructions': self.instructions,
+      'state': self.get_state(),
     }
 
 
