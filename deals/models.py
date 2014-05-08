@@ -105,6 +105,7 @@ class Deal(models.Model):
   Deal model. Here's the schema:
     vendor - Primary 'Vendor' key for the creator of the deal
     title - Short title for the deal
+    subtitle - Longer (40 char) subtitle for the deal
     desc - Longer (500 char) description of the deal
     time_start, time_end - Duration of the deal
     max_deals - Cap on number of deals available
@@ -112,7 +113,8 @@ class Deal(models.Model):
     photo - deal specific photo
   """
   vendor = models.ForeignKey(Vendor)
-  title = models.CharField(max_length=40)
+  title = models.CharField(max_length=15)
+  subtitle = models.CharField(max_length=40)
   desc = models.CharField(max_length=500)
   time_start = models.DateTimeField()
   time_end = models.DateTimeField()
@@ -141,6 +143,7 @@ class Deal(models.Model):
     return {
       'id': self.id,
       'title': self.title,
+      'subtitle': self.subtitle,
       'desc': self.desc,
       'time_start': self.time_start,
       'time_end': self.time_end,
