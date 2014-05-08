@@ -260,10 +260,13 @@ define([
         this.$el.find('#photo-validation-error').remove();
         return true;
       } else {
-        photoEl.addClass('has-error');
-        photoContainer.after('<p id="photo-validation-error" ' +
-                             'class="help-block col-sm-6 col-sm-offset-2">' +
-                             'Must choose a deal photo</p>');
+        var errorEl = this.$el.find('#photo-validation-error');
+        if (errorEl.length == 0) {
+          photoEl.addClass('has-error');
+          photoContainer.after('<p id="photo-validation-error" ' +
+                               'class="help-block col-sm-6 col-sm-offset-2">' +
+                               'Must choose a deal photo</p>');
+        }
         return false;
       }
     },
