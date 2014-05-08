@@ -22,8 +22,8 @@ class Vendor(models.Model):
   """
   name = models.CharField(max_length=100)
   address = models.CharField(max_length=100)
-  latitude = models.FloatField(default=37.445225) # 320 High Street lat long
-  longitude = models.FloatField(default=-122.165492)
+  latitude = models.FloatField()
+  longitude = models.FloatField()
   web_url = models.URLField()
   yelp_url = models.URLField()
   phone = models.CharField(max_length=20)
