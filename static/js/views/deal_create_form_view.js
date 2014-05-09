@@ -7,10 +7,13 @@
 define([
   'fluxy_time',
   'marionette',
-  'vent'
-], function(FluxyTime, Marionette, vent) {
+  'vent',
+  'models/deal_model',
+], function(FluxyTime, Marionette, vent, DealModel) {
   var DealCreateFormView = Marionette.ItemView.extend({
 
+    deal: new DealModel(),
+    cache: { },
     template: '#deal-create-form-template',
 
     events: {
@@ -18,12 +21,46 @@ define([
       'focusout #duration-group' : 'validateStartAndDuration',
       'focusout #start-time-group' : 'validateStart',
       'focusout #max-deals-group' : 'validateMaxDeals',
+      'change input:radio[name="limit"]' : 'changeMaxDealsState',
       'click #change-photo-btn': 'changePhoto',
-      'click #submit-btn': 'createDeal'
+      'click #submit-btn' : 'createDeal',
+      // Model-Field bindings
+      'change #deal-title' : 'updateModel',
+      'change #deal-subtitle' : 'updateModel',
+      'change #deal-desc' : 'updateModel',
+      'focusout #start-time-group' : 'updateModel',
+      'focusout #duration-group' : 'updateModel',
+      'change #max-deals-number' : 'updateModel',
     },
 
     initialize: function() {
       vent.on('photoChangedTrigger', this.photoChanged, this);
+    },
+
+    updateModel: function(e) {
+      superduper = this.deal;
+      var changed = e.currentTarget;
+
+      var obj = { };
+      if (changed.id == 'max-deals-number') {
+        obj['max_deals'] = this.getMaxDeals();
+      } else if (changed.id == 'start-time-group') {
+        obj['time_start'] = this.computeStart().toISOString();
+        // Cache elem values
+        this.cache['start-day'] = this.$el.find('#start-day').val();
+        this.cache['start-hours'] = this.$el.find('#start-hours').val();
+        this.cache['start-minutes'] = this.$el.find('#start-minutes').val();
+        this.cache['start-am-pm'] = this.$el.find('#start-am-pm').val();
+      } else if (changed.id == 'duration-group') {
+        obj['time_end'] = this.computeEnd().toISOString();
+        // Cache elem values
+        this.cache['duration-hours'] = this.$el.find('#duration-hours').val();
+        this.cache['duration-minutes'] = this.$el.find('#duration-minutes').val();
+      } else {
+        obj[changed.id.split('-')[1]] = $(changed).val();
+      }
+
+      this.deal.set(obj);
     },
 
     /*
@@ -32,7 +69,9 @@ define([
      *         elements, extract input, and compute the start time as a
      *         Javascript date.
      */
-    computeStart: function(startDayEl, startTimeEl) {
+    computeStart: function() {
+      var startDayEl = this.$el.find('#start-day-group');
+      var startTimeEl = this.$el.find('#start-time-group');
       var dayInputEl = startDayEl.find('select[name="start-day"]');
       var hoursInputEl = startTimeEl.find('select[name="start-hours"]');
       var minutesInputEl = startTimeEl.find('select[name="start-minutes"]');
@@ -54,10 +93,19 @@ define([
      * @desc: Utility function to take the duration-group element, extract
      *        input, and compute the duration.
      */
-    computeDuration: function(durationEl) {
+    computeDuration: function() {
+      var durationEl = this.$el.find('#duration-group');
       var minutesEl = durationEl.find('#duration-minutes');
       var hoursEl = durationEl.find('#duration-hours');
       return Number(minutesEl.val()) + 60 * Number(hoursEl.val());
+    },
+
+    computeEnd: function(timeStart, minutes) {
+      if (typeof(timeStart) === 'undefined')
+        timeStart = this.computeStart();
+      if (typeof(minutes) === 'undefined')
+        minutes = this.computeDuration();
+      return timeStart.getTime() + minutes * 60000;
     },
 
     /*
@@ -69,10 +117,9 @@ define([
     validateStart: function(e) {
       var valid = true;
       var timeArea = this.$el.find('#time-area');
-      var startDayEl = timeArea.find('#start-day-group');
       var startTimeEl = timeArea.find('#start-time-group');
       var startGroups = timeArea.find('#start-day-group').add('#start-time-group');
-      var startTime = this.computeStart(startDayEl, startTimeEl);
+      var startTime = this.computeStart();
       if (0 < (startTime - Date.now())) {
         startGroups.removeClass('has-error');
         this.$el.find('#start-validation-error').remove();
@@ -169,7 +216,7 @@ define([
     validateDuration: function(e) {
       var valid = true;
       var durationEl = this.$el.find('#duration-group');
-      var duration = this.computeDuration(durationEl);
+      var duration = this.computeDuration();
 
       if (duration > 0) {
         durationEl.removeClass('has-error');
@@ -282,6 +329,36 @@ define([
           && maxDealsValid && photoValid);
     },
 
+    populateFromModel: function() {
+      if (this.deal) {
+        this.$el.find('#deal-title').val(this.deal.get('title'));
+        this.$el.find('#deal-subtitle').val(this.deal.get('subtitle'));
+        this.$el.find('#deal-desc').val(this.deal.get('desc'));
+        if (this.photo)
+          vent.trigger('photoChangedTrigger', this.photo);
+        /* Restore start time and duration values from cache */
+        if (this.cache['start-day']) {
+          this.$el.find('#start-day').val(this.cache['start-day']);
+          this.$el.find('#start-hours').val(this.cache['start-hours']);
+          this.$el.find('#start-minutes').val(this.cache['start-minutes']);
+          this.$el.find('#start-am-pm').val(this.cache['start-am-pm']);
+        }
+        if (this.cache['duration-hours']) {
+          this.$el.find('#duration-hours').val(this.cache['duration-hours']);
+          this.$el.find('#duration-minutes').val(this.cache['duration-minutes']);
+        }
+        /* End */
+        var maxDeals = this.deal.get('max_deals');
+        if (maxDeals === -1) {
+          this.$el.find('input:radio[value="unlimited"]').prop('checked', true);
+        } else if (maxDeals !== undefined) {
+          this.$el.find('input:radio[value="limited"]').prop('checked', true);
+          this.changeMaxDealsState();
+          this.$el.find('#max-deals-number').val(maxDeals);
+        }
+      }
+    },
+
     render: function() {
       this.$el.html(_.template($(this.template).html()));
       var currDate = new Date();
@@ -303,21 +380,24 @@ define([
                          possibleDay.getDate().toString() + '</option>');
       }
 
-      this.$el.find('input:radio[name="limit"]').change(
-        function() {
-          if ($(this).is(':checked') && (this).value == 'limited') {
-            $('#max-deals-number').prop('disabled', false);
-            $('#max-deals-number').attr('placeholder', '1  --  500');
-            $('#max-deals-number').attr('maxlength', '3');
-          }
-          if ($(this).is(':checked') && (this).value == 'unlimited') {
-            $('#max-deals-number').prop('disabled', true);
-            $('#max-deals-number').attr('placeholder', 'Unlimited');
-            $('#max-deals-number').val('');
-          }
-        }
-      );
+      this.populateFromModel();
       return this;
+    },
+
+    changeMaxDealsState: function(e) {
+      console.log('woot');
+      if (this.$el.find('#limited').is(':checked')) {
+        console.log("What");
+        $('#max-deals-number').prop('disabled', false);
+        $('#max-deals-number').attr('placeholder', '100');
+        $('#max-deals-number').attr('maxlength', '3');
+      }
+      else if (this.$el.find('#unlimited').is(':checked')) {
+        console.log("Whoo");
+        $('#max-deals-number').prop('disabled', true);
+        $('#max-deals-number').attr('placeholder', 'Unlimited');
+        $('#max-deals-number').val('');
+      }
     },
 
     /*
@@ -336,8 +416,17 @@ define([
      */
     photoChanged: function(photo) {
       this.photo = photo;
-      this.$el.find('#deal-photo').attr('src', photo.get('photo'));
+      this.deal.set('photo', photo);
+      this.$el.find('#deal-photo').attr('src', this.photo.get('photo'));
       this.$el.find('#deal-photo').css('display', 'block');
+    },
+
+    getMaxDeals: function() {
+      var maxDeals = -1;
+      var limitRadio = this.$el.find('input:radio[value="limited"]');
+      if (limitRadio.is(':checked'))
+        maxDeals = Number(this.$el.find('#max-deals-number').val());
+      return maxDeals;
     },
 
     createDeal: function(e) {
@@ -372,19 +461,11 @@ define([
       newModel['subtitle'] = formValues['deal-subtitle'];
       newModel['desc'] = formValues['desc'];
       var timeEnd = new Date();
-      var timeStart = this.computeStart(this.$el.find('#start-day-group'),
-                                        this.$el.find('#start-time-group'));
-      var minutes = this.computeDuration(this.$el.find('#duration-group'));
-      timeEnd.setTime(timeStart.getTime() + minutes * 60000);
+      var timeStart = this.computeStart();
       newModel['time_start'] = timeStart.toISOString();
-      newModel['time_end'] = timeEnd.toISOString();
-      var maxDeals = -1;
-      var limitRadio = this.$el.find('input:radio[value="limited"]');
+      newModel['time_end'] = this.computeEnd(timeStart).toISOString();
 
-      if (limitRadio.is(':checked')) {
-        maxDeals = Number(formValues['max-deals']);
-      }
-      newModel['max_deals'] = maxDeals;
+      newModel['max_deals'] = this.getMaxDeals();
       newModel['instructions'] = 'Show to waiter';
 
       newModel['photo'] = this.photo;

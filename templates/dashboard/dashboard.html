@@ -166,7 +166,7 @@
           <label class="col-sm-2 control-label">Do you want to limit the total number of deals that can be claimed?</label>
           <div id="max-deals" class="col-sm-3">
             <label class="radio-inline">
-              <input type="radio" name="limit" value="limited"> Yes
+              <input type="radio" name="limit" value="limited"id="limited"> Yes
             </label>
             <label class="radio-inline">
               <input type="radio" name="limit" value="unlimited" id="unlimited"> No
@@ -176,7 +176,7 @@
         <div class="form-group" id="max-deals-group">
           <label for="max-deals-number" class="col-sm-2 control-label">Maximum number of deals</label>
           <div class="col-sm-2">
-            <input id="max-deals-number" class="form-control" name="max-deals" type="text" size="3" placeholder="Unlimited" disabled>
+            <input id="max-deals-number" class="form-control" name="max-deals" type="text" size="3">
           </div>
         </div>
       </div>
@@ -184,7 +184,7 @@
         <div class="form-group">
           <label for="desc" class="col-sm-2 control-label">Extra information (optional)</label>
           <div class="col-sm-6">
-            <textarea name="desc" class="form-control" rows="3" placeholder="While you're here, try our specialty salad!"></textarea>
+            <textarea name="desc" id="deal-desc" class="form-control" rows="3" placeholder="While you're here, try our specialty salad!"></textarea>
           </div>
           <p class="help-block col-sm-offset-2 col-sm-6">
             Feel free to include anything you want your customers to know before they claim the deal. Take note: we already show users your address, website, phone number, and Yelp page.
