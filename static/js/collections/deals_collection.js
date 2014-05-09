@@ -36,7 +36,6 @@ define([
     // Potential for web-iphone synchronization issues.
     scheduled: function() {
       return this.filter(function(deal) {
-        console.log(deal.get('stage'));
         return (deal.get('stage') == 0); 
       });
     },
