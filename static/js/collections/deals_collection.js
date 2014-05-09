@@ -27,9 +27,14 @@ define([
     initialize: function(models, options) {
       this.vendorId = options.vendorId || -1;
       this.url = '/api/v1/vendor/' + this.vendorId + '/deals/';
-      if(options.listenForCreate == true) {
+      if(options.listenForChanges == true) {
         vent.on('createDealTrigger', this.create, this);
+        vent.on('cancelDealTrigger', this.cancel, this);
       }
+    },
+
+    cancel: function(model) {
+      model.destroy();
     },
 
     // Filter collection to include only deals that have not started.

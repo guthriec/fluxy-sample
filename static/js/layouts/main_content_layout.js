@@ -51,7 +51,6 @@ define([
     },
 
     showReview: function() {
-      console.log(this.reviewCollectionView);
       this.dashboard.show(this.reviewCollectionView);
     },
 

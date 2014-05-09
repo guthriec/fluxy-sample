@@ -1,8 +1,8 @@
 from datetime import datetime
 from dateutil import parser
-from deals.api_tools import make_get_response, make_post_response, \
-                            make_put_response, list_from_qset, \
-                            custom_serialize
+from deals.api_tools import make_get_response, make_delete_response, \
+                            make_post_response, make_put_response, \
+                            list_from_qset, custom_serialize
 from deals.decorators import api_login_required, api_vendor_required
 from deals.models import ClaimedDeal, Deal, Vendor, VendorPhoto
 from deals.forms import VendorForm

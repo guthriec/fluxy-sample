@@ -30,8 +30,8 @@ define([
       var data = this.model.toJSON();
       var start_date = new Date(data.time_start);
       var end_date = new Date(data.time_end);
-      data.pretty_time_start = FluxyTime.getDateString(start_date); 
-      data.pretty_time_end = FluxyTime.getDateString(end_date); 
+      data.pretty_time_start = FluxyTime.getDateStringHTML(start_date); 
+      data.pretty_time_end = FluxyTime.getDateStringHTML(end_date); 
       return data;
     }
   });
