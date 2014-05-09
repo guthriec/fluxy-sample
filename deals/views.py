@@ -147,8 +147,8 @@ def vendor_photo(request, vendor_id, photo_id=None):
         'detail': 'Successfully deleted photo.'}))
 
 @csrf_exempt
-@require_http_methods(["GET", "POST", "PUT"])
-@api_vendor_required(["POST"])
+@require_http_methods(["GET", "POST", "PUT", "DELETE"])
+@api_vendor_required(["POST", "PUT", "DELETE"])
 def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
   """
   @author: Chris, Ayush
@@ -208,7 +208,7 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
     single_deal_list = custom_serialize([deal])
     return make_put_response(single_deal_list, known_error)
 
-  else:
+  elif request.method == 'POST':
     # ---- POST ----
     deal = None
     deal_id = -1
@@ -227,6 +227,17 @@ def vendor_deals(request, vendor_id, deal_id=None, active_only=True):
     except Exception:
       known_error={ 'status': 400, 'detail': 'Bad deal POST' }
     return make_post_response(deal_list, 'deals/' + str(deal_id), known_error)
+  else:
+    # ---- DELETE ----
+    try:
+      deal = Deal.objects.get(pk=deal_id)
+      deal.cancelled = True
+      deal.save()
+    except Deal.DoesNotExist:
+      known_error = { 'status': 404,
+                      'error': 'Resource not found',
+                      'detail': 'No deal of specified id exists' }
+    return make_delete_response(known_error)
 
 @require_http_methods(['GET'])
 @api_vendor_required(['GET'])

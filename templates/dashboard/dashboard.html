@@ -45,12 +45,34 @@
   <script type="text/template" id="modal-content-template">
     <div id="modal"></div>
   </script>
-
+  
+  <script type="text/template" id="empty-review-template">
+    <h2>No deals currently scheduled!</h2>
+  </script>
+  
+  <script type="text/template" id="review-collection-template">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Title</th>
+        <th>Subtitle</th>
+        <th>Start Time</th>
+        <th>End Time</th>
+        <th>Deal Maximum</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </script>
+  
   <script type="text/template" id="deal-template">
-    <td><%= title  %></td>
-    <td><%= desc  %></td>
+    <td><img src="<%= photo.claimed_thumb %>"</td>
+    <td><%= title %></td>
+    <td><%= subtitle %></td>
     <td><%= time_start  %></td>
     <td><%= time_end  %></td>
+    <td><%= max_deals %></td>
   </script>
 
   <script type="text/template" id="deals-collection-template">

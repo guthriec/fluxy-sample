@@ -124,8 +124,8 @@ Deals have 4 stages:
   * GET returns all active deals associated with {id}, with no embedded vendor object. Returns 200 on success. POST creates a deal associated with {id}, returns 201 on success. If user does not have POST permissions for {id}, returns 403. If no vendor of {id} exists returns 404.
 
 * ``` /vendor/{id}/deals/{id} ```
-  * Accepts GET, PUT.
-  * Get returns deal associated with {id} with no embedded vendor object. Returns 200 on success. If user does not have PUT permissions, returns 403. If no vendor of {id} exists, returns 404. If no deal of {id} exists on a PUT request, returns 404.
+  * Accepts GET, PUT, DELETE.
+  * Get returns deal associated with {id} with no embedded vendor object. Returns 200 on success. If user does not have PUT or DELETE permissions, returns 403. If no vendor of {id} exists, returns 404. If no deal of {id} exists on a PUT or DELETE request, returns 404.
 
 * ``` /vendor/{id}/deals/all ```
   * Accepts GET.
