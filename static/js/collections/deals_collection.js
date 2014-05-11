@@ -36,6 +36,7 @@ define([
     createAndFetch: function(model) {
       var self = this;
       this.create(model, {
+        wait: true,
         success: function(resp) {
           console.log('deal created - refreshing collection');
           self.fetch(); 
@@ -46,6 +47,7 @@ define([
     cancelAndFetch: function(model) {
       var self = this;
       model.destroy({
+        wait: true,
         success: function(model, response) {
           console.log('deal cancelled - refreshing collection');
           self.fetch();
@@ -71,9 +73,6 @@ define([
                                                       this.vendorId });
       var self = this;
       scheduledCollection.listenTo(self, 'reset sync', function() {
-        console.log('resetting scheduled collection');
-        console.log(self);
-        console.log(this);
         this.reset(self.scheduled(), { 'vendorId' : self.vendorId });
       });
       return scheduledCollection;
