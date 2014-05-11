@@ -99,7 +99,7 @@
   </script>
 
   <script type="text/template" id="deal-create-form-template">
-    <form action="#" id="deal-form" class="form-horizontal" role="form" onsubmit="console.log('poop');">
+    <form action="#" id="deal-form" class="form-horizontal" role="form" onsubmit="return false();">
       <div class="form-area">
         <div id="title-group" class="form-group">
           <label for="deal-title" class="col-sm-2 control-label">Title</label>
@@ -127,7 +127,7 @@
           <label for="title" class="col-sm-2 control-label">Photo</label>
           <div id="photo-container" class="col-sm-6">
             <img class="img-responsive" id="deal-photo">
-            <button class="btn" class="col-sm-offset-2 col-sm-6" id="change-photo-btn">
+            <button type="button" class="btn" class="col-sm-offset-2 col-sm-6" id="change-photo-btn">
               Change Photo
             </button>
           </div>
@@ -226,7 +226,7 @@
       <div class="form-area">
         <div class="form-group" id="button-group">
           <div class="col-sm-offset-2 col-sm-6">
-          <button id="submit-btn" class="btn btn-success btn-lg">Review and schedule</button>
+          <button type="button" id="submit-btn" class="btn btn-success btn-lg">Review and schedule</button>
           </div>
         </div>
       </div>
