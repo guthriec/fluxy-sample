@@ -196,6 +196,7 @@ class Deal(models.Model):
         'max_deals': self.max_deals,
         'claimed_count': self.claimeddeal_set.count(),
         'instructions': self.instructions,
+        'photo': self.photo.natural_key(),
     }
 
 
