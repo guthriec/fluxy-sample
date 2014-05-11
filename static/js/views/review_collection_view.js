@@ -9,9 +9,9 @@ define([
   'views/deal_review_view',
 ], function(Marionette, DealReviewView) {
   var ReviewCollectionView = Marionette.CompositeView.extend({
-    tagname: 'table',
     id: 'review-list-view',
-    className: 'table table-striped table-bordered',
+    
+    className: 'list-container',
 
     getTemplate: function() {
       if (this.collection.length == 0) {
