@@ -28,7 +28,6 @@ define([
     },
 
     doNotSubmit: function(e) {
-      console.log('tried to submit the form!');
       e.preventDefault();
     },
      
@@ -333,7 +332,6 @@ define([
      */
     changePhoto: function(e) {
       e.preventDefault();
-      console.log('change photo event fired');
       vent.trigger('changePhotoTrigger', { });
     },
 
@@ -349,7 +347,6 @@ define([
 
     createDeal: function(e) {
       e.preventDefault();
-      console.log('create deal event fired');
       var buttonGroup = this.$el.find('#button-group');
       if (!this.validateAll(e)) {
         buttonGroup.addClass('has-error');

@@ -1,7 +1,7 @@
 /*
- * @author: Ayush
- * @desc: Defines the view that is associated with the DealModel. It represents
- * a DealModel as a <tr> tag.
+ * @author: Chris
+ * @desc: Defines the view that's responsible for rendering a single deal
+ *        for review. It includes functionality for the Cancel Deal button.
  */
 define([
   'marionette',
@@ -22,7 +22,6 @@ define([
 
     cancelDeal: function(e) {
       e.preventDefault();
-      console.log('firing trigger');
       Vent.trigger('cancelDealTrigger', this.model);
       this.$el.find('.cancel-btn').blur();
     },
@@ -32,7 +31,10 @@ define([
       var start_date = new Date(data.time_start);
       var end_date = new Date(data.time_end);
       data.pretty_time_start = FluxyTime.getDateStringHTML(start_date); 
-      data.pretty_time_end = FluxyTime.getDateStringHTML(end_date); 
+      data.pretty_time_end = FluxyTime.getDateStringHTML(end_date);
+      if (data.max_deals == -1) {
+        data.max_deals = "Unlimited";
+      }
       return data;
     }
   });
