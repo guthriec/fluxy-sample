@@ -22,6 +22,7 @@ define([
 
     cancelDeal: function(e) {
       e.preventDefault();
+      console.log('firing trigger');
       Vent.trigger('cancelDealTrigger', this.model);
       this.$el.find('.cancel-btn').blur();
     },

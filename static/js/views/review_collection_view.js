@@ -6,17 +6,30 @@
  */
 define([
   'marionette',
-  'views/deal_review_view'
+  'views/deal_review_view',
 ], function(Marionette, DealReviewView) {
   var ReviewCollectionView = Marionette.CompositeView.extend({
     tagname: 'table',
     id: 'review-list-view',
     className: 'table table-striped table-bordered',
-    template: '#review-collection-template',
+
+    getTemplate: function() {
+      if (this.collection.length == 0) {
+        return "#empty-review-template";
+      } else {
+        return "#review-collection-template";
+      }
+    },
+
     itemView: DealReviewView,
 
     collectionEvents: {
-      "create sync": "render"
+      "all": "templateAndRender"
+    },
+
+    templateAndRender: function(e) {
+      this.template = this.getTemplate();
+      this.render();
     },
 
     appendHtml: function(collectionView, itemView) {

@@ -19,13 +19,19 @@ define([
       'focusout #start-time-group' : 'validateStart',
       'focusout #max-deals-group' : 'validateMaxDeals',
       'click #change-photo-btn': 'changePhoto',
-      'click #submit-btn': 'createDeal'
+      'click #submit-btn': 'createDeal',
+      'submit #deal-form': 'doNotSubmit'
     },
 
     initialize: function() {
       vent.on('photoChangedTrigger', this.photoChanged, this);
     },
 
+    doNotSubmit: function(e) {
+      console.log('tried to submit the form!');
+      e.preventDefault();
+    },
+     
     /*
      * @author: Chris
      * @desc: Utility function to take the start-day-group and start-time-group
@@ -327,6 +333,7 @@ define([
      */
     changePhoto: function(e) {
       e.preventDefault();
+      console.log('change photo event fired');
       vent.trigger('changePhotoTrigger', { });
     },
 
@@ -342,6 +349,7 @@ define([
 
     createDeal: function(e) {
       e.preventDefault();
+      console.log('create deal event fired');
       var buttonGroup = this.$el.find('#button-group');
       if (!this.validateAll(e)) {
         buttonGroup.addClass('has-error');

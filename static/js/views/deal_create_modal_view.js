@@ -54,7 +54,7 @@ define([
 
     createDeal: function() {
       // TODO: send trigger to clear from
-      vent.trigger('createDealTrigger', this.newDeal);
+      vent.trigger('createDealTrigger', this.newDeal, { wait: true });
       this.$el.find('#create-deal-modal').modal('hide');
     }
   });

@@ -134,6 +134,7 @@ class Deal(models.Model):
 
   def get_stage(self):
     if self.cancelled:
+      print 'cancelled!!!'
       return 4 # cancelled
     tz = self.time_start.tzinfo
     now = datetime.datetime.now(tz)
