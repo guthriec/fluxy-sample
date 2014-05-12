@@ -216,6 +216,10 @@ textarea:focus:-moz-placehoder { color:transparent; }
   display: none;
 }
 
+#content .list-container {
+  text-align: center;
+}
+
 #modal .clickable-photo:hover {
   cursor: pointer;
   border: 1px solid #589AD6;

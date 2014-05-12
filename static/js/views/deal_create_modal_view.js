@@ -36,9 +36,9 @@ define([
       }
       var timeStart = new Date(deal.time_start);
       var timeEnd = new Date(deal.time_end);
-      $modal.find('#create-start-time-cell').html(FluxyTime.getDateString(
+      $modal.find('#create-start-time-cell').html(FluxyTime.getDateStringHTML(
                                                             timeStart))
-      $modal.find('#create-end-time-cell').html(FluxyTime.getDateString(
+      $modal.find('#create-end-time-cell').html(FluxyTime.getDateStringHTML(
                                                              timeEnd));
       var d = Math.abs((new Date(deal.time_start)) - (new Date(deal.time_end)));
       var hours = parseInt(d / 3600000);

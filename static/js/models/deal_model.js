@@ -6,5 +6,14 @@
 define([
  'backbone'
 ], function(Backbone) {
-  return Backbone.Model.extend({ });
+  var DealModel = Backbone.Model.extend({
+    parse: function(resp) {
+      if (resp.hasOwnProperty('data')) {
+        return resp.data;
+      } else {
+        return resp;
+      }
+    }
+  });
+  return DealModel; 
 });

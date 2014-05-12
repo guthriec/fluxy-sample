@@ -29,7 +29,7 @@ define([
   DashboardApp.addInitializer(function(options) {
     var mainOpts = {};
     mainOpts.deals = new DealsCollection([], { 'vendorId': vendorId,
-                                           'listenForCreate': true });
+                                           'listenForChanges': true });
     mainOpts.deals.fetch({ reset: true });
 
     var mainContent = new MainContentLayout(mainOpts);

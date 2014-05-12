@@ -19,13 +19,18 @@ define([
       'focusout #start-time-group' : 'validateStart',
       'focusout #max-deals-group' : 'validateMaxDeals',
       'click #change-photo-btn': 'changePhoto',
-      'click #submit-btn': 'createDeal'
+      'click #submit-btn': 'createDeal',
+      'submit #deal-form': 'doNotSubmit'
     },
 
     initialize: function() {
       vent.on('photoChangedTrigger', this.photoChanged, this);
     },
 
+    doNotSubmit: function(e) {
+      e.preventDefault();
+    },
+     
     /*
      * @author: Chris
      * @desc: Utility function to take the start-day-group and start-time-group
