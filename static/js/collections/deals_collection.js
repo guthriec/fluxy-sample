@@ -38,7 +38,6 @@ define([
       this.create(model, {
         wait: true,
         success: function(resp) {
-          console.log('deal created - refreshing collection');
           self.fetch(); 
         }
       });
@@ -49,7 +48,6 @@ define([
       model.destroy({
         wait: true,
         success: function(model, response) {
-          console.log('deal cancelled - refreshing collection');
           self.fetch();
         }
       }); 
@@ -57,7 +55,6 @@ define([
     },
 
     // Filter collection to include only deals that have not started.
-    // Potential for web-iphone synchronization issues.
     scheduled: function() {
       return this.filter(function(deal) {
         return (deal.get('stage') == 0); 

@@ -1,8 +1,8 @@
 /*
  * @author: Chris 
  * @desc: Defines the view that is associated with a collection of 
- * scheduled deals for review. Is
- * responsible for showing all the DealView objects in a <table>.
+ * scheduled deals for review. Is responsible for showing all the DealView
+ * objects in a <table>.
  */
 define([
   'marionette',
