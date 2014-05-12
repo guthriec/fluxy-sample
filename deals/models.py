@@ -193,6 +193,7 @@ class Deal(models.Model):
         'claimed_count': self.claimeddeal_set.count(),
         'instructions': self.instructions,
         'photo': self.photo.natural_key(),
+        'vendor': self.vendor.natural_key(),
     }
 
 
