@@ -11,13 +11,12 @@ define([
   'models/deal_model',
 ], function(FluxyTime, Marionette, vent, DealModel) {
   var DealCreateFormView = Marionette.ItemView.extend({
-
-    deal: new DealModel(),
     cache: { },
     template: '#deal-create-form-template',
 
     events: {
       'focusout #title-group' : 'validateTitleGroup',
+      'focusout #subtitle-group' : 'validateSubtitleGroup',
       'focusout #duration-group' : 'validateStartAndDuration',
       'focusout #start-time-group' : 'validateStart',
       'focusout #max-deals-group' : 'validateMaxDeals',
@@ -60,7 +59,10 @@ define([
         obj[changed.id.split('-')[1]] = $(changed).val();
       }
 
-      this.deal.set(obj);
+      if (this.deal)
+        this.deal.set(obj);
+      else
+        this.deal = new DealModel(obj);
     },
 
     /*
@@ -151,7 +153,7 @@ define([
      */
     validateTitleGroup: function(e) {
       var valid = true;
-      var titleEl = $('#title-group');
+      var titleEl = this.$el.find('#title-group');
       var titleInputEl = titleEl.find('input:text[name="deal-title"]');
       var title = titleInputEl.val();
       if (title.length > 7 && title.length < 16) {
@@ -180,7 +182,7 @@ define([
 
     validateSubtitleGroup: function(e) {
       var valid = true;
-      var subtitleEl = $('#subtitle-group');
+      var subtitleEl = this.$el.find('#subtitle-group');
       var subtitleInputEl = subtitleEl.find('input:text[name="deal-subtitle"]');
       var subtitle = subtitleInputEl.val();
       if (subtitle.length < 41) {
@@ -356,6 +358,7 @@ define([
           this.changeMaxDealsState();
           this.$el.find('#max-deals-number').val(maxDeals);
         }
+        this.validateAll();
       }
     },
 
@@ -379,21 +382,21 @@ define([
                          FluxyTime.monthNames[possibleDay.getMonth()] + ' ' +
                          possibleDay.getDate().toString() + '</option>');
       }
-
+      // This seems to be required to cause the events hash to get
+      // used when the view is rendered for a second time (i.e. after
+      // another tab gets clicked on)
+      this.delegateEvents();
       this.populateFromModel();
       return this;
     },
 
     changeMaxDealsState: function(e) {
-      console.log('woot');
       if (this.$el.find('#limited').is(':checked')) {
-        console.log("What");
         $('#max-deals-number').prop('disabled', false);
         $('#max-deals-number').attr('placeholder', '100');
         $('#max-deals-number').attr('maxlength', '3');
       }
       else if (this.$el.find('#unlimited').is(':checked')) {
-        console.log("Whoo");
         $('#max-deals-number').prop('disabled', true);
         $('#max-deals-number').attr('placeholder', 'Unlimited');
         $('#max-deals-number').val('');
