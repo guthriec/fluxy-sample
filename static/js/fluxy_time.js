@@ -19,7 +19,7 @@ define([
    * @param: date - a Javascript date object
    * @returns: string formatted, e.g., Sunday April 27 2:30 PM
    */
-  FluxyTime.getDateString = function(date) {
+  FluxyTime.getDateStringHTML = function(date) {
     var hours = date.getHours();
     var minutes = date.getMinutes();
     if (minutes < 10) {
@@ -33,7 +33,7 @@ define([
     var month = FluxyTime.monthNames[date.getMonth()];
     var day = date.getDate();
     var dayOfWeek = FluxyTime.dayNames[date.getDay()];
-    return dayOfWeek + " " + month + " " + day + " " + hours +
+    return dayOfWeek + " " + month + " " + day + "<br>" + hours +
              ":" + minutes + " " + amPm;
   };
   

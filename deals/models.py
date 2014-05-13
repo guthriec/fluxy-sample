@@ -127,11 +127,14 @@ class Deal(models.Model):
   desc = models.CharField(max_length=500)
   time_start = models.DateTimeField()
   time_end = models.DateTimeField()
+  cancelled = models.BooleanField(default=False)
   max_deals = models.PositiveIntegerField(default=100)
   instructions = models.CharField(max_length=1000, default="Show to waiter.")
   photo = models.ForeignKey(VendorPhoto)
 
   def get_stage(self):
+    if self.cancelled:
+      return 4 # cancelled
     tz = self.time_start.tzinfo
     now = datetime.datetime.now(tz)
     if self.time_end < now:
@@ -193,6 +196,7 @@ class Deal(models.Model):
         'claimed_count': self.claimeddeal_set.count(),
         'instructions': self.instructions,
         'photo': self.photo.natural_key(),
+        'vendor': self.vendor.natural_key(),
     }
 
 

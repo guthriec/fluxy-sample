@@ -27,16 +27,37 @@ define([
     initialize: function(models, options) {
       this.vendorId = options.vendorId || -1;
       this.url = '/api/v1/vendor/' + this.vendorId + '/deals/';
-      if(options.listenForCreate == true) {
-        vent.on('createDealTrigger', this.create, this);
+      if(options.listenForChanges == true) {
+        vent.on('createDealTrigger', this.createAndFetch, this);
+        vent.on('cancelDealTrigger', this.cancelAndFetch, this);
       }
     },
 
+    createAndFetch: function(model) {
+      var self = this;
+      this.create(model, {
+        wait: true,
+        success: function(resp) {
+          self.fetch(); 
+        }
+      });
+    },
+
+    cancelAndFetch: function(model) {
+      var self = this;
+      model.destroy({
+        wait: true,
+        success: function(model, response) {
+          self.fetch();
+        }
+      }); 
+      this.fetch();
+    },
+
     // Filter collection to include only deals that have not started.
-    // Potential for web-iphone synchronization issues.
     scheduled: function() {
       return this.filter(function(deal) {
-        return 0 < (new Date(deal.get('time_start') - Date.now()));
+        return (deal.get('stage') == 0); 
       });
     },
 
@@ -48,7 +69,7 @@ define([
                                                     { 'vendorId': 
                                                       this.vendorId });
       var self = this;
-      scheduledCollection.listenTo(self, 'add remove reset sync', function() {
+      scheduledCollection.listenTo(self, 'reset sync', function() {
         this.reset(self.scheduled(), { 'vendorId' : self.vendorId });
       });
       return scheduledCollection;
@@ -70,7 +91,7 @@ define([
       var activeCollection = new DealsCollection(filtered, 
                                                  { 'vendorId': this.vendorId });
       var self = this;
-      activeCollection.listenTo(self, 'add remove reset sync', function() {
+      activeCollection.listenTo(self, 'all', function() {
         this.reset(self.active(), { 'vendorId' : self.vendorId });
       });
       return activeCollection;
@@ -92,7 +113,7 @@ define([
                                                   { 'vendorId':
                                                     this.vendorId });
       var self = this;
-      expiredCollection.listenTo(self, 'add remove reset sync', function() {
+      expiredCollection.listenTo(self, 'all', function() {
         this.reset(self.expired(), { 'vendorId' : self.vendorId });
       });
       return expiredCollection;

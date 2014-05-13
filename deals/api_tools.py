@@ -93,6 +93,19 @@ def make_put_response(single_obj_list, known_error=None):
   return HttpResponse(json.dumps(response), content_type="application/json",
                       status=response['status'])
 
+def make_delete_response(known_error=None):
+  response = { 'status': 200,
+               'error': None,
+               'detail': None,
+               'success': True }
+  if known_error:
+    response['status'] = known_error['status']
+    response['error'] = known_error['error']
+    response['detail'] = known_error['detail']
+    response['success'] = False
+  return HttpResponse(json.dumps(response), content_type="application/json",
+                      status=response['status'])
+
 def custom_serialize(qset, options = None):
   """
   @author: Rahul
