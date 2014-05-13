@@ -39,19 +39,24 @@ def make_post_response(obj_list, redirect_addr=None, known_error=None):
 
   @return: JSON HttpResponse with status 200 on sucess otherwise with error
   """
-  response = { 'code': 201,
-               'message': None,
-               'created_object_list': None }
+  response = { 'status': 201,
+               'error': None,
+               'detail': None,
+               'data': None,
+               'success': True }
   if known_error:
-    response['code'] = known_error['code']
-    response['message'] = known_error['message']
-  response['created_object_list'] = obj_list
+    response['status'] = known_error['status']
+    response['detail'] = known_error['detail']
+    response['success'] = False
+  response['data'] = obj_list
   if redirect_addr:
-    return HttpResponseRedirect(redirect_addr, json.dumps(response),\
-                                content_type="application/json", status=response['code'])
+    return HttpResponseRedirect(redirect_addr, json.dumps(response),
+                                content_type="application/json",
+                                status=response['status'])
   else:
-    return HttpResponse(json.dumps(response),\
-                        content_type="application/json", status=response['code'])
+    return HttpResponse(json.dumps(response),
+                        content_type="application/json",
+                        status=response['status'])
 
 def make_get_response(resp_list, known_error=None):
   """
@@ -67,7 +72,7 @@ def make_get_response(resp_list, known_error=None):
             JSON HttpResponse with appropriate error code if known_error
   """
   if known_error:
-    code = known_error['code']
+    code = known_error['status']
     return HttpResponse(json.dumps(known_error),\
                         content_type="application/json", status=code)
   else:
@@ -87,3 +92,16 @@ def make_put_response(single_obj_list, known_error=None):
     response['success'] = False
   return HttpResponse(json.dumps(response), content_type="application/json",
                       status=response['status'])
+
+def custom_serialize(qset, options = None):
+  """
+  @author: Rahul
+  @desc: Helper function to serialize models in a non-standard manner.
+  Expects the model that makes up the passed-in qlist to have a method
+  get_custom_serializable which returns an object with the desired properties.
+
+  @param qset: A query-set containing the objects to be serialized
+
+  @returns: An array of the customized models.
+  """
+  return map(lambda obj: obj.get_custom_serializable(options), qset)

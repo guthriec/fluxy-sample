@@ -5,12 +5,17 @@ require.config({
     bootstrap: 'lib/bootstrap.min',
     domReady: 'lib/domReady',
     jquery: 'lib/jquery-2.1.0.min',
+    'jquery.form': 'lib/jquery.form',
     marionette: 'lib/backbone.marionette.min',
     underscore: 'lib/underscore-1.6.0.min',
   },
   shim: {
     jquery: {
       exports: 'jQuery'
+    },
+    'jquery.form': {
+      deps: ['jquery'],
+      exports: 'jQuery.form'
     },
     bootstrap: {
       deps: ['jquery']
@@ -30,7 +35,7 @@ require.config({
 });
 
 require([
-  'dashboard',
+  'dashboard_app',
   'analytics',
   'domReady!'], function(DashboardApp, Analytics) {
   Analytics.start();

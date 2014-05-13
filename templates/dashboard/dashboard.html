@@ -42,6 +42,10 @@
     <div id="dashboard"></div>
   </script>
 
+  <script type="text/template" id="modal-content-template">
+    <div id="modal"></div>
+  </script>
+
   <script type="text/template" id="deal-template">
     <td><%= title  %></td>
     <td><%= desc  %></td>
@@ -87,9 +91,35 @@
         <div id="title-group" class="form-group">
           <label for="deal-title" class="col-sm-2 control-label">Title</label>
           <div id="deal-title-container" class="col-sm-6">
-            <input name="deal-title" id="deal-title" type="text" class="form-control" placeholder="40% off all non-alcoholic drinks">
+            <input name="deal-title" id="deal-title" type="text"
+                class="form-control" placeholder="40% off drinks">
           </div>
-          <p class="help-block col-sm-offset-2 col-sm-6">A short, to-the-point description of the deal. This will be displayed as-is to users, so pay attention to capitalization, punctuation, etc.</p>
+          <p class="help-block col-sm-offset-2 col-sm-6">A short title.
+          (Between 8 and 15 characters)</p>
+        </div>
+        <div id="subtitle-group" class="form-group">
+          <label for="deal-subtitle" class="col-sm-2 control-label">
+            Subtitle
+          </label>
+          <div id="deal-subtitle-container" class="col-sm-6">
+              <input name="deal-subtitle" id="deal-subtitle" type="text"
+              class="form-control" placeholder="Get cheap drinks with the purchase of any meal">
+          </div>
+          <p class="help-block col-sm-offset-2 col-sm-6">An optional subtitle
+          up to 40 characters. Typically one sentence.</p>
+        </div>
+      </div>
+      <div class="form-area">
+        <div id="photo-group" class="form-group">
+          <label for="title" class="col-sm-2 control-label">Photo</label>
+          <div id="photo-container" class="col-sm-6">
+            <img class="img-responsive" id="deal-photo">
+            <button class="btn" class="col-sm-offset-2 col-sm-6" id="change-photo-btn">
+              Change Photo
+            </button>
+          </div>
+          <p class="help-block col-sm-offset-2 col-sm-6">Choosing an attractive
+          photo is important to entice customers to check out your deal.</p>
         </div>
       </div>
       <div id="time-area" class="form-area">
@@ -151,24 +181,6 @@
         </div>
       </div>
       <div class="form-area">
-        <div class="form-group">
-          <label class="col-sm-2 control-label">Is the deal for sit-down service?</label>
-          <div id="sit-down" class="col-sm-4 controls">
-            <label class="radio-inline">
-              <input type="radio" name="sit-down" value="y"> Yes
-            </label>
-            <label class="radio-inline">
-              <input type="radio" name="sit-down" value="n"> No
-            </label>
-          </div>
-        </div>
-        <div class="form-group">
-          <p class="help-block col-sm-offset-2 col-sm-6" id="grace-period-help">
-            For sit-down meals, according to our policies, <strong>customers may apply a previously claimed deal up to 2 hours after the deal ends</strong>, so plan accordingly. (During this period, no new deals can be claimed.) This policy allows your customers to enjoy their meals and apply the deal after eating.
-          </p>
-        </div>
-      </div>
-      <div class="form-area">
         <div class="form-group" id="max-deals-radio">
           <label class="col-sm-2 control-label">Do you want to limit the total number of deals that can be claimed?</label>
           <div id="max-deals" class="col-sm-3">
@@ -208,7 +220,50 @@
     </form>
   </script>
 
-  <script type="text/template" id="create-deal-modal-template">
+  <script type="text/template" id="photos-collection-modal-template">
+    <div class="modal fade" id="change-photo-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"
+              aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Choose Deal Photo</h4>
+          </div>
+          <div class="modal-body" id="photos-modal-content">
+            <div class="container-fluid">
+              <div id="photos-container" class="row">
+                <div class="col-lg-4 col-md-4 col-xs-12 thumb">
+                  <form enctype="multipart/form-data"
+                    action="/api/v1/vendor/{{ vendor_id }}/photos/"
+                    id="upload-photo-form" method="post">
+                    <label id="photo-upload-placeholder" for="photo-input">
+                      <img class="img-responsive clickable-photo thumbnail"
+                      src="/static/img/UploadPlaceholder.jpg">
+                    </label>
+                    <input type="file" name="photo" id="photo-input"
+                    style="display: none" />
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer" id="photos-modal-footer">
+            <button type="button" class="btn btn-primary"
+              data-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </script>
+
+  <script type="text/template" id="photo-template">
+    <div class="col-lg-4 col-md-4 col-xs-12 thumb">
+      <img class="img-responsive photos-modal-photo clickable-photo thumbnail"
+        src="<%= thumb %>">
+    </div>
+  </script>
+
+  <script type="text/template" id="deal-create-modal-template">
     <div class="modal fade" id="create-deal-modal">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -218,23 +273,31 @@
           <div class="modal-body">
             <table>
               <tr id="create-title">
-                <td>Title:</td>
+                <td>Title: </td>
                 <td id="create-title-cell"></td>
               </tr>
+              <tr id="create-subtitle">
+                <td>Subtitle: </td>
+                <td id="create-subtitle-cell"></td>
+              </tr>
+              <tr id="photo">
+                <td>Photo: </td>
+                <td><img id="create-photo-cell" src="" ></td>
+              </tr>
               <tr id="create-start-time">
-                <td>Starts:</td>
+                <td>Starts: </td>
                 <td id="create-start-time-cell"></td>
               </tr>
               <tr id="create-end-time">
-                <td>Ends:</td>
+                <td>Ends: </td>
                 <td id="create-end-time-cell"></td>
               </tr>
               <tr id="create-max-deals">
-                <td>Maximum number of deals:</td>
+                <td>Maximum number of deals: </td>
                 <td id="create-max-deals-cell"></td>
               </tr>
               <tr id="create-extra-info">
-                <td>Extra information:</td>
+                <td>Extra information: </td>
                 <td id="create-extra-info-cell"></td>
               </tr>
             </table>

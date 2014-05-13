@@ -1,6 +1,6 @@
 /*
  * @author: Chris, Ayush
- * @desc: a Marionette layout that warps the main content of the dashboard.
+ * @desc: a Marionette layout that wraps the main content of the dashboard.
  *        Expects to be initalized with a complete set of collections for
  *        every dashboard view. Handles navigation within the dashboard.
  */

@@ -8,8 +8,8 @@ define([
   'bootstrap',
   'fluxy_time'
 ], function(Marionette, vent, Bootstrap, FluxyTime) {
-  var ModalControllerView = Marionette.ItemView.extend({
-    template: '#create-deal-modal-template',
+  var DealCreateModalView = Marionette.ItemView.extend({
+    template: '#deal-create-modal-template',
 
     events: {
       'click #create-deal-modal #create-btn': 'createDeal',
@@ -26,6 +26,8 @@ define([
       var $modal = this.$el.find('#create-deal-modal');
 
       $modal.find('#create-title-cell').html(deal.title);
+      $modal.find('#create-subtitle-cell').html(deal.subtitle);
+      $modal.find('#create-photo-cell').attr('src', deal.photo.get('thumb'));
       $modal.find('#create-extra-info-cell').html(deal.desc);
       if (deal.max_deals > 0) {
         $modal.find('#create-max-deals-cell').html(deal.max_deals);
@@ -35,7 +37,7 @@ define([
       var timeStart = new Date(deal.time_start);
       var timeEnd = new Date(deal.time_end);
       $modal.find('#create-start-time-cell').html(FluxyTime.getDateString(
-                                                            timeStart)) 
+                                                            timeStart))
       $modal.find('#create-end-time-cell').html(FluxyTime.getDateString(
                                                              timeEnd));
       var d = Math.abs((new Date(deal.time_start)) - (new Date(deal.time_end)));
@@ -57,5 +59,5 @@ define([
     }
   });
 
-  return ModalControllerView;
+  return DealCreateModalView;
 });

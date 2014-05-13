@@ -18,7 +18,12 @@ define([
       'focusout #duration-group' : 'validateStartAndDuration',
       'focusout #start-time-group' : 'validateStart',
       'focusout #max-deals-group' : 'validateMaxDeals',
+      'click #change-photo-btn': 'changePhoto',
       'click #submit-btn': 'createDeal'
+    },
+
+    initialize: function() {
+      vent.on('photoChangedTrigger', this.photoChanged, this);
     },
 
     /*
@@ -75,8 +80,8 @@ define([
         startGroups.addClass('has-error');
 
         if (this.$el.find('#start-validation-error').length == 0) {
-          startTimeEl.append('<p id="start-validation-error" ' + 
-                             'class="help-block col-sm-offset-2 col-sm-6">' + 
+          startTimeEl.append('<p id="start-validation-error" ' +
+                             'class="help-block col-sm-offset-2 col-sm-6">' +
                              'Start time must be in the future!</p>');
         valid = false;
         }
@@ -102,7 +107,7 @@ define([
       var titleEl = $('#title-group');
       var titleInputEl = titleEl.find('input:text[name="deal-title"]');
       var title = titleInputEl.val();
-      if (title.length > 7) {
+      if (title.length > 7 && title.length < 16) {
         titleEl.removeClass('has-error');
         this.$el.find('#title-validation-error').remove();
       } else {
@@ -112,8 +117,8 @@ define([
           this.$el.find('#deal-title-container').after(
                                              '<p id="title-validation-error" ' +
                                              'class="help-block col-sm-offset-2' +
-                                             ' col-sm-6">Deal title must be at ' +
-                                             'least 8 characters long.</p>');
+                                             ' col-sm-6">Deal title must be ' +
+                                             'between 8 and 15 characters in length.</p>');
         }
         valid = false;
       }
@@ -121,6 +126,35 @@ define([
       // feedback while editing the form
       this.events['keyup #title-group'] = 'validateTitleGroup';
       delete this.events['focusout #title-group'];
+      // Register changes made to events
+      this.delegateEvents();
+      return valid;
+    },
+
+    validateSubtitleGroup: function(e) {
+      var valid = true;
+      var subtitleEl = $('#subtitle-group');
+      var subtitleInputEl = subtitleEl.find('input:text[name="deal-subtitle"]');
+      var subtitle = subtitleInputEl.val();
+      if (subtitle.length < 41) {
+        subtitleEl.removeClass('has-error');
+        this.$el.find('#subtitle-validation-error').remove();
+      } else {
+        subtitleEl.addClass('has-error');
+        var errorEl = this.$el.find('#subtitle-validation-error');
+        if (errorEl.length == 0) {
+          this.$el.find('#deal-subtitle-container').after(
+                                             '<p id="subtitle-validation-error" ' +
+                                             'class="help-block col-sm-offset-2' +
+                                             ' col-sm-6">Subtitle must be less ' +
+                                             'than 40 characters in length.</p>');
+        }
+        valid = false;
+      }
+      // Attach event handlers to validate on any change, giving user immediate
+      // feedback while editing the form
+      this.events['keyup #subtitle-group'] = 'validateSubtitleGroup';
+      delete this.events['focusout #subtitle-group'];
       // Register changes made to events
       this.delegateEvents();
       return valid;
@@ -167,7 +201,7 @@ define([
       this.validateStart(e);
       this.validateDuration(e);
     },
-    
+
     /*
      * @author: Chris
      * @desc: Event handler to extract the input for maximum number of deals,
@@ -218,12 +252,34 @@ define([
       return valid;
     },
 
+    validatePhoto: function(e) {
+      photoEl = this.$el.find('#photo-group');
+      photoContainer = this.$el.find('#photo-container');
+      if (this.photo) {
+        photoEl.removeClass('has-error');
+        this.$el.find('#photo-validation-error').remove();
+        return true;
+      } else {
+        var errorEl = this.$el.find('#photo-validation-error');
+        if (errorEl.length == 0) {
+          photoEl.addClass('has-error');
+          photoContainer.after('<p id="photo-validation-error" ' +
+                               'class="help-block col-sm-6 col-sm-offset-2">' +
+                               'Must choose a deal photo</p>');
+        }
+        return false;
+      }
+    },
+
     validateAll: function(e) {
       var startValid = this.validateStart(e);
       var titleValid = this.validateTitleGroup(e);
+      var subtitleValid = this.validateSubtitleGroup(e);
       var durationValid = this.validateDuration(e);
       var maxDealsValid = this.validateMaxDeals(e);
-      return (startValid && titleValid && durationValid && maxDealsValid);
+      var photoValid = this.validatePhoto(e);
+      return (startValid && titleValid && subtitleValid && durationValid
+          && maxDealsValid && photoValid);
     },
 
     render: function() {
@@ -264,6 +320,26 @@ define([
       return this;
     },
 
+    /*
+     * @author: Rahul
+     * @desc: Triggers an event on the dashboard that shows the photo picker
+     * modal.
+     */
+    changePhoto: function(e) {
+      e.preventDefault();
+      vent.trigger('changePhotoTrigger', { });
+    },
+
+    /*
+     * @author: Rahul
+     * @desc: Change displayed photo.
+     */
+    photoChanged: function(photo) {
+      this.photo = photo;
+      this.$el.find('#deal-photo').attr('src', photo.get('photo'));
+      this.$el.find('#deal-photo').css('display', 'block');
+    },
+
     createDeal: function(e) {
       e.preventDefault();
       var buttonGroup = this.$el.find('#button-group');
@@ -293,6 +369,7 @@ define([
         formValues[this.name] = this.value;
       });
       newModel['title'] = formValues['deal-title'];
+      newModel['subtitle'] = formValues['deal-subtitle'];
       newModel['desc'] = formValues['desc'];
       var timeEnd = new Date();
       var timeStart = this.computeStart(this.$el.find('#start-day-group'),
@@ -309,6 +386,9 @@ define([
       }
       newModel['max_deals'] = maxDeals;
       newModel['instructions'] = 'Show to waiter';
+
+      newModel['photo'] = this.photo;
+
       vent.trigger('createDealConfirmTrigger', newModel);
       this.$el.find('#submit-btn').blur();
     }

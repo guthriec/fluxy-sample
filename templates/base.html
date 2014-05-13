@@ -25,6 +25,22 @@
           <div id="page-title">{{ page_title }}</div>
           <div id="account-links">
             {% if user.is_authenticated %}
+              {% if user.vendors.all.length > 0 %}
+              <div class="btn-group">
+                <a href="/vendors/{{ user.vendors.first.id }}/"
+                  class="btn btn-default">{{ user.vendors.first.name }}</a>
+                <button type="button" class="btn btn-default dropdown-toggle"
+                  data-toggle="dropdown">
+                  <span class="caret"></span>
+                  <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  {% for vendor in user.vendors.all %}
+                    <li><a href="/vendors/{{ vendor.id }}/">{{ vendor.name }}</a></li>
+                  {% endfor %}
+                </ul>
+              </div>
+              {% endif %}
             <a class="btn btn-default btn-navbar" href="{% url 'fluxy.views.logout_page' %}">Logout</a>
             {% elif page_title != 'Login'  %}
             <a class="btn btn-default btn-navbar" href="{% url 'fluxy.views.login_page' %}">Login</a>
@@ -35,7 +51,7 @@
       <div id="content">
         {% block content %}{% endblock %}
       </div>
-      
+
       {% block js %}{% endblock %}
 
     </body>
