@@ -106,7 +106,7 @@ define([
         timeStart = this.computeStart();
       if (typeof(minutes) === 'undefined')
         minutes = this.computeDuration();
-      return timeStart.getTime() + minutes * 60000;
+      return new Date(timeStart.getTime() + minutes * 60000);
     },
 
     /*
