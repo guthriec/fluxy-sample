@@ -1,7 +1,6 @@
 /*
- * @author: Ayush, Chris
- * @desc: Defines the model that represents the deal that is going to be
- * displayed.
+ * @author: Chris
+ * @desc: Defines the model that represents user feedback 
  */
 define([
  'backbone'

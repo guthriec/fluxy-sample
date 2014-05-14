@@ -1,7 +1,7 @@
 /*
  * @author: Chris
- * @desc: Defines the view that's responsible for rendering a single deal
- *        for review. It includes functionality for the Cancel Deal button.
+ * @desc: Defines the view that's responsible for rendering the feedback
+ *        form and submitting it. 
  */
 define([
   'marionette',
