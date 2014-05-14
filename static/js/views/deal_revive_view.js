@@ -1,7 +1,7 @@
 /*
  * @author: Ayush
- * @desc: Defines the view that is associated with the DealModel. It represents
- * a DealModel as a <tr> tag.
+ * @desc: Defines a view that is associated with the DealModel, with 
+ *        functionality to revive a deal.
  */
 define([
   'marionette',

@@ -4,10 +4,9 @@
  * responsible for showing all the DealView objects in a <table>.
  */
 define([
-  'jquery',
   'marionette',
   'views/deal_view'
-], function($, Marionette, DealView) {
+], function(Marionette, DealView) {
   var DealsCollectionView = Marionette.CompositeView.extend({
     tagname: 'table',
     id: 'deals-list-view',
