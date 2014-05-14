@@ -37,7 +37,6 @@ define([
     },
 
     updateModel: function(e) {
-      superduper = this.deal;
       var changed = e.currentTarget;
 
       var obj = { };
@@ -463,9 +462,7 @@ define([
       newModel['title'] = formValues['deal-title'];
       newModel['subtitle'] = formValues['deal-subtitle'];
       newModel['desc'] = formValues['desc'];
-      var timeEnd = new Date();
-      var timeStart = this.computeStart();
-      newModel['time_start'] = timeStart.toISOString();
+      newModel['time_start'] = this.computeStart().toISOString();
       newModel['time_end'] = this.computeEnd(timeStart).toISOString();
 
       newModel['max_deals'] = this.getMaxDeals();
