@@ -418,6 +418,8 @@ define([
      */
     photoChanged: function(photo) {
       this.photo = photo;
+      if (!this.deal)
+        this.deal = new DealModel();
       this.deal.set('photo', photo);
       this.$el.find('#deal-photo').attr('src', this.photo.get('photo'));
       this.$el.find('#deal-photo').css('display', 'block');
