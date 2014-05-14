@@ -9,7 +9,7 @@ define([
   'vent',
   'views/deals_collection_view',
   'views/deal_create_form_view',
-  'views/revive_deals_collection_view'
+  'views/revive_deals_collection_view',
   'views/review_collection_view'
 ], function(Marionette, vent, DealsCollectionView, DealCreateFormView,
             DealReviveView, ReviewCollectionView) {
