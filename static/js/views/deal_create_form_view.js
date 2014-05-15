@@ -11,7 +11,6 @@ define([
   'models/deal_model',
 ], function(FluxyTime, Marionette, vent, DealModel) {
   var DealCreateFormView = Marionette.ItemView.extend({
-    cache: { },
     template: '#deal-create-form-template',
 
     events: {
@@ -27,9 +26,11 @@ define([
       'change #deal-title' : 'updateModel',
       'change #deal-subtitle' : 'updateModel',
       'change #deal-desc' : 'updateModel',
+      'focusout #start-day-group' : 'updateModel',
       'focusout #start-time-group' : 'updateModel',
       'focusout #duration-group' : 'updateModel',
-      'change #max-deals-number' : 'updateModel',
+      'focusout #max-deals-radio' : 'updateModel',
+      'change #max-deals-group' : 'updateModel',
     },
 
     initialize: function() {
@@ -40,20 +41,14 @@ define([
       var changed = e.currentTarget;
 
       var obj = { };
-      if (changed.id == 'max-deals-number') {
+      if (changed.id == 'max-deals-group' ||
+          changed.id == 'max-deals-radio') {
         obj['max_deals'] = this.getMaxDeals();
-      } else if (changed.id == 'start-time-group') {
+      } else if (changed.id == 'start-time-group' ||
+                 changed.id == 'duration-group' ||
+                 changed.id == 'start-day-group') {
         obj['time_start'] = this.computeStart().toISOString();
-        // Cache elem values
-        this.cache['start-day'] = this.$el.find('#start-day').val();
-        this.cache['start-hours'] = this.$el.find('#start-hours').val();
-        this.cache['start-minutes'] = this.$el.find('#start-minutes').val();
-        this.cache['start-am-pm'] = this.$el.find('#start-am-pm').val();
-      } else if (changed.id == 'duration-group') {
         obj['time_end'] = this.computeEnd().toISOString();
-        // Cache elem values
-        this.cache['duration-hours'] = this.$el.find('#duration-hours').val();
-        this.cache['duration-minutes'] = this.$el.find('#duration-minutes').val();
       } else {
         obj[changed.id.split('-')[1]] = $(changed).val();
       }
@@ -235,7 +230,6 @@ define([
       // Attach event handlers to validate on any change, giving user immediate
       // feedback while editing the form
       this.events['change #duration-group'] = 'validateDuration';
-      delete this.events['focusout #duration-group'];
       // Register changes made to events
       this.delegateEvents();
       return valid;
@@ -276,7 +270,7 @@ define([
         maxDealsRadio.find('#max-deals-radio-validation-error').remove();
       }
 
-      if (this.$el.find('#unlimited').checked ||
+      if (this.$el.find('#unlimited:checked') ||
           (!isNaN(maxDeals) && maxDeals > 0 && maxDeals <= 500)) {
         maxDealsEl.removeClass('has-error');
         maxDealsEl.find('#max-deals-validation-error').remove();
@@ -292,9 +286,10 @@ define([
       }
       // Attach event handlers to validate on any change, giving user immediate
       // feedback while editing the form
-      this.events['keyup #max-deals-group'] = 'validateMaxDeals';
-      this.events['click #max-deals-radio'] = 'validateMaxDeals';
-      delete this.events['focusout #max-deals-group'];
+      // these seem to break things for now
+      // this.events['keyup #max-deals-group'] = 'validateMaxDeals';
+      // this.events['click #max-deals-radio'] = 'validateMaxDeals';
+      // delete this.events['focusout #max-deals-group'];
       // Register changes made to events
       this.delegateEvents();
       return valid;
@@ -303,7 +298,7 @@ define([
     validatePhoto: function(e) {
       photoEl = this.$el.find('#photo-group');
       photoContainer = this.$el.find('#photo-container');
-      if (this.photo) {
+      if (this.deal && this.deal.has('photo')) {
         photoEl.removeClass('has-error');
         this.$el.find('#photo-validation-error').remove();
         return true;
@@ -335,28 +330,38 @@ define([
         this.$el.find('#deal-title').val(this.deal.get('title'));
         this.$el.find('#deal-subtitle').val(this.deal.get('subtitle'));
         this.$el.find('#deal-desc').val(this.deal.get('desc'));
-        if (this.photo)
-          vent.trigger('photoChangedTrigger', this.photo);
-        /* Restore start time and duration values from cache */
-        if (this.cache['start-day']) {
-          this.$el.find('#start-day').val(this.cache['start-day']);
-          this.$el.find('#start-hours').val(this.cache['start-hours']);
-          this.$el.find('#start-minutes').val(this.cache['start-minutes']);
-          this.$el.find('#start-am-pm').val(this.cache['start-am-pm']);
+        if (this.deal.has('photo'))
+          vent.trigger('photoChangedTrigger', this.deal.get('photo'));
+        /* Handling Time */
+        var timeStart = this.deal.get('time_start');
+        if (timeStart) {
+          timeStart = new Date(timeStart);
+          var startDay = new Date(timeStart);
+          startDay.setHours(0);
+          startDay.setMinutes(0);
+          startDay.setMilliseconds(0);
+          this.$el.find('#start-day').val(startDay.getTime());
+          this.$el.find('#start-hours').val(timeStart.getHours() % 12);
+          this.$el.find('#start-minutes').val(timeStart.getMinutes());
+          var am_pm = timeStart.getHours() > 11 ? 'pm' : 'am';
+          this.$el.find('#start-am-pm').val(am_pm);
+
+          var timeEnd = new Date(this.deal.get('time_end'));
+          var dur = new Date(timeEnd - timeStart);
+          var durHours = Math.floor(dur.getTime() / 3600000);
+
+          this.$el.find('#duration-hours').val(durHours);
+          this.$el.find('#duration-minutes').val(dur.getMinutes());
         }
-        if (this.cache['duration-hours']) {
-          this.$el.find('#duration-hours').val(this.cache['duration-hours']);
-          this.$el.find('#duration-minutes').val(this.cache['duration-minutes']);
-        }
-        /* End */
+        /* End time */
         var maxDeals = this.deal.get('max_deals');
         if (maxDeals === -1) {
           this.$el.find('input:radio[value="unlimited"]').prop('checked', true);
         } else if (maxDeals !== undefined) {
           this.$el.find('input:radio[value="limited"]').prop('checked', true);
-          this.changeMaxDealsState();
           this.$el.find('#max-deals-number').val(maxDeals);
         }
+        this.changeMaxDealsState();
         this.validateAll();
       }
     },
@@ -391,14 +396,14 @@ define([
 
     changeMaxDealsState: function(e) {
       if (this.$el.find('#limited').is(':checked')) {
-        $('#max-deals-number').prop('disabled', false);
-        $('#max-deals-number').attr('placeholder', '100');
-        $('#max-deals-number').attr('maxlength', '3');
+        this.$el.find('#max-deals-number').prop('disabled', false);
+        this.$el.find('#max-deals-number').attr('placeholder', '100');
+        this.$el.find('#max-deals-number').attr('maxlength', '3');
       }
       else if (this.$el.find('#unlimited').is(':checked')) {
-        $('#max-deals-number').prop('disabled', true);
-        $('#max-deals-number').attr('placeholder', 'Unlimited');
-        $('#max-deals-number').val('');
+        this.$el.find('#max-deals-number').prop('disabled', true);
+        this.$el.find('#max-deals-number').attr('placeholder', 'Unlimited');
+        this.$el.find('#max-deals-number').val('');
       }
     },
 
@@ -417,11 +422,10 @@ define([
      * @desc: Change displayed photo.
      */
     photoChanged: function(photo) {
-      this.photo = photo;
       if (!this.deal)
         this.deal = new DealModel();
       this.deal.set('photo', photo);
-      this.$el.find('#deal-photo').attr('src', this.photo.get('photo'));
+      this.$el.find('#deal-photo').attr('src', photo.get('photo'));
       this.$el.find('#deal-photo').css('display', 'block');
     },
 
@@ -461,18 +465,8 @@ define([
       $formInputs.each(function() {
         formValues[this.name] = this.value;
       });
-      newModel['title'] = formValues['deal-title'];
-      newModel['subtitle'] = formValues['deal-subtitle'];
-      newModel['desc'] = formValues['desc'];
-      newModel['time_start'] = this.computeStart().toISOString();
-      newModel['time_end'] = this.computeEnd(timeStart).toISOString();
 
-      newModel['max_deals'] = this.getMaxDeals();
-      newModel['instructions'] = 'Show to waiter';
-
-      newModel['photo'] = this.photo;
-
-      vent.trigger('createDealConfirmTrigger', newModel);
+      vent.trigger('createDealConfirmTrigger', this.deal.attributes);
       this.$el.find('#submit-btn').blur();
     }
   });
