@@ -49,7 +49,7 @@
   <script type="text/template" id="empty-review-template">
     <h2>No deals currently scheduled</h2>
   </script>
-  
+
   <script type="text/template" id="review-collection-template">
     <table class="table table-striped table-bordered">
       <thead>
@@ -67,7 +67,7 @@
       </tbody>
     </table>
   </script>
-  
+
   <script type="text/template" id="deal-template">
     <td><img src="<%= photo.claimed_thumb %>"</td>
     <td><%= title %></td>
@@ -76,7 +76,7 @@
     <td><%= time_end  %></td>
     <td><%= max_deals %></td>
   </script>
-  
+
   <script type="text/template" id="review-deal-template">
     <td><img src="<%= photo.claimed_thumb %>"</td>
     <td><%= title %></td>
@@ -178,18 +178,18 @@
           <label for="duration-hours" class="col-sm-2 control-label">Duration</label>
           <div class="col-sm-4 controls form-inline">
             <select id="duration-hours" class="form-control" name="duration-hours">
-              <option>0</option>
-              <option>1</option>
-              <option>2</option>
-              <option>3</option>
-              <option>4</option>
-              <option>5</option>
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
             </select> H
             <select id="duration-minutes" class="form-control" name="duration-minutes">
-              <option>00</option>
-              <option>15</option>
-              <option>30</option>
-              <option>45</option>
+              <option value="0">00</option>
+              <option value="15">15</option>
+              <option value="30">30</option>
+              <option value="45">45</option>
             </select> M
           </div>
           <p class="help-block col-sm-offset-2 col-sm-6">While this deal is active, it will be listed on our mobile app and users can claim it. Customers will be instructed to show the deal to your waitstaff or cashier to apply the deal.</p>
@@ -200,7 +200,7 @@
           <label class="col-sm-2 control-label">Do you want to limit the total number of deals that can be claimed?</label>
           <div id="max-deals" class="col-sm-3">
             <label class="radio-inline">
-              <input type="radio" name="limit" value="limited"> Yes
+              <input type="radio" name="limit" value="limited" id="limited"> Yes
             </label>
             <label class="radio-inline">
               <input type="radio" name="limit" value="unlimited" id="unlimited"> No
@@ -210,7 +210,7 @@
         <div class="form-group" id="max-deals-group">
           <label for="max-deals-number" class="col-sm-2 control-label">Maximum number of deals</label>
           <div class="col-sm-2">
-            <input id="max-deals-number" class="form-control" name="max-deals" type="text" size="3" placeholder="Unlimited" disabled>
+            <input id="max-deals-number" class="form-control" name="max-deals" type="text" size="3">
           </div>
         </div>
       </div>
@@ -218,7 +218,7 @@
         <div class="form-group">
           <label for="desc" class="col-sm-2 control-label">Extra information (optional)</label>
           <div class="col-sm-6">
-            <textarea name="desc" class="form-control" rows="3" placeholder="While you're here, try our specialty salad!"></textarea>
+            <textarea name="desc" id="deal-desc" class="form-control" rows="3" placeholder="While you're here, try our specialty salad!"></textarea>
           </div>
           <p class="help-block col-sm-offset-2 col-sm-6">
             Feel free to include anything you want your customers to know before they claim the deal. Take note: we already show users your address, website, phone number, and Yelp page.
