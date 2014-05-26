@@ -75,11 +75,13 @@ class VendorPhoto(models.Model):
 
   def natural_key(self):
     return {
+        'id': self.id,
         'thumb': self.get_thumb(),
         'deal_thumb': self.get_thumb('320x190'),
         'main_thumb': self.get_thumb('292x150'),
         'claimed_thumb': self.get_thumb('74x74'),
-        'photo': self.photo.url
+        'photo': self.photo.url,
+        'vendor': self.vendor.id,
       }
 
   def get_custom_serializable(self, options):
