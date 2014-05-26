@@ -22,14 +22,15 @@ define([
 
     reviveDeal: function(e) {
       e.preventDefault();
-      Vent.trigger('reviveDealTrigger', this.model);
+      Vent.trigger('showCreateView', this.model);
       this.$el.find('.revive-btn').blur();
     },
 
     serializeData: function() {
       var data = this.model.toJSON();
       var start_date = new Date(data.time_start);
-      data.pretty_time_start = FluxyTime.getDateStringHTML(start_date); 
+      data.pretty_time_start = FluxyTime.getDateStringHTML(start_date);
+      data.photo = data.photo.attributes;
       return data;
     }
   });

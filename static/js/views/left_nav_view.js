@@ -8,6 +8,13 @@ define([
     id: 'left-navbar',
     template: '#left-navbar-template',
 
+    initialize: function(options) {
+      vent.on('showCreateView', this.switchCreate, this);
+      vent.on('showReviveView', this.switchRevive, this);
+      vent.on('showReviewView', this.switchReview, this);
+      vent.on('showActiveView', this.switchActive, this);
+    },
+
     events: {
       'click #nav-create': 'showCreate',
       'click #nav-revive': 'showRevive',
@@ -17,30 +24,42 @@ define([
 
     showCreate: function(e) {
       e.preventDefault();
+      vent.trigger('showCreateView');
+    },
+
+    switchCreate: function(e) {
       $("#left-navbar").find(".list-group-item").removeClass("selected");
       $("#nav-create").addClass("selected");
-      vent.trigger('showCreateView');
     },
 
     showRevive: function(e) {
       e.preventDefault();
+      vent.trigger('showReviveView');
+    },
+
+    switchRevive: function(e) {
       $("#left-navbar").find(".list-group-item").removeClass("selected");
       $("#nav-revive").addClass("selected");
-      vent.trigger('showReviveView');
     },
 
     showReview: function(e) {
       e.preventDefault();
+      vent.trigger('showReviewView');
+    },
+
+    switchReview: function(e) {
       $("#left-navbar").find(".list-group-item").removeClass("selected");
       $("#nav-review").addClass("selected");
-      vent.trigger('showReviewView');
     },
 
     showActive: function(e) {
       e.preventDefault();
+      vent.trigger('showActiveView');
+    },
+
+    switchActive: function(e) {
       $("#left-navbar").find(".list-group-item").removeClass("selected");
       $("#nav-active").addClass("selected");
-      vent.trigger('showActiveView');
     },
 
     onShow: function() {
