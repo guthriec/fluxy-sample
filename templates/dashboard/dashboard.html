@@ -36,6 +36,11 @@
           <p class="list-group-item-text">Monitor active deals</p>
         </a>
       </li>
+      <li class="list-group-item" id="nav-contact">
+        <a href="#">
+          <h3 class="list-group-item-heading">Contact Us</h3>
+        </a>
+      </li>
   </script>
 
   <script type="text/template" id="main-content-template">
@@ -228,11 +233,27 @@
       <div class="form-area">
         <div class="form-group" id="button-group">
           <div class="col-sm-offset-2 col-sm-6">
-          <button type="button" id="submit-btn" class="btn btn-success btn-lg">Review and schedule</button>
+          <button type="button" id="submit-btn" class="btn btn-success btn-lg">
+            Review and schedule
+          </button>
           </div>
         </div>
       </div>
     </form>
+  </script>
+
+  <script type="text/template" id="contact-form-template">
+    <div class="list-container">
+      <h2>Let us know what's on your mind</h2>
+      <form action="#" id="contact-form" class="col-sm-offset-3 col-sm-6" role="form">
+        <textarea name="feedback" id="feedback" class="form-control" rows="5"></textarea>
+        <div class="form-group" id="button-group">
+          <button type="button" id="submit-btn" class="btn btn-success btn-lg">
+            Send feedback
+          </button>
+        </div>
+      </form>
+    </div>
   </script>
 
   <script type="text/template" id="photos-collection-modal-template">
