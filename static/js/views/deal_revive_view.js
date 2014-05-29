@@ -1,6 +1,6 @@
 /*
  * @author: Ayush
- * @desc: Defines a view that is associated with the DealModel, with
+ * @desc: Defines a view that is associated with the DealModel, with 
  *        functionality to revive a deal.
  */
 define([
@@ -12,11 +12,11 @@ define([
   var DealReviveView = Marionette.ItemView.extend({
 
     template: '#revive-deal-template',
-
+    
     tagName: 'tr',
-
+    
     className: 'deal',
-
+    
     events: {
       'click .revive-btn': 'reviveDeal'
     },
@@ -36,7 +36,7 @@ define([
         'max_deals': this.model.get('max_deals'),
         'photo': this.model.get('photo'),
         'time_start': newStart.toISOString(),
-        'time_end': newEnd.toISOString(),
+        'time_end': newEnd.toISOString(),   
       });
       Vent.trigger('showCreateView', newDeal);
       this.$el.find('.revive-btn').blur();
