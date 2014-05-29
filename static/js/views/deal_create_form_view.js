@@ -33,7 +33,7 @@ define([
       'change #max-deals-group' : 'updateModel',
     },
 
-    initialize: function(options) {
+    initialize: function() {
       vent.on('photoChangedTrigger', this.photoChanged, this);
     },
 
