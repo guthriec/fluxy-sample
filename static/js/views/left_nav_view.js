@@ -19,7 +19,8 @@ define([
       'click #nav-create': 'showCreate',
       'click #nav-revive': 'showRevive',
       'click #nav-review': 'showReview',
-      'click #nav-active': 'showActive'
+      'click #nav-active': 'showActive',
+      'click #nav-contact': 'showContact'
     },
 
     showCreate: function(e) {
@@ -60,6 +61,13 @@ define([
     switchActive: function(e) {
       $("#left-navbar").find(".list-group-item").removeClass("selected");
       $("#nav-active").addClass("selected");
+    },
+
+    showContact: function(e) {
+      e.preventDefault();
+      $("#left-navbar").find(".list-group-item").removeClass("selected");
+      $("#nav-contact").addClass("selected");
+      vent.trigger('showFeedbackView');
     },
 
     onShow: function() {
