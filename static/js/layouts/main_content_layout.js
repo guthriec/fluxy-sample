@@ -47,7 +47,8 @@ define([
 
 
     showCreate: function(deal) {
-      this.dealCreateForm.setDeal(deal);
+      if (deal)
+        this.dealCreateForm.setDeal(deal);
       this.dashboard.show(this.dealCreateForm);
     },
 
