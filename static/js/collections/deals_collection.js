@@ -15,6 +15,11 @@ define([
 
     model: DealModel,
 
+    comparator: function(model) {
+      var start_date = new Date(model.get('time_start'));
+      return (-1) * start_date.getTime();
+    },
+
     sync: function(method, collection, options) {
       if(method=='read') {
         options.url = '/api/v1/vendor/' + collection.vendorId + '/deals/all/';

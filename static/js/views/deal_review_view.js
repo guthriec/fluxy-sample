@@ -32,6 +32,7 @@ define([
       var end_date = new Date(data.time_end);
       data.pretty_time_start = FluxyTime.getDateStringHTML(start_date); 
       data.pretty_time_end = FluxyTime.getDateStringHTML(end_date);
+      data.photo = data.photo.attributes;
       if (data.max_deals == -1) {
         data.max_deals = "Unlimited";
       }

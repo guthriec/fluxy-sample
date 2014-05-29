@@ -37,6 +37,10 @@ define([
       vent.on('photoChangedTrigger', this.photoChanged, this);
     },
 
+    setDeal: function(deal) {
+      this.deal = deal;
+    },
+
     updateModel: function(e) {
       var changed = e.currentTarget;
 

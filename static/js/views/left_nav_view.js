@@ -13,35 +13,51 @@ define([
       'click #nav-revive': 'showRevive',
       'click #nav-review': 'showReview',
       'click #nav-active': 'showActive',
-      'click #nav-contact': 'showContact'
+      'click #nav-contact': 'showContact',
+      'showCreateView': 'switchCreate',
+      'showReviveView': 'switchRevive',
+      'showReviewView': 'switchView',
+      'showActiveView': 'switchActive',
     },
 
     showCreate: function(e) {
       e.preventDefault();
+      vent.trigger('showCreateView');
+    },
+
+    switchCreate: function(e) {
       $("#left-navbar").find(".list-group-item").removeClass("selected");
       $("#nav-create").addClass("selected");
-      vent.trigger('showCreateView');
     },
 
     showRevive: function(e) {
       e.preventDefault();
+      vent.trigger('showReviveView');
+    },
+
+    switchRevive: function(e) {
       $("#left-navbar").find(".list-group-item").removeClass("selected");
       $("#nav-revive").addClass("selected");
-      vent.trigger('showReviveView');
     },
 
     showReview: function(e) {
       e.preventDefault();
+      vent.trigger('showReviewView');
+    },
+
+    switchReview: function(e) {
       $("#left-navbar").find(".list-group-item").removeClass("selected");
       $("#nav-review").addClass("selected");
-      vent.trigger('showReviewView');
     },
 
     showActive: function(e) {
       e.preventDefault();
+      vent.trigger('showActiveView');
+    },
+
+    switchActive: function(e) {
       $("#left-navbar").find(".list-group-item").removeClass("selected");
       $("#nav-active").addClass("selected");
-      vent.trigger('showActiveView');
     },
 
     showContact: function(e) {
