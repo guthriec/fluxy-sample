@@ -13,6 +13,7 @@ define([
       vent.on('showReviveView', this.switchRevive, this);
       vent.on('showReviewView', this.switchReview, this);
       vent.on('showActiveView', this.switchActive, this);
+      vent.on('showFeedbackView', this.switchContact, this);
     },
 
     events: {
@@ -65,9 +66,12 @@ define([
 
     showContact: function(e) {
       e.preventDefault();
+      vent.trigger('showFeedbackView');
+    },
+
+    switchContact: function(e) {
       $("#left-navbar").find(".list-group-item").removeClass("selected");
       $("#nav-contact").addClass("selected");
-      vent.trigger('showFeedbackView');
     },
 
     onShow: function() {
