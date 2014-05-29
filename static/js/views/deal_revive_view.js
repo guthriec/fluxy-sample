@@ -26,20 +26,8 @@ define([
 
       var oldStart = new Date(this.model.get('time_start'));
       var oldEnd = new Date(this.model.get('time_end'));
-      var oldStartHours = oldStart.getHours(); 
-      var oldStartMinutes = oldStart.getMinutes();
-      var oldEndHours = oldEnd.getHours(); 
-      var oldEndMinutes = oldEnd.getMinutes();
-      var newStart = new Date();
-      var newEnd = new Date();
-      newStart.setMilliseconds(0);
-      newStart.setSeconds(0);
-      newStart.setMinutes(oldStartMinutes);
-      newStart.setHours(oldStartHours); 
-      newEnd.setMilliseconds(0);
-      newEnd.setSeconds(0);
-      newEnd.setMinutes(oldEndMinutes);
-      newEnd.setHours(oldEndHours);
+      var newStart = FluxyTime.sameTimeToday(oldStart);
+      var newEnd = FluxyTime.sameTimeToday(oldEnd);
       // We only copy the attributes we need
       var newDeal = new DealModel({
         'title': this.model.get('title'),

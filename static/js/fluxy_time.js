@@ -11,6 +11,24 @@ define([
                            "November", "December" ];
   FluxyTime.dayNames = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
                          "Friday", "Saturday" ];
+  
+  /*
+   * @author: Chris
+   * @desc: Takes a Javascript date object and returns a new date object
+   *        with the same hours and minutes, but on the current date
+   * @param: date - a Javascript date object
+   * @returns: date with same time on current date
+   */
+  FluxyTime.sameTimeToday = function(date) {
+      var oldHours = date.getHours();
+      var oldMinutes = date.getMinutes();
+      var newDate = new Date();
+      newDate.setMilliseconds(0);
+      newDate.setSeconds(0);
+      newDate.setMinutes(oldMinutes);
+      newDate.setHours(oldHours);
+      return newDate;
+  };
 
   /*
    * @author: Chris
