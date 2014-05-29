@@ -8,19 +8,16 @@ define([
     id: 'left-navbar',
     template: '#left-navbar-template',
 
-    initialize: function(options) {
-      vent.on('showCreateView', this.switchCreate, this);
-      vent.on('showReviveView', this.switchRevive, this);
-      vent.on('showReviewView', this.switchReview, this);
-      vent.on('showActiveView', this.switchActive, this);
-    },
-
     events: {
       'click #nav-create': 'showCreate',
       'click #nav-revive': 'showRevive',
       'click #nav-review': 'showReview',
       'click #nav-active': 'showActive',
-      'click #nav-contact': 'showContact'
+      'click #nav-contact': 'showContact',
+      'showCreateView': 'switchCreate',
+      'showReviveView': 'switchRevive',
+      'showReviewView': 'switchView',
+      'showActiveView': 'switchActive',
     },
 
     showCreate: function(e) {
