@@ -334,9 +334,8 @@ define([
         this.$el.find('#deal-title').val(this.deal.get('title'));
         this.$el.find('#deal-subtitle').val(this.deal.get('subtitle'));
         this.$el.find('#deal-desc').val(this.deal.get('desc'));
-        if (this.deal.has('photo')) {
+        if (this.deal.has('photo'))
           vent.trigger('photoChangedTrigger', this.deal.get('photo'));
-        }
         /* Handling Time */
         var timeStart = this.deal.get('time_start');
         if (timeStart) {
