@@ -7,9 +7,9 @@
 define([
   'marionette',
   'vent',
-  'views/active_deals_collection_view',
+  'views/active_collection_view',
   'views/deal_create_form_view',
-  'views/revive_deals_collection_view',
+  'views/revive_collection_view',
   'views/review_collection_view',
   'views/feedback_view'
 ], function(Marionette, vent, ActiveCollectionView, DealCreateFormView,
