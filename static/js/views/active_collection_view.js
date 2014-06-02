@@ -5,9 +5,9 @@
  */
 define([
   'marionette',
-  'views/deal_live_view'
-], function(Marionette, DealLiveView) {
-  var LiveCollectionView = Marionette.CompositeView.extend({
+  'views/deal_active_view'
+], function(Marionette, DealActiveView) {
+  var ActiveCollectionView = Marionette.CompositeView.extend({
     id: 'live-list-view',
 
     className: 'list-container',
@@ -20,7 +20,7 @@ define([
       }
     },
 
-    itemView: DealLiveView,
+    itemView: DealActiveView,
 
     collectionEvents: {
       "all": "templateAndRender"
@@ -35,5 +35,5 @@ define([
       collectionView.$('tbody').append(itemView.el);
     }
   });
-  return LiveCollectionView;
+  return ActiveCollectionView;
 });
