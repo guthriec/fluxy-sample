@@ -35,10 +35,15 @@ define([
 
     initialize: function() {
       vent.on('photoChangedTrigger', this.photoChanged, this);
+      vent.on('createDealTrigger', this.resetDeal, this);
     },
 
     setDeal: function(deal) {
       this.deal = deal;
+    },
+
+    resetDeal: function() {
+      this.deal = null;
     },
 
     updateModel: function(e) {
