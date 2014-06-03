@@ -1,6 +1,6 @@
 /*
- * @author: Chris 
- * @desc: Defines the view that is associated with a collection of 
+ * @author: Chris
+ * @desc: Defines the view that is associated with a collection of
  * scheduled deals for review. Is responsible for showing all the DealView
  * objects in a <table>.
  */
@@ -10,7 +10,7 @@ define([
 ], function(Marionette, DealReviewView) {
   var ReviewCollectionView = Marionette.CompositeView.extend({
     id: 'review-list-view',
-    
+
     className: 'list-container',
 
     getTemplate: function() {

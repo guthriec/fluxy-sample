@@ -21,5 +21,5 @@ define([
       return deal;
     }
   });
-  return DealModel; 
+  return DealModel;
 });

@@ -1,9 +1,9 @@
 /*
  * @author: Ayush, Chris
  * @desc: Defines the collection that represents a grouping of DealModel items.
- *        This collection also has functions scheduledCollection and 
- *        expiredCollection that return DealsCollections filtered into 
- *        scheduled and expired deals. These new collections listen to the 
+ *        This collection also has functions scheduledCollection and
+ *        expiredCollection that return DealsCollections filtered into
+ *        scheduled and expired deals. These new collections listen to the
  *        original collection for changes and update themselves accordingly.
  */
 define([
@@ -71,8 +71,8 @@ define([
     // the original DealsCollection gets updated.
     scheduledCollection: function() {
       var filtered = this.scheduled();
-      var scheduledCollection = new DealsCollection(filtered, 
-                                                    { 'vendorId': 
+      var scheduledCollection = new DealsCollection(filtered,
+                                                    { 'vendorId':
                                                       this.vendorId });
       var self = this;
       scheduledCollection.listenTo(self, 'reset sync', function() {
@@ -85,7 +85,7 @@ define([
     // Potential for web-iphone synchronization issues.
     active: function() {
       return this.filter(function(deal) {
-        return (0 > (new Date(deal.get('time_start') - Date.now())) && 
+        return (0 > (new Date(deal.get('time_start') - Date.now())) &&
                 0 < (new Date(deal.get('time_end')) - Date.now()));
       });
     },
@@ -94,7 +94,7 @@ define([
     // the original DealsCollection gets updated.
     activeCollection: function() {
       var filtered = this.active();
-      var activeCollection = new DealsCollection(filtered, 
+      var activeCollection = new DealsCollection(filtered,
                                                  { 'vendorId': this.vendorId });
       var self = this;
       activeCollection.listenTo(self, 'all', function() {
@@ -108,9 +108,6 @@ define([
     expired: function() {
       return this.select(function(deal) {
         return deal.get('stage') == 0;
-        /*
-        return 0 > (new Date(deal.get('time_end')) - Date.now() - 60000);
-        */
       });
     },
 
@@ -118,7 +115,7 @@ define([
     // the original DealsCollection gets updated.
     expiredCollection: function() {
       var filtered = this.expired();
-      var expiredCollection = new DealsCollection(filtered, 
+      var expiredCollection = new DealsCollection(filtered,
                                                   { 'vendorId':
                                                     this.vendorId });
       var self = this;
