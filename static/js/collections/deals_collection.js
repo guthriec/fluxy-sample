@@ -41,9 +41,13 @@ define([
     createAndFetch: function(model) {
       var self = this;
       this.create(model, {
-        wait: true,
-        success: function(resp) {
-          self.fetch(); 
+        success: function(obj, resp) {
+          var newDeal = new DealModel(resp, {parse: true});
+          if (newDeal.get('stage') == 3)
+            vent.trigger('showReviewView');
+          else
+            vent.trigger('showActiveView');
+          self.fetch();
         }
       });
     },
@@ -51,18 +55,15 @@ define([
     cancelAndFetch: function(model) {
       var self = this;
       model.destroy({
-        wait: true,
         success: function(model, response) {
-          self.fetch();
         }
-      }); 
-      this.fetch();
+      });
     },
 
     // Filter collection to include only deals that have not started.
     scheduled: function() {
       return this.filter(function(deal) {
-        return (deal.get('stage') == 0); 
+        return (deal.get('stage') == 3);
       });
     },
 
@@ -106,7 +107,10 @@ define([
     // Pretends we're 1 minute in the future to mitigate synchronization issues.
     expired: function() {
       return this.select(function(deal) {
+        return deal.get('stage') == 0;
+        /*
         return 0 > (new Date(deal.get('time_end')) - Date.now() - 60000);
+        */
       });
     },
 
