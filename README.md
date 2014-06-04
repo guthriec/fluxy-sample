@@ -60,11 +60,12 @@ API
 For all POST and PUT requests, data must be encoded using JSON.  Remember to
 set the request's CONTENT-TYPE header to '/application/json'.
 
-Deals have 4 stages:
+Deals have 5 stages:
   * 0 = Expired: The deal's end time has passed.
   * 1 = Live: The deal can currently be redeemed at its vendor.
   * 2 = Active: The deal cannot yet be redeemed but it is claimable.
   * 3 = Scheduled: The deal cannot yet be claimed.
+  * 4 = Cancelled.
 
 * ``` /deals/{id} ```
   * Accepts GET.

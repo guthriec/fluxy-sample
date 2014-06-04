@@ -12,6 +12,8 @@ define([
       var deal = {};
       if (resp.hasOwnProperty('data')) {
         deal = resp.data;
+        if (deal.length > 0) // meaning deal is an array
+          deal = deal[0];
       } else {
         deal = resp;
       }
@@ -19,5 +21,5 @@ define([
       return deal;
     }
   });
-  return DealModel; 
+  return DealModel;
 });
