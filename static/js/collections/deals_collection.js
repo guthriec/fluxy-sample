@@ -33,12 +33,12 @@ define([
       this.vendorId = options.vendorId || -1;
       this.url = '/api/v1/vendor/' + this.vendorId + '/deals/';
       if(options.listenForChanges == true) {
-        vent.on('createDealTrigger', this.createAndFetch, this);
-        vent.on('cancelDealTrigger', this.cancelAndFetch, this);
+        vent.on('createDealTrigger', this.createDeal, this);
+        vent.on('cancelDealTrigger', this.cancelDeal, this);
       }
     },
 
-    createAndFetch: function(model) {
+    createDeal: function(model) {
       var self = this;
       this.create(model, {
         success: function(obj, resp) {
@@ -47,17 +47,13 @@ define([
             vent.trigger('showReviewView');
           else
             vent.trigger('showActiveView');
-          self.fetch();
         }
       });
     },
 
-    cancelAndFetch: function(model) {
+    cancelDeal: function(model) {
       var self = this;
-      model.destroy({
-        success: function(model, response) {
-        }
-      });
+      model.destroy({});
     },
 
     // Filter collection to include only deals that have not started.
@@ -104,7 +100,6 @@ define([
     },
 
     // Filter collection to include only deals that have expired.
-    // Pretends we're 1 minute in the future to mitigate synchronization issues.
     expired: function() {
       return this.select(function(deal) {
         return deal.get('stage') == 0;
