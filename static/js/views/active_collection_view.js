@@ -1,5 +1,5 @@
 /*
- * @author: Ayush
+ * @author: Chris
  * @desc: Defines the view that renders the Live collection. Is
  * responsible for showing all the DealLiveView objects.
  */
