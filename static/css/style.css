@@ -220,6 +220,10 @@ textarea:focus:-moz-placehoder { color:transparent; }
   text-align: center;
 }
 
+#content .table-padded td {
+  padding: 10px;
+}
+
 #modal .clickable-photo:hover {
   cursor: pointer;
   border: 1px solid #589AD6;
