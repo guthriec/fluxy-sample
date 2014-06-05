@@ -23,11 +23,10 @@ define([
       data.pretty_time_start = FluxyTime.getDateStringHTML(start_date); 
       data.pretty_time_end = FluxyTime.getDateStringHTML(end_date);
       data.photo = data.photo.attributes;
-      data.deals_claimed = 10;
       if (data.max_deals == -1) {
         data.deals_remaining = "Unlimited";
       } else {
-        data.deals_remaining = data.max_deals - data.deals_claimed;
+        data.deals_remaining = data.max_deals - data.claimed_count;
       }
       return data;
     }

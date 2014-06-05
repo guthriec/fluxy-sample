@@ -39,7 +39,6 @@ define([
     },
 
     createDeal: function(model) {
-      var self = this;
       this.create(model, {
         success: function(obj, resp) {
           var newDeal = new DealModel(resp, {parse: true});
@@ -52,7 +51,6 @@ define([
     },
 
     cancelDeal: function(model) {
-      var self = this;
       model.destroy({});
     },
 
@@ -78,11 +76,10 @@ define([
     },
 
     // Filter collection to include only deals that are active.
-    // Potential for web-iphone synchronization issues.
     active: function() {
       return this.filter(function(deal) {
-        return (0 > (new Date(deal.get('time_start') - Date.now())) &&
-                0 < (new Date(deal.get('time_end')) - Date.now()));
+        var stage = deal.get('stage');
+        return (stage == 1 || stage == 2);
       });
     },
 
