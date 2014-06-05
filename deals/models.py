@@ -140,12 +140,12 @@ class Deal(models.Model):
     tz = self.time_start.tzinfo
     now = datetime.datetime.now(tz)
     if self.time_end < now:
-      return 3 # expired
+      return 0 # expired
     if self.time_start < now:
-      return 2 # live
+      return 1 # live
     if (self.time_start - now) < self.timedelta_prior_to_start_for_active:
-      return 1 # active
-    return 0 # scheduled
+      return 2 # active
+    return 3 # scheduled
 
   def __unicode__(self):
     """

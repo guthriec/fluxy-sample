@@ -1,9 +1,9 @@
 /*
  * @author: Ayush, Chris
  * @desc: Defines the collection that represents a grouping of DealModel items.
- *        This collection also has functions scheduledCollection and 
- *        expiredCollection that return DealsCollections filtered into 
- *        scheduled and expired deals. These new collections listen to the 
+ *        This collection also has functions scheduledCollection and
+ *        expiredCollection that return DealsCollections filtered into
+ *        scheduled and expired deals. These new collections listen to the
  *        original collection for changes and update themselves accordingly.
  */
 define([
@@ -33,36 +33,33 @@ define([
       this.vendorId = options.vendorId || -1;
       this.url = '/api/v1/vendor/' + this.vendorId + '/deals/';
       if(options.listenForChanges == true) {
-        vent.on('createDealTrigger', this.createAndFetch, this);
-        vent.on('cancelDealTrigger', this.cancelAndFetch, this);
+        vent.on('createDealTrigger', this.createDeal, this);
+        vent.on('cancelDealTrigger', this.cancelDeal, this);
       }
     },
 
-    createAndFetch: function(model) {
+    createDeal: function(model) {
       var self = this;
       this.create(model, {
-        wait: true,
-        success: function(resp) {
-          self.fetch(); 
+        success: function(obj, resp) {
+          var newDeal = new DealModel(resp, {parse: true});
+          if (newDeal.get('stage') == 3)
+            vent.trigger('showReviewView');
+          else
+            vent.trigger('showActiveView');
         }
       });
     },
 
-    cancelAndFetch: function(model) {
+    cancelDeal: function(model) {
       var self = this;
-      model.destroy({
-        wait: true,
-        success: function(model, response) {
-          self.fetch();
-        }
-      }); 
-      this.fetch();
+      model.destroy({});
     },
 
     // Filter collection to include only deals that have not started.
     scheduled: function() {
       return this.filter(function(deal) {
-        return (deal.get('stage') == 0); 
+        return (deal.get('stage') == 3);
       });
     },
 
@@ -70,8 +67,8 @@ define([
     // the original DealsCollection gets updated.
     scheduledCollection: function() {
       var filtered = this.scheduled();
-      var scheduledCollection = new DealsCollection(filtered, 
-                                                    { 'vendorId': 
+      var scheduledCollection = new DealsCollection(filtered,
+                                                    { 'vendorId':
                                                       this.vendorId });
       var self = this;
       scheduledCollection.listenTo(self, 'reset sync', function() {
@@ -84,7 +81,7 @@ define([
     // Potential for web-iphone synchronization issues.
     active: function() {
       return this.filter(function(deal) {
-        return (0 > (new Date(deal.get('time_start') - Date.now())) && 
+        return (0 > (new Date(deal.get('time_start') - Date.now())) &&
                 0 < (new Date(deal.get('time_end')) - Date.now()));
       });
     },
@@ -93,7 +90,7 @@ define([
     // the original DealsCollection gets updated.
     activeCollection: function() {
       var filtered = this.active();
-      var activeCollection = new DealsCollection(filtered, 
+      var activeCollection = new DealsCollection(filtered,
                                                  { 'vendorId': this.vendorId });
       var self = this;
       activeCollection.listenTo(self, 'all', function() {
@@ -103,10 +100,9 @@ define([
     },
 
     // Filter collection to include only deals that have expired.
-    // Pretends we're 1 minute in the future to mitigate synchronization issues.
     expired: function() {
       return this.select(function(deal) {
-        return 0 > (new Date(deal.get('time_end')) - Date.now() - 60000);
+        return deal.get('stage') == 0;
       });
     },
 
@@ -114,7 +110,7 @@ define([
     // the original DealsCollection gets updated.
     expiredCollection: function() {
       var filtered = this.expired();
-      var expiredCollection = new DealsCollection(filtered, 
+      var expiredCollection = new DealsCollection(filtered,
                                                   { 'vendorId':
                                                     this.vendorId });
       var self = this;
