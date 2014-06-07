@@ -8,6 +8,9 @@
  * URL: http://blacktie.co/
  */
 
+/*
+ * Modified by Rahul Gupta-Iwasaki for Fluxy
+ */
 
 /* ==========================================================================
    Base Styles and Bootstrap Modifications
@@ -270,15 +273,18 @@ a:after {
    Wrap Sections
    ========================================================================== */
 
+.headerwrap {
+    margin-top: -50px;
+    padding-top:120px;
+    text-align:center;
+    min-height: 650px;
+    width: 100%;
+}
+
 #headerwrap {
 	background: url(../img/header_bg.jpg) no-repeat center top;
-	margin-top: -50px;
-	padding-top:120px;
-	text-align:center;
 	background-attachment: relative;
 	background-position: center center;
-	min-height: 650px;
-	width: 100%;
 
     -webkit-background-size: 100%;
     -moz-background-size: 100%;
@@ -312,7 +318,7 @@ a:after {
 	text-shadow: 1px 1px 1px #000;
 }
 
-#greywrap {
+.greywrap {
 	background: #f5f5f5;
 	margin-top: 0px;
 	padding-top: 40px;
@@ -320,11 +326,11 @@ a:after {
 	text-align: center;
 }
 
-#greywrap .callout {
+.greywrap .callout {
 	margin-bottom: 20px;
 }
 
-#greywrap p {
+.greywrap p {
 	margin-left: 30px;
 	margin-right: 30px;
 	letter-spacing: 1px;
@@ -332,7 +338,7 @@ a:after {
 	padding-bottom: 15px;
 }
 
-#greywrap .icon {
+.greywrap .icon {
 	font-size: 60px;
 	line-height: 30px;
 	margin-bottom: 10px;
@@ -403,6 +409,10 @@ a:after {
 	font-size: 40px;
 }
 
+.textdivider h2 {
+    color: white;
+}
+
 .textdivider p {
 	color: white;
 	font-size: 25px;
@@ -425,7 +435,7 @@ a:after {
 }
 
 .divider6 {
-	background-image: url('../img/bg/divider6.jpg')
+	background-image: url('../img/bg/StanfordOval.jpg')
 }
 
 
@@ -631,3 +641,40 @@ a:after {
 	}
 }
 
+
+/* ==========================================================================
+   Fluxy-specific
+   ========================================================================== */
+.fluxy-icon {
+    background: url({% static 'img/team/ayush.jpg' %}) no-repeat center top;
+    background-attachment: relative;
+    background-position: center center;
+
+    -webkit-background-size: 100%;
+    -moz-background-size: 100%;
+    -o-background-size: 100%;
+    background-size: 100%;
+
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+#fluxy-header {
+    min-height: 500px;
+}
+
+#fluxy-header-detail {
+    width: 200%;
+    margin-left: -50%;
+}
+
+/* This happens when the width is less than 992px; */
+@media (max-width:992px) {
+    #fluxy-header, #fluxy-header-detail {
+        width: 100%;
+        margin-left: 0%;
+        min-height: 0px;
+    }
+}
