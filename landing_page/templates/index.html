@@ -49,8 +49,8 @@
 				<div class="navbar-collapse collapse">
 					<ul class="nav navbar-nav">
 						<li> <a href="#about" class="smoothScroll"> About</a></li>
-						<li> <a href="#team" class="smoothScroll"> Team</a></li>
 						<li> <a href="#contact" class="smoothScroll"> Contact</a></li>
+						<li> <a href="#team" class="smoothScroll"> Team</a></li>
 					</div><!--/.nav-collapse -->
 				</div>
 			</div>
@@ -68,54 +68,35 @@
 						<div style="display:table-cell; vertical-align: middle;">
 							<img src="{% static 'img/FullNameLogo.png' %}" class="" style="max-width:100%; max-height:200px;" />
 							<div id="fluxy-header-detail">
-								<h1>Deals at the best restaurants near you. Right now.</h1>
-								<p><b>Launching this July.</b> <i>Sign up now for updates and access to special deals.</i></p>
-								<!-- The sign-up form itself -->
-							  <div id="form-container">
-							    <!-- Error message -->
-							    {% if error_message %}
-							    <p><strong>{{ error_message }}</strong></p>
-							    {% endif %}
-							    <!-- Success message -->
-							    {% if success %}
-							    <p><strong>Thanks for subscribing!</strong></p>
-							    {% endif %}
-							    <!-- Form to submit email to our list -->
-							    <form action="/subscribe/" method="post">
-							      {% csrf_token %}
-							      <input name="email" type="email" class="required email"
-							      placeholder="Your email" id="email" />
-							      <button type="submit" class="btn btn-default btn-lg" id="submit-btn">Subscribe</button>
-							    </form>
-							  </div>
+								<h1>Deals at the best restaurants near you. Right now.</h1\>
 							</div>
 						</div>
 					</div>
 					<div class="col-md-2"></div>
 				</div>
+				<h4><b>Launching this July.</b> <i>Sign up now for updates and access to special deals.</i></h4><br>
+				<!-- The sign-up form itself -->
+			  <div id="form-container">
+			    <!-- Form to submit email to our list -->
+			    <form id="subscribeForm" action="/subscribe/" method="post">
+			      {% csrf_token %}
+			      <input name="email" type="email" class="required email"
+			      placeholder="Your email" id="email" style="border-radius: 5px; border-width: 1px; padding: 5px 10px;" />
+			      <button type="submit" class="btn btn-default btn-lg" id="submit-btn">Subscribe</button>
+			    </form>
+			  </div><br><br><br>
 			</header>
 		</div><!-- /headerwrap -->
 
 		<!-- ==== GREYWRAP ==== -->
-		<div class="greywrap">
+		<div class="greywrap" id="about" name="about">
+			<h1>Fluxy is built for the <i>needs</i> of restaurants and the <i>wants</i> of consumers.</h1>
+			<hr>
+			<br/>
 			<div class="row">
-				<div class="col-lg-4 callout">
-					<span class="icon icon-stack"></span>
-					<h2>Bootstrap 3</h2>
-					<p>Shield Theme is powered by Bootstrap 3. The incredible Mobile First Framework is the best option to run your website. </p>
-				</div><!-- col-lg-4 -->
-
-				<div class="col-lg-4 callout">
-					<span class="icon icon-eye"></span>
-					<h2>Retina Ready</h2>
-					<p>You can use this theme with your iPhone, iPad or MacBook Pro. This theme is retina ready and that is awesome. </p>
-				</div><!-- col-lg-4 -->
-
-				<div class="col-lg-4 callout">
-					<span class="icon icon-heart"></span>
-					<h2>Crafted with Love</h2>
-					<p>We don't make sites, we craft themes with love & passion. That is our most valued secret. We only do thing that we love.   </p>
-				</div><!-- col-lg-4 -->
+				<div class="col-md-8 col-md-offset-2">
+					<iframe id="fluxy-video" src="//player.vimeo.com/video/97117689?badge=0" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe><br><br>
+				</div>
 			</div><!-- row -->
 		</div><!-- greywrap -->
 
@@ -124,7 +105,7 @@
 			<br>
 			<br>
 			<div class="row">
-				<h2 class="centered">ONE BRAND, ONE VOICE.</h2>
+				<h2 class="centered">FOR CONSUMERS</h2>
 				<hr>
 				<br>
 				<div class="col-lg-offset-2 col-lg-8">
@@ -136,7 +117,7 @@
 			</div><!-- row -->
 
 			<div class="row">
-				<h2 class="centered">MOBILE FIRST THINKING, ALWAYS.</h2>
+				<h2 class="centered">FOR RESTAURANTS</h2>
 				<hr>
 				<br>
 				<div class="col-lg-offset-2 col-lg-8">
@@ -146,20 +127,21 @@
 		</div><!-- container -->
 
 
-		<!-- ==== SECTION DIVIDER2 -->
-		<section class="section-divider textdivider divider2">
-			<div class="container">
-				<h1>DESIGN IS AN INTERACTION</h1>
+		<!-- ==== SECTION DIVIDER ==== -->
+		<section class="section-divider textdivider divider6" name="contact">
+			<div class="container" style="">
+				<h1>With <span class="icon-heart" style="color: red;"></span> from Stanford, CA.</h1>
 				<hr>
-				<p>To develop a deeper and more meaningful connection with consumers, we believe design must invite them to take part in the conversation.</p>
+				<h2>Get in touch with us at:</h2>
+				<p>team@fluxyapp.com</p>
+				<p><a class="icon icon-twitter" href="https://twitter.com/fluxyapp"></a> | <a class="icon icon-facebook" href="https://www.facebook.com/fluxyapp"></a></p>
 			</div><!-- container -->
 		</section><!-- section -->
 
 		<!-- ==== TEAM MEMBERS ==== -->
 		<div class="container" id="team" name="team">
-			<br>
 			<div class="row white centered">
-				<h1 class="centered">MEET OUR AWESOME TEAM</h1>
+				<h1 class="centered">THE FLUXY TEAM</h1>
 				<hr>
 				<br>
 				<br>
@@ -168,68 +150,37 @@
 				<div class="col-lg-2 centered">
 					<img class="img img-circle" src="{% static 'img/team/amrit.jpg' %}" height="120px" width="120px" alt="">
 					<br>
-					<h4><b>Amrit</b></h4>
-					<a href="#" class="icon icon-twitter"></a>
-					<a href="#" class="icon icon-facebook"></a>
-					<a href="#" class="icon icon-flickr"></a>
-					<p>Mike combines an expert technical knowledge with a real eye for design. Working with clients from a wide range of industries, he fully understands client objectives when working on a project, large or small.</p>
+					<h4><b>Amrit Saxena</b></h4>
 				</div><!-- col-lg-3 -->
 
 				<div class="col-lg-2 centered">
 					<img class="img img-circle" src="{% static 'img/team/arushi.jpg' %}" height="120px" width="120px" alt="">
 					<br>
-					<h4><b>Arushi</b></h4>
-					<a href="#" class="icon icon-twitter"></a>
-					<a href="#" class="icon icon-facebook"></a>
-					<a href="#" class="icon icon-flickr"></a>
-					<p>Tim is an experienced marcoms practitioner and manages projects from inception to delivery. He understands the synergy between great design and commercial effectiveness which shines through on every project.</p>
+					<h4><b>Arushi Raghuvanshi</b></h4>
 				</div><!-- col-lg-3 -->
 
 				<div class="col-lg-2 centered">
 					<img class="img img-circle" src="{% static 'img/team/ayush.jpg' %}" height="120px" width="120px" alt="">
 					<br>
-					<h4><b>Aysuh</b></h4>
-					<a href="#" class="icon icon-twitter"></a>
-					<a href="#" class="icon icon-facebook"></a>
-					<a href="#" class="icon icon-flickr"></a>
-					<p>Be a creative director is a hard task, but Michele loves what she does. Her combination of knowledge and expertise is an important pillar in our agency.</p>
+					<h4><b>Ayush Sood</b></h4>
 				</div><!-- col-lg-3 -->
 
 				<div class="col-lg-2 centered">
 					<img class="img img-circle" src="{% static 'img/team/chris.jpg' %}" height="120px" width="120px" alt="">
 					<br>
-					<h4><b>Chris</b></h4>
-					<a href="#" class="icon icon-twitter"></a>
-					<a href="#" class="icon icon-facebook"></a>
-					<a href="#" class="icon icon-flickr"></a>
-					<p>Be a creative director is a hard task, but Michele loves what she does. Her combination of knowledge and expertise is an important pillar in our agency.</p>
+					<h4><b>Chris Guthrie</b></h4>
 				</div><!-- col-lg-3 -->
 
 				<div class="col-lg-2 centered">
 					<img class="img img-circle" src="{% static 'img/team/rahul.jpg' %}" height="120px" width="120px" alt="">
 					<br>
-					<h4><b>Rahul</b></h4>
-					<a href="#" class="icon icon-twitter"></a>
-					<a href="#" class="icon icon-facebook"></a>
-					<a href="#" class="icon icon-flickr"></a>
-					<p>Be a creative director is a hard task, but Michele loves what she does. Her combination of knowledge and expertise is an important pillar in our agency.</p>
+					<h4><b>Rahul Gupta-Iwasaki</b></h4>
 				</div><!-- col-lg-3 -->
 
 				<div class="col-lg-1 centered"></div>
 
-			</div><!-- row -->
+			</div><!-- row --><br><br><br>
 		</div><!-- container -->
-
-		<!-- ==== SECTION DIVIDER6 ==== -->
-		<section class="section-divider textdivider divider6" name="contact">
-			<div class="container">
-				<h1>With <span class="icon-heart" style="color: red;"></span> from Stanford, CA.</h1>
-				<hr>
-				<h2>Get in touch with us at:</h2>
-				<p>team@fluxyapp.com</p>
-				<p><a class="icon icon-twitter" href="https://twitter.com/fluxyapp"></a> | <a class="icon icon-facebook" href="https://www.facebook.com/fluxyapp"></a></p>
-			</div><!-- container -->
-		</section><!-- section -->
 
 		<!-- A footer if we want it
 		<div id="footerwrap">
@@ -249,5 +200,13 @@
   <script type="text/javascript" src="{% static 'js/jquery.easing.1.3.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/smoothscroll.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/jquery-func.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/lib/jquery.form.js' %}"></script>
+  	<script type="text/javascript">
+		$('#subscribeForm').ajaxForm({
+			success: function(responseText, statusText, xhr, $form) {
+				$('#form-container').html('<p>Thanks for signing up!</p>');
+			},
+		});
+	</script>
 </body>
 </html>

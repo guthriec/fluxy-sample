@@ -661,6 +661,11 @@ a:after {
     background-size: cover;
 }
 
+#fluxy-video {
+    width: 80%;
+    height: 500px;
+}
+
 #fluxy-header {
     min-height: 500px;
 }
