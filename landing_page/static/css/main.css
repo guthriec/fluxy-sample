@@ -435,7 +435,7 @@ a:after {
 }
 
 .divider6 {
-	background-image: url('../img/bg/StanfordOval.jpg')
+	background-image: url('../img/bg/StanfordOval.jpg');
 }
 
 
@@ -645,19 +645,27 @@ a:after {
 /* ==========================================================================
    Fluxy-specific
    ========================================================================== */
+
 .fluxy-icon {
-    background: url({% static 'img/team/ayush.jpg' %}) no-repeat center top;
-    background-attachment: relative;
+    height: 40px; background: none;
+}
+
+.fluxy-team-pic {
+    height: 120px;
+    width: 120px;
+}
+
+.fluxy-mute {
+    background-color: hsla(0,100%,0%,0.25);
+}
+
+#fluxy-iphone {
+    max-height:500px;
+}
+
+#fluxy-contact {
+    background-image: url('../img/bg/StanfordOval.jpg');
     background-position: center center;
-
-    -webkit-background-size: 100%;
-    -moz-background-size: 100%;
-    -o-background-size: 100%;
-    background-size: 100%;
-
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
     background-size: cover;
 }
 
