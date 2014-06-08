@@ -44,11 +44,14 @@
 					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
 						<span class="icon icon-shield" style="font-size:30px; color:#3498db;"></span>
 					</button>
-					<a class="navbar-brand hidden-xs hidden-sm" href="#home"><img class="icon" src="{% static 'img/logo.png' %}" style="height:40px;" /></a>
+					<a class="navbar-brand hidden-xs hidden-sm" href="#home"><img class="icon" src="{% static 'img/LogoWhite.png' %}" style="height: 40px; background: none; margin-top: -7px;" /></a>
 				</div>
 				<div class="navbar-collapse collapse">
 					<ul class="nav navbar-nav">
+						<!--<li> <a href="#" class="smoothScroll"> <b style="color:white;">Fluxy</b></a></li>-->
 						<li> <a href="#about" class="smoothScroll"> About</a></li>
+						<li> <a href="#consumers" class="smoothScroll"> Consumers</a></li>
+						<li> <a href="#restaurants" class="smoothScroll"> Restaurants</a></li>
 						<li> <a href="#contact" class="smoothScroll"> Contact</a></li>
 						<li> <a href="#team" class="smoothScroll"> Team</a></li>
 					</div><!--/.nav-collapse -->
@@ -74,17 +77,19 @@
 					</div>
 					<div class="col-md-2"></div>
 				</div>
-				<h4><b>Launching this July.</b> <i>Sign up now for updates and access to special deals.</i></h4><br>
+				<h4><b>Launching this July.</b> <i>Sign up now for updates and access to special launch-day deals.</i></h4><br>
 				<!-- The sign-up form itself -->
 			  <div id="form-container">
 			    <!-- Form to submit email to our list -->
-			    <form id="subscribeForm" action="/subscribe/" method="post">
+			    <form id="subscribeForm" class="form-inline" action="/subscribe/" method="post">
 			      {% csrf_token %}
-			      <input name="email" type="email" class="required email"
-			      placeholder="Your email" id="email" style="border-radius: 5px; border-width: 1px; padding: 5px 10px;" />
-			      <button type="submit" class="btn btn-default btn-lg" id="submit-btn">Subscribe</button>
+			      <div class="form-group">
+				      <input name="email" type="email" class="required email form-control input-lg"
+				      placeholder="Your email" id="email" style="" />
+				    </div>
+				    <button type="submit" class="btn btn-default btn-lg" id="submit-btn">Subscribe</button>
 			    </form>
-			  </div><br><br><br>
+			  </div><br><br>
 			</header>
 		</div><!-- /headerwrap -->
 
@@ -95,34 +100,39 @@
 			<br/>
 			<div class="row">
 				<div class="col-md-8 col-md-offset-2">
-					<iframe id="fluxy-video" src="//player.vimeo.com/video/97117689?badge=0" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe><br><br>
+					<iframe id="fluxy-video" src="//player.vimeo.com/video/97117689?badge=0" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe><br><br><br>
 				</div>
 			</div><!-- row -->
 		</div><!-- greywrap -->
 
 		<!-- ==== SERVICES ==== -->
-		<div class="container" id="services" name="services">
+		<div class="container" id="consumers" name="consumers">
 			<br>
 			<br>
-			<div class="row">
+			<div class="row" >
 				<h2 class="centered">FOR CONSUMERS</h2>
 				<hr>
-				<br>
 				<div class="col-lg-offset-2 col-lg-8">
-					<p>Employees and consumers. Two halves of a brand’s entirety, the whole of a brand’s audience. Sometimes these two halves have very different viewpoints, creating a weak spot in the brand story. Weakness tarnishes credibility. Brands that aren’t credible aren’t viable.
-					</p>
-					<p>We squash weakness by designing the whole brand story. It’s crafted around the truism held by employees and consumers to create an experience that connects from the inside out.</p>
-					<p>By being true to the brand we represent, we elevate the audiences’ relationship to it. Like becomes love becomes a passion. Passion becomes advocacy. And we see the brand blossom from within, creating a whole story the audience embraces. That’s when the brand can truly flex its muscles.</p>
+					<h3>
+						<ul>
+							<li>Fluxy gives consumers a seamless deal discovery process for local restaurants</li><br>
+							<li>Consumers save money at familiar classics and discover new favorites</li>
+						</ul>
+					</h3>
 				</div><!-- col-lg -->
 			</div><!-- row -->
-
+			<div class="row" style="margin-top:-44px;" id="restaurants" name="restaurants"></div>
 			<div class="row">
 				<h2 class="centered">FOR RESTAURANTS</h2>
 				<hr>
-				<br>
 				<div class="col-lg-offset-2 col-lg-8">
-					<img class="img-responsive" src="{% static 'img/iphone.png' %}" alt="">
-				</div><!-- col -->
+					<h3>
+						<ul>
+							<li>Fluxy increases traffic and demand by enabling restaurants to intelligently price goods and services according to demand</li><br>
+							<li>Fluxy supplies restaurants with a new marketing and distribution channel that is synchronized across social networks and other online platforms</li>
+						</ul>
+					</h3>
+				</div>
 			</div><!-- row -->
 		</div><!-- container -->
 
@@ -207,6 +217,7 @@
 				$('#form-container').html('<p>Thanks for signing up!</p>');
 			},
 		});
+		$('#email').focus();
 	</script>
 </body>
 </html>
