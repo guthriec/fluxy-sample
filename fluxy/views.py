@@ -18,14 +18,6 @@ import json
 import mailchimp
 # mailchimp example app: https://github.com/mailchimp/mcapi2-python-examples
 
-def index(request):
-  """
-  Author: Rahul Gupta-Iwasaki
-  Path: /
-  Description: Renders the landing page
-  """
-  return render(request, 'fluxy/index.html', {'title': 'Fluxy'})
-
 def success(request):
   """
   Author: Rahul Gupta-Iwasaki

@@ -48,6 +48,7 @@ INSTALLED_APPS = (
     'fluxy',
     'deals',
     'dashboard',
+    'landing_page',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

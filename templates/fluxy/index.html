@@ -1,7 +1,25 @@
 {% extends "base_landing.html" %}
 {% load staticfiles %}
 
+{% block css %}
+<style type="text/css">
+  .navbar .navbar-header #logo {
+    background-color: white;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container">
+    <div class="novbar-header">
+      <button id="logo" type="button" class="navbar-toggle" data-toggle="collapse"
+        data-target=".navbar-collapse">
+        Jeanblue
+      </button>
+    </div>
+  </div>
+</div>
 <div class="container">
 <div id="landing-page">
   <img src="{% static 'img/in_iPhone.png' %}" alt="iPhone Image" id="left-col" />

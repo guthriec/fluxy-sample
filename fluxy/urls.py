@@ -25,7 +25,7 @@ urlpatterns = patterns('',
   url(r'^vendors/(?P<vendor_id>\d+)/$', views.vendor_page),
 
   # Route landing page resources: /, /success, /subscribe
-  url(r'^$', views.index),
+  url(r'', include('landing_page.urls')),
   url(r'^subscribe/$', views.subscribe),
   url(r'^success/$', views.success),
 
