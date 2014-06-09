@@ -50,7 +50,6 @@
 						<li> <a href="#about" class="smoothScroll"> About</a></li>
 						<li> <a href="#restaurants" class="smoothScroll"> Restaurants</a></li>
 						<li> <a href="#contact" class="smoothScroll"> Contact</a></li>
-						<li> <a href="#team" class="smoothScroll"> Team</a></li>
 					</div><!--/.nav-collapse -->
 				</div>
 			</div>
@@ -101,6 +100,11 @@
 				</div>
 			</div><!-- row -->
 			<div class="row">
+				<!-- Something that would be interesting to test is making this a link that scrolls the user back to the top instead of a
+						 another form. However, this turned out to be more challenging to implement than expected. Requires work in the smoothscroll.js
+						 library to make it possible to focus on an element after the scroll has completed. (This could be accomplished by calling an event
+						 on the window) Trying to focus on the event prior to the scroll being completed causes the window to jump to the element being focused
+						 on. -->
 				<div id="lowerSubscribeContainer" class="col-md-6 col-md-offset-3">
 					<h3>Sign up for updates and special early-adopter benefits.</h3><br>
 					<div id="lowerSubscribe" name="subscribe">
