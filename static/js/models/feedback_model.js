@@ -1,6 +1,6 @@
 /*
  * @author: Chris
- * @desc: Defines the model that represents user feedback 
+ * @desc: The model that represents user feedback 
  */
 define([
  'backbone'
