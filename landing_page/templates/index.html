@@ -48,8 +48,7 @@
 					<ul class="nav navbar-nav">
 						<li> <a href="#home" class="smoothScroll"> Home</a></li>
 						<li> <a href="#about" class="smoothScroll"> About</a></li>
-						<li> <a href="#consumers" class="smoothScroll"> For You</a></li>
-						<li> <a href="#restaurants" class="smoothScroll"> For Restaurants</a></li>
+						<li> <a href="#restaurants" class="smoothScroll"> Restaurants</a></li>
 						<li> <a href="#contact" class="smoothScroll"> Contact</a></li>
 						<li> <a href="#team" class="smoothScroll"> Team</a></li>
 					</div><!--/.nav-collapse -->
@@ -69,15 +68,15 @@
 						<div style="display:table-cell; vertical-align: middle;">
 							<img src="{% static 'img/FullNameLogo.png' %}" class="" style="max-width:100%; max-height:200px;" />
 							<div id="fluxy-header-detail">
-								<h1>Deals at the best restaurants near you. Right now.</h1\>
+								<h1>Deals at the best restaurants near you.</h1\>
 							</div>
 						</div>
 					</div>
 					<div class="col-md-2"></div>
 				</div>
-				<h4><b>Launching this July.</b> <i>Sign up now for updates and access to special launch-day deals.</i></h4><br>
+				<h4><b>Launching this July in Palo Alto.</b> <i id="signUpRequest">Sign up for updates and special early-adopter benefits.</i></h4><br>
 				<!-- The sign-up form itself -->
-			  <div id="form-container">
+			  <div id="subscribe" name="subscribe">
 			    <!-- Form to submit email to our list -->
 			    <form id="subscribeForm" class="form-inline" action="/subscribe/" method="post">
 			      {% csrf_token %}
@@ -93,7 +92,7 @@
 
 		<!-- ==== GREYWRAP ==== -->
 		<div class="greywrap" id="about" name="about">
-			<h1>Fluxy is built for the <i>needs</i> of restaurants and the <i>wants</i> of consumers.</h1>
+			<h1>Every restaurant gets quiet sometimes. Go against the crowd and save.</h1>
 			<hr>
 			<br/>
 			<div class="row">
@@ -101,32 +100,35 @@
 					<iframe id="fluxy-video" src="//player.vimeo.com/video/97117689?badge=0" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe><br><br><br>
 				</div>
 			</div><!-- row -->
+			<div class="row">
+				<div id="lowerSubscribeContainer" class="col-md-6 col-md-offset-3">
+					<h3>Sign up for updates and special early-adopter benefits.</h3><br>
+					<div id="lowerSubscribe" name="subscribe">
+				    <!-- Form to submit email to our list -->
+				    <form id="lowerSubscribeForm" class="form-inline" action="/subscribe/" method="post">
+				      {% csrf_token %}
+				      <div class="form-group">
+					      <input id="lowerEmail" name="email" type="email" class="required email form-control input-lg"
+					      placeholder="Your email" id="email" style="" />
+					    </div>
+					    <button type="submit" class="btn btn-default btn-lg" id="lower-submit-btn">Subscribe</button>
+				    </form><br>
+			  	</div>
+			  </div>
+			</div><br><br>
 		</div><!-- greywrap -->
 
 		<!-- ==== SERVICES ==== -->
-		<div class="container" id="consumers" name="consumers">
+		<div class="container" id="restaurants" name="restaurants">
 			<br>
 			<br>
-			<div class="row" >
-				<h2 class="centered">FOR YOU</h2>
-				<hr>
-				<div class="col-md-offset-2 col-md-8">
-					<h3>
-						<ul>
-							<li>Fluxy gives consumers a seamless deal discovery process for local restaurants.</li><br>
-							<li>Consumers save money at old classics and discover new favorites.</li>
-						</ul>
-					</h3>
-				</div><!-- col-lg -->
-			</div><!-- row -->
-			<div class="row hidden-xs hidden-sm" style="margin-top:-44px;" id="restaurants" name="restaurants"></div>
 			<div class="row">
 				<h2 class="centered">FOR RESTAURANTS</h2>
 				<hr>
 				<div class="col-md-offset-2 col-md-8">
 					<h3>
 						<ul>
-							<li>Fluxy increases traffic and demand by enabling restaurants to intelligently price goods and services according to demand.</li><br>
+							<li>Fluxy's loyal diners and pricing intelligence tools help you drive the right amount of traffic at off-peak hours and on quiet nights.</li><br>
 							<li>Email us at <a href="mailto:team@fluxyapp.com">team@fluxyapp.com</a> to talk about putting your restaurant on Fluxy!</li>
 						</ul>
 					</h3>
@@ -137,7 +139,7 @@
 
 		<!-- ==== SECTION DIVIDER ==== -->
 		<div id="fluxy-contact">
-			<section class="section-divider textdivider fluxy-mute" name="contact">
+			<section class="section-divider textdivider fluxy-mute fluxy-footer" name="contact">
 				<div class="container">
 					<h1>With <span class="icon-heart" style="color: red;"></span> from Stanford, CA.</h1>
 					<hr>
@@ -147,47 +149,6 @@
 				</div><!-- container -->
 			</section><!-- section -->
 		</div>
-
-		<!-- ==== TEAM MEMBERS ==== -->
-		<div class="container" id="team" name="team">
-			<div class="row white centered">
-				<h1 class="centered">THE FLUXY TEAM</h1>
-				<hr>
-				<br>
-				<br>
-
-				<div class="col-md-2 col-md-offset-1 centered">
-					<img class="img img-circle fluxy-team-pic" src="{% static 'img/team/amrit.jpg' %}" alt="">
-					<br>
-					<h4><b>Amrit Saxena</b></h4>
-				</div><!-- col-lg-3 -->
-
-				<div class="col-md-2 centered">
-					<img class="img img-circle fluxy-team-pic" src="{% static 'img/team/arushi.jpg' %}" alt="">
-					<br>
-					<h4><b>Arushi Raghuvanshi</b></h4>
-				</div><!-- col-lg-3 -->
-
-				<div class="col-md-2 centered">
-					<img class="img img-circle fluxy-team-pic" src="{% static 'img/team/ayush.jpg' %}" alt="">
-					<br>
-					<h4><b>Ayush Sood</b></h4>
-				</div><!-- col-lg-3 -->
-
-				<div class="col-md-2 centered">
-					<img class="img img-circle fluxy-team-pic" src="{% static 'img/team/chris.jpg' %}" alt="">
-					<br>
-					<h4><b>Chris Guthrie</b></h4>
-				</div><!-- col-lg-3 -->
-
-				<div class="col-md-2 centered">
-					<img class="img img-circle fluxy-team-pic" src="{% static 'img/team/rahul.jpg' %}" alt="">
-					<br>
-					<h4><b>Rahul Gupta-Iwasaki</b></h4>
-				</div><!-- col-lg-3 -->
-
-			</div><!-- row --><br><br><br>
-		</div><!-- container -->
 
 		<!-- A footer if we want it
 		<div id="footerwrap">
@@ -201,7 +162,6 @@
   ================================================== -->
   <!-- Placed at the end of the document so the pages load faster -->
 
-
   <script type="text/javascript" src="{% static 'js/lib/bootstrap.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/retina.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/jquery.easing.1.3.js' %}"></script>
@@ -210,7 +170,15 @@
   	<script type="text/javascript">
 		$('#subscribeForm').ajaxForm({
 			success: function(responseText, statusText, xhr, $form) {
-				$('#form-container').html('<p>Thanks for signing up!</p>');
+				$('#subscribe').html('<p>Thanks for signing up!</p>');
+				$('#lowerSubscribeContainer').html('');
+			},
+		});
+		$('#lowerSubscribeForm').ajaxForm({
+			success: function(responseText, statusText, xhr, $form) {
+				$('#lowerSubscribe').html('<p>Thanks for signing up!</p>');
+				$('#subscribe').html('');
+				$('#signUpRequest').html('Thanks for signing up!');
 			},
 		});
 		$('#email').focus();

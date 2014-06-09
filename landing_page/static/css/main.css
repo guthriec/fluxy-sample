@@ -659,6 +659,10 @@ a:after {
     background-color: hsla(0,100%,0%,0.25);
 }
 
+.fluxy-footer {
+    border-bottom: none;
+}
+
 #fluxy-iphone {
     max-height:500px;
 }
