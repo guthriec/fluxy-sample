@@ -1,3 +1,10 @@
+/*
+ * @author: Ayush, Chris
+ * @desc: Initializes the marionette application. Defines regions for the main
+ * content, the modal content, and the left navbar. Fetches the original set of
+ * deals and initializes appropriate layouts.
+ */
+
 define([
   'backbone',
   'marionette',

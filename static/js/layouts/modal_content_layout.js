@@ -1,6 +1,8 @@
 /*
  * @author: Rahul
  * @desc: A Marionette layout that wraps the modal content of the dashboard.
+ * Initializes the modals, and on appropriate triggers, shows the deal
+ * confirmation modal or the photo selection modal.
  */
 define([
   'marionette',

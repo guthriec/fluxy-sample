@@ -14,7 +14,8 @@ define([
   var DealsCollection = Backbone.Collection.extend({
 
     model: DealModel,
-
+    
+    // The collection is by default sorted by start date
     comparator: function(model) {
       var start_date = new Date(model.get('time_start'));
       return (-1) * start_date.getTime();

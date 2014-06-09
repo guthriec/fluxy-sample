@@ -1,6 +1,6 @@
 /*
  * @author: Chris
- * @desc: The model that represents user feedback 
+ * @desc: The model that represents user feedback. Specifies the API URL.
  */
 define([
  'backbone'

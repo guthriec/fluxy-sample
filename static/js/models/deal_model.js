@@ -1,6 +1,7 @@
 /*
  * @author: Ayush, Chris
- * @desc: The model that represents a single deal.
+ * @desc: The model that represents a single deal. Parses the API response
+ * for a single deal, creating as appropriate a nested photo model instance.
  */
 define([
  'backbone',
