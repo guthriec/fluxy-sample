@@ -1,6 +1,6 @@
 /*
  * @author: Chris
- * @desc: Defines the view that's responsible for rendering the feedback
+ * @desc: The view that's responsible for rendering the feedback
  *        form and submitting it. 
  */
 define([

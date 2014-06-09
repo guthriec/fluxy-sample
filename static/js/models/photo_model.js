@@ -1,7 +1,6 @@
 /*
  * @author: Rahul
- * @desc: Defines the model that represents the photo that is going to be
- * displayed.
+ * @desc: The model that represents a single photo.
  */
 define([
     'backbone'

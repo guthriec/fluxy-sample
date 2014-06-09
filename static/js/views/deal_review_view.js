@@ -1,7 +1,9 @@
 /*
  * @author: Chris
- * @desc: Defines the view that's responsible for rendering a single deal
- *        for review. It includes functionality for the Cancel Deal button.
+ * @desc: The view for a single scheduled deal for review.
+ * Includes functionality for the Cancel Deal button. Serializes a deal model 
+ * for display (interpreting max deals and deals remaining, and serializing
+ * the dates to human-readable HTML).
  */
 define([
   'marionette',

@@ -1,3 +1,10 @@
+/*
+ * @author: Ayush, Chris
+ * @desc: The view that is associated with the left nav-bar. Triggers view
+ * switches when links in the left nav are clicked. Catches event triggers for
+ * switching views and makes sure the left nav reflects those changes. Default
+ * initialized to show the create view.
+ */
 define([
   'marionette',
   'vent'

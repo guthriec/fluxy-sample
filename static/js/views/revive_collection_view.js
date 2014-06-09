@@ -1,8 +1,8 @@
 /*
  * @author: Chris 
- * @desc: Defines the view that is associated with a collection of 
- * expired deals. Is responsible for showing all the DealView
- * objects in a <table>.
+ * @desc: The view that is associated with a collection of expired deals that
+ * can be revived. Renders “no deals available” template if no expired deals.
+ * Re-renders when the collection changes.
  */
 define([
   'marionette',

@@ -1,6 +1,7 @@
 /*
- * @author: Ayush
- * @desc: Responsible for rendering and displaying any necessary modals.
+ * @author: Ayush, Rahul
+ * @desc: Responsible for rendering the deal creation confirmation modal.
+ * Allows the user to confirm the deal or cancel it.
  */
 define([
   'marionette',

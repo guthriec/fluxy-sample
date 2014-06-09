@@ -1,7 +1,10 @@
 /*
- * @author: Ayush
- * @desc: Defines a view that is associated with the DealModel, with 
- *        functionality to revive a deal.
+ * @author: Chris
+ * @desc: The view for a single expired deal that can be revived. Includes
+ * functionality for the Revive Deal button, including sending the user to the
+ * appropriately populated create view. Serializes a deal model for display
+ * (interpreting max deals and deals remaining, and serializing the dates to
+ * human-readable HTML).
  */
 define([
   'marionette',

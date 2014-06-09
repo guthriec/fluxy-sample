@@ -1,6 +1,7 @@
 /*
  * @author: Rahul
- * @desc: Defines the view associated with PhotosCollection.
+ * @desc: The view associated with the PhotosCollection. Manages new photo
+ * uploading. Allows user to choose different photos.
  */
 define([
   'jquery.form',

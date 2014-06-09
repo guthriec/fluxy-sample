@@ -1,6 +1,6 @@
 /*
  * @author: Chris
- * @desc: Defines the view that's responsible for rendering a single deal
+ * @desc: The view that's responsible for rendering a single deal
  *        for Fluxy Live.
  */
 define([

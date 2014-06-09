@@ -1,6 +1,7 @@
 /*
  * @author: Rahul
- * @desc: Defines the view associated with the PhotoModel.
+ * @desc: Defines the view associated with the PhotoModel. Includes
+ * functionality for choosing a photo for a new deal.
  */
 define([
   'marionette',

@@ -1,7 +1,7 @@
 /*
  * @author: Chris
- * @desc: Defines the view that renders the Live collection. Is
- * responsible for showing all the DealLiveView objects.
+ * @desc: The view that renders the active collection. Is
+ * responsible for showing all the DealActiveView objects.
  */
 define([
   'marionette',

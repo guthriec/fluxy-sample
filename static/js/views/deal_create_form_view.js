@@ -1,8 +1,11 @@
 /*
- * @author: Ayush
- * @desc: Defines the view that is associated with the form that allows vendors
- * to create a new deal. It is responsible for handling all events associated
- * with the form.
+ * @author: Ayush, Chris, Rahul
+ * @desc: The view that is associated with the form that allows vendors
+ * to create a new deal. Manages form logic. 
+ * Binds form fields to a new deal model.
+ * Validates the form. Allows a client to populate the fields from a
+ * pre-existing model using the setDeal method and clear the fields using
+ * the resetDeal method. Triggers the confirm deal modal on form submission.
  */
 define([
   'fluxy_time',
