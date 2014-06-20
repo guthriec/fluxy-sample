@@ -10,7 +10,7 @@ DEBUG = TEMPLATE_DEBUG = True
 ADMINS = ()
 
 # Media files (Images, etc.)
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 # Store locally for local server
