@@ -687,6 +687,11 @@ a:after {
     margin-left: -50%;
 }
 
+.inline-twitter-icon {
+  display: inline-block;
+  margin-right: 10px;
+}
+
 /* This happens when the width is less than 992px; */
 @media (max-width:992px) {
     #fluxy-header, #fluxy-header-detail {

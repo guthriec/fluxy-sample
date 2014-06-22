@@ -73,19 +73,24 @@
 					</div>
 					<div class="col-md-2"></div>
 				</div>
-				<h4><b>Launching this July in Palo Alto.</b> <i id="signUpRequest">Sign up for updates and special early-adopter benefits.</i></h4><br>
+				<h4><b>Launching this July in Palo Alto.</b></h4>
+        <h4><i id="signUpRequest">Follow us on Twitter for updates and get on our email list for special early-adopter benefits.</i></h4><br>
 				<!-- The sign-up form itself -->
-			  <div id="subscribe" name="subscribe">
-			    <!-- Form to submit email to our list -->
-			    <form id="subscribeForm" class="form-inline" action="/subscribe/" method="post">
-			      {% csrf_token %}
-			      <div class="form-group">
-				      <input name="email" type="email" class="required email form-control input-lg"
-				      placeholder="Your email" id="email" style="" />
-				    </div>
-				    <button type="submit" class="btn btn-default btn-lg" id="submit-btn">Subscribe</button>
-			    </form>
-			  </div><br><br>
+			  <div class="row">
+          <a href="https://twitter.com/intent/follow?original_referer=fluxyapp.com&screen_name=fluxyapp&variant=2.0" class="btn btn-primary btn-lg popup"><div class="inline-twitter-icon icon icon-twitter"></div>Follow @fluxyapp on Twitter</a>
+        </div><br>
+        <div class="row">
+          <div id="subscribe" name="subscribe">
+            <!-- Form to submit email to our list -->
+            <form id="subscribeForm" class="form-inline" action="/subscribe/" method="post">
+              {% csrf_token %}
+              <div class="form-group">
+                <input name="email" type="email" class="required email form-control input-lg"
+                placeholder="Your email" id="email" style="" />
+              </div>
+              <button type="submit" class="btn btn-default btn-lg" id="submit-btn">Subscribe</button>
+            </form>
+          </div><br><br>
 			</header>
 		</div><!-- /headerwrap -->
 
@@ -106,19 +111,24 @@
 						 on the window) Trying to focus on the event prior to the scroll being completed causes the window to jump to the element being focused
 						 on. -->
 				<div id="lowerSubscribeContainer" class="col-md-6 col-md-offset-3">
-					<h3>Sign up for updates and special early-adopter benefits.</h3><br>
-					<div id="lowerSubscribe" name="subscribe">
-				    <!-- Form to submit email to our list -->
-				    <form id="lowerSubscribeForm" class="form-inline" action="/subscribe/" method="post">
-				      {% csrf_token %}
-				      <div class="form-group">
-					      <input id="lowerEmail" name="email" type="email" class="required email form-control input-lg"
-					      placeholder="Your email" id="email" style="" />
-					    </div>
-					    <button type="submit" class="btn btn-default btn-lg" id="lower-submit-btn">Subscribe</button>
-				    </form><br>
-			  	</div>
-			  </div>
+          <div class="row">
+            <h3>Follow us for updates. Sign up for special early-adopter benefits.</h3><br>
+            <div>
+              <a href="https://twitter.com/intent/follow?original_referer=fluxyapp.com&screen_name=fluxyapp&variant=2.0" class="btn btn-primary btn-lg popup"><div class="inline-twitter-icon icon-twitter"></div>Follow @fluxyapp on Twitter</a>
+            </div><br>
+            <div id="lowerSubscribe" name="subscribe">
+              <!-- Form to submit email to our list -->
+              <form id="lowerSubscribeForm" class="form-inline" action="/subscribe/" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                  <input id="lowerEmail" name="email" type="email" class="required email form-control input-lg"
+                  placeholder="Your email" id="email" style="" />
+                </div>
+                <button type="submit" class="btn btn-default btn-lg" id="lower-submit-btn">Subscribe</button>
+              </form><br>
+            </div>
+          </div>
+        </div>
 			</div><br><br>
 		</div><!-- greywrap -->
 
@@ -197,5 +207,21 @@
 	  ga('send', 'pageview');
 
 	</script>
+  <script>
+    $('.popup').click(function(e) {
+      e.preventDefault();
+      var width  = 575,
+          height = 400,
+          left   = ($(window).width() - width) / 2,
+          top    = ($(window).height() - height) / 2,
+          url    = this.href,
+          opts   = 'status=1' + 
+                   ',width=' + width + 
+                   ',height=' + height +
+                   ',top=' + top +
+                   ',left=' + left;
+      window.open(url, 'twitter', opts);
+    });
+  </script>
 </body>
 </html>
