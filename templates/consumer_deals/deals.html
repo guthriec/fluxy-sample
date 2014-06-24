@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+    <div id="left-navbar-container"></div>
+    <div id="deals-container"></div>
+    <div id="modal-container"></div>
+{% endblock %}
+{% block js %}
+  <script type="text/template" id="left-navbar-template">
+    Left nav!
+  </script>
+
+  <script type="text/template" id="main-content-template">
+    <div id="deals">Deals div!</div>
+  </script>
+
+  <script type="text/template" id="modal-content-template">
+    <div id="modal">Modal div!</div>
+  </script>
+  
+  <script data-main="{% static 'js/consumer_deals_main.js' %}" src="{% static 'js/require.js' %}"></script>
+{% endblock %}
