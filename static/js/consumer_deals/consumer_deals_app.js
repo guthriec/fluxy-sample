@@ -12,10 +12,10 @@ define([
   'consumer_deals/layouts/modal_content_layout'
 ], function(Backbone, Marionette, _, MainContentLayout, ModalContentLayout) {
 
-  // Start the dashboard Marionette/Backbone app
+  // Start the deals Marionette/Backbone app
   var DealsApp = new Marionette.Application();
 
-  // Register the main dashboard region
+  // Register the main regions
   DealsApp.addRegions({
     dealsRegion: '#deals-container',
     leftNavbarRegion: '#left-navbar-container',
