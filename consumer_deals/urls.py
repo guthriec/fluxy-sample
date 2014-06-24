@@ -3,5 +3,5 @@ from consumer_deals import views
 
 urlpatterns = patterns('',
   # Route deals page
-  url(r'^deals/$', 'consumer_deals.views.deals'),
+  url(r'^deals/$', views.deals),
 )
